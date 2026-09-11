@@ -45,7 +45,8 @@ let
     "security-tools" = ../home/features/security-tools.nix;
     "nix-tools" = ../home/features/nix-tools.nix;
     "terminal-tools" = ../home/features/terminal-tools.nix;
-    nixos = ../home/nixos.nix;
+    # Explicit NixOS host entry point; generic Linux hosts must use portable modules.
+    nixos = ../home/platform/nixos.nix;
 
     nixvim = {
       imports = [

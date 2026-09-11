@@ -1,7 +1,6 @@
-# NixOS 集成模块：仅显式导入时提供系统重建与 NixOS 选项工具。
+# NixOS platform entry point. Import this only on a NixOS host; portable defaults stay in home/default.nix.
 {
   lib,
-  options,
   pkgs,
   ...
 }:
@@ -74,68 +73,35 @@ let
     in
     cfgs.''${selectedHost}.options
   '';
-
-  btopWithNixOSDriver = pkgs.writeShellApplication {
-    name = "btop";
-    text = ''
-      export LD_LIBRARY_PATH="/run/opengl-driver/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-      exec ${pkgs.btop}/bin/btop "$@"
-    '';
-  };
-
-  nixosFishFunctions = [
-    "_mcb_flake_dir"
-    "_mcb_flake_ref"
-    "_mcb_flake_source"
-    "_mcb_flake_target"
-    "nfu"
-    "nrb"
-    "nrc"
-    "nrs"
-    "nrt"
-    "nru"
-  ];
-  fishFunctionFiles = builtins.listToAttrs (
-    map (name: {
-      name = "fish/functions/${name}.fish";
-      value.source = ./config/fish/functions + "/${name}.fish";
-    }) nixosFishFunctions
-  );
 in
 {
+  imports = [
+    {
+      _module.args = {
+        mcbNixpkgsExpression = nixpkgsExpression;
+        mcbNixosOptionsExpression = nixosOptionsExpression;
+      };
+    }
+    ../config/btop/nixos.nix
+    ../config/fish/nixos.nix
+    ../config/zsh/nixos.nix
+    ../config/nushell/nixos.nix
+    ../config/helix/nixos.nix
+    ../config/nixvim/nixos.nix
+  ];
+
   config = {
     assertions = [
       {
         assertion = pkgs.stdenv.hostPlatform.isLinux;
         message = "homeModules.nixos requires a Linux system.";
       }
+      {
+        assertion = builtins.pathExists /etc/NIXOS;
+        message = "homeModules.nixos requires a NixOS host environment; generic Linux hosts are unsupported.";
+      }
     ];
 
-    home.packages = lib.mkAfter [ btopWithNixOSDriver ];
-    home.file.".local/bin/btop".source = "${btopWithNixOSDriver}/bin/btop";
     home.sessionPath = lib.mkAfter [ "/run/wrappers/bin" ];
-    programs.zsh.shellAliases = {
-      nsp = "nix search nixpkgs";
-      nsh = "nix-shell";
-      ngc = "/run/wrappers/bin/sudo nix-collect-garbage -d";
-      please = "/run/wrappers/bin/sudo";
-    };
-
-    xdg.configFile = fishFunctionFiles // {
-      "helix/languages.toml".source = lib.mkForce (
-        pkgs.writeText "mcbctl-nixos-languages.toml" (
-          builtins.readFile ./config/helix/languages.toml + "\n" + builtins.readFile ./config/helix/nixos.toml
-        )
-      );
-    };
-
-    programs.zsh.initContent = lib.mkAfter (builtins.readFile ./config/zsh/nixos.zsh);
-    programs.nushell.extraConfig = lib.mkAfter (builtins.readFile ./config/nushell/nixos.nu);
-  }
-  // lib.optionalAttrs (options ? programs.nixvim) {
-    programs.nixvim.lsp.servers.nixd.config.settings.nixd = {
-      nixpkgs.expr = nixpkgsExpression;
-      options.nixos.expr = nixosOptionsExpression;
-    };
   };
 }
