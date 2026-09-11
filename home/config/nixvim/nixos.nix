@@ -13,5 +13,14 @@
       nixpkgs.expr = mcbNixpkgsExpression;
       options.nixos.expr = mcbNixosOptionsExpression;
     };
+
+    programs.nixvim.lsp.servers.clangd.config.cmd = lib.mkForce [
+      "clangd"
+      "--background-index"
+      "--clang-tidy"
+      "--completion-style=detailed"
+      "--header-insertion=iwyu"
+      "--query-driver=/nix/store/*/bin/gcc,/nix/store/*/bin/g++,/nix/store/*/bin/cc,/nix/store/*/bin/c++"
+    ];
   };
 }
