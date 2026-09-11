@@ -3,7 +3,7 @@
 let
   markdownPreviewBun = pkgs.vimPlugins.markdown-preview-nvim.overrideAttrs (oldAttrs: {
     postPatch =
-      (oldAttrs.postPatch or "") + builtins.readFile ../scripts/markdown-preview-bun-post-patch.sh;
+      (oldAttrs.postPatch or "") + builtins.readFile ../../scripts/markdown-preview-bun-post-patch.sh;
   });
 in
 

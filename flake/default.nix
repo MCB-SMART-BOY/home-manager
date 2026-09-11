@@ -50,7 +50,7 @@ let
     nixvim = {
       imports = [
         inputs.nixvim.homeModules.nixvim
-        ../home/nixvim
+        ../home/config/nixvim
       ];
     };
   };
