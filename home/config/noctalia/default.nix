@@ -94,9 +94,9 @@ let
       '';
 in
 {
-  # W Engine settings require the nixpkgs-provided linux-wallpaperengine executable.
+  # Noctalia v5 provides the TOML configuration and `noctalia msg` IPC command.
   home.packages = [
-    pkgs.noctalia-shell
+    pkgs.noctalia
     pkgs.linux-wallpaperengine
   ];
   home.file."Pictures/Wallpapers" = {

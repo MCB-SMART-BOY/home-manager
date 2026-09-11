@@ -4,9 +4,11 @@
   home.packages = [
     pkgs.fcitx5
     pkgs.fcitx5-rime
+    pkgs.qt6Packages.fcitx5-chinese-addons
     pkgs.fcitx5-gtk
     pkgs.qt6Packages.fcitx5-qt
   ];
+
 
   xdg.configFile = {
     "fcitx5/profile".source = ./profile;
