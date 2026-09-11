@@ -1417,11 +1417,10 @@ Before staging, the worktree contained:
 - Report correction follow-up: `282ce2268bc4d1dd1d131c224473d3369ba56757` — `docs: record Task 8 delivery commit`
 - Final evidence follow-up: `41de938c7dbdaab39df31cc063f8c04cf01414cb` — `docs: expand Task 8 ownership evidence`
 - Final metadata follow-up: `51b7d4e527e872a968f15f3c15cdfd9c477b500b` — `docs: record final Task 8 evidence hash`
+- Inventory metadata follow-up: `b85039b82c6309729d3853e50491d70976e591b0` — `docs: record current Task 8 report hash`
 - Report tip-identification follow-up: `583962d32ebaab461364c9c6b4f37b663fd83c15` — `docs: identify Task 8 report tip`
-- Complete evidence report commit: `8fdd61bfe601af9fc82df363ec46f312f9bca675` — `docs: record complete Task 8 probe evidence`
-- This report-only commit records the raw ownership probe transcript and the corrected inventory metadata.
 
-The first delivery commit contains the three formatter changes and the initial report. The follow-ups contain report metadata/evidence only. The pre-existing `task-3-report.md` correction remains unstaged and excluded.
+The checked-out `HEAD` contains this Commit section and the report-only evidence updates; verify its exact current hash with `git rev-parse HEAD`. The pre-existing `task-3-report.md` correction remains unstaged and excluded.
 
 
 ## Unresolved risks
