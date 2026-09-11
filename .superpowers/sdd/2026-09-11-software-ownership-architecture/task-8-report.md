@@ -512,6 +512,7 @@ Before staging, the worktree contained:
 - Report correction follow-up: `282ce2268bc4d1dd1d131c224473d3369ba56757` — `docs: record Task 8 delivery commit`
 - Final evidence follow-up: `41de938c7dbdaab39df31cc063f8c04cf01414cb` — `docs: expand Task 8 ownership evidence`
 - Final metadata follow-up: `51b7d4e527e872a968f15f3c15cdfd9c477b500b` — `docs: record final Task 8 evidence hash`
+- The current final report tip is the checked-out `HEAD` containing this section; verify its exact hash with `git rev-parse HEAD`. It supersedes the preceding metadata follow-up and contains report metadata only.
 
 The first delivery commit contains the three formatter changes and the initial report. The two follow-ups contain report metadata/evidence only. The pre-existing `task-3-report.md` correction remains unstaged and excluded.
 
