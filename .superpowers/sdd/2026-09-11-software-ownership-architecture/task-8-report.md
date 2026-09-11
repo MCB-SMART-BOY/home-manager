@@ -338,111 +338,108 @@ builtins.concatStringsSep "\n" ([
   "generic: totals packages=${toString (builtins.length base.packages)} homeFile=${toString (builtins.length base.homeFile)} xdgConfig=${toString (builtins.length base.xdgConfig)} xdgData=${toString (builtins.length base.xdgData)} xdgDesktop=${toString (builtins.length base.xdgDesktop)}"
 ] ++ map row defs)'
 ```
+`lib.subtractLists` in nixpkgs removes the first list from the second list, so `lib.subtractLists base i` is intentionally the feature-minus-baseline delta. An independent semantics probe returned `{"baseThenFeature":["feature"],"featureThenBase":["base"]}` for `lib.subtractLists ["base"] ["feature"]` and its reversed operands. The reviewer suggestion to reverse these operands would therefore produce baseline-only entries, not feature additions.
 
-The evaluator emitted the existing LibreOffice versioning warning twice on stderr (`use libreoffice-stable`); the command exited 0. Exact stdout was captured at `/tmp/task8-owner-inventory.txt` (100 lines, 9866 bytes) and is reproduced below:
+The evaluator emitted the existing LibreOffice versioning warning twice on stderr (`use libreoffice-stable`); the command exited 0. Exact stdout was captured at `/tmp/task8-owner-inventory.txt` (96 lines, 6798 bytes; SHA-256 `47d1f6e85b7f51a6cb8de339e6c18c63ae9f5df03ef46f730e53db5b2c7a9775`) and is reproduced below:
 
 ```text
-generic: packages=[bat,btop,coreutils,curl,direnv,dummy-xdg-mime-dirs1,dummy-xdg-mime-dirs2,eza,fastfetch,fd,fish,fzf,git,git-lfs,helix,hm-session-vars.fish,hm-session-vars.sh,home-configuration-reference-manpage,home-manager,jq,less,man-db,mcb-toolchain,nix-zsh-completions,nushell,oh-my-zsh,ouch,ripgrep,shared-mime-info,starship,tmux,zoxide,zsh]
-generic: homeFile=[$HOME/.cache/.keep,$HOME/.cache/oh-my-zsh/.keep,$HOME/.config/bat/config,$HOME/.config/btop/btop.conf,$HOME/.config/btop/themes/noctalia.theme,$HOME/.config/direnv/lib/hm-nix-direnv.sh,$HOME/.config/environment.d/10-home-manager.conf,$HOME/.config/fastfetch/config.jsonc,$HOME/.config/fish/conf.d/01-colors.fish,$HOME/.config/fish/conf.d/02-env.fish,$HOME/.config/fish/conf.d/03-options.fish,$HOME/.config/fish/conf.d/05-fzf.fish,$HOME/.config/fish/conf.d/08-bang-bang.fish,$HOME/.config/fish/config.fish,$HOME/.config/fish/functions/_mcb_toolchain.fish,$HOME/.config/fish/functions/backup.fish,$HOME/.config/fish/functions/bootstrap-toolchain.fish,$HOME/.config/fish/functions/check-toolchain.fish,$HOME/.config/fish/functions/copy.fish,$HOME/.config/fish/functions/extract.fish,$HOME/.config/fish/functions/fcd.fish,$HOME/.config/fish/functions/fe.fish,$HOME/.config/fish/functions/history.fish,$HOME/.config/fish/functions/mkcd.fish,$HOME/.config/fish/functions/upgrade-toolchain.fish,$HOME/.config/git/config,$HOME/.config/helix/config.toml,$HOME/.config/helix/languages.toml,$HOME/.config/nushell/config.nu,$HOME/.config/nushell/env.nu,$HOME/.config/starship.toml,$HOME/.config/systemd/user/tray.target,$HOME/.config/tmux/tmux.conf,$HOME/.config/toolchain/tools.json,$HOME/.local/share/fish/home-manager/generated_completions,$HOME/.local/state/.keep,./.zprofile,./.zshenv,./.zshrc,.local/bin/mcb-toolchain,.local/share/fastfetch/logos/logo-01.png,.local/share/fastfetch/logos/logo-02.png,.local/share/fastfetch/logos/logo-03.webp,.manpath]
-generic: xdgConfig=[bat/config,btop/btop.conf,btop/themes/noctalia.theme,direnv/lib/hm-nix-direnv.sh,environment.d/10-home-manager.conf,fastfetch/config.jsonc,fish/conf.d/01-colors.fish,fish/conf.d/02-env.fish,fish/conf.d/03-options.fish,fish/conf.d/05-fzf.fish,fish/conf.d/08-bang-bang.fish,fish/config.fish,fish/functions/_mcb_toolchain.fish,fish/functions/backup.fish,fish/functions/bootstrap-toolchain.fish,fish/functions/check-toolchain.fish,fish/functions/copy.fish,fish/functions/extract.fish,fish/functions/fcd.fish,fish/functions/fe.fish,fish/functions/history.fish,fish/functions/mkcd.fish,fish/functions/upgrade-toolchain.fish,git/config,helix/config.toml,helix/languages.toml,starship.toml,systemd/user/tray.target,tmux/tmux.conf,toolchain/tools.json]
-generic: xdgData=[fish/home-manager/generated_completions]
-generic: xdgDesktop=[]
+generic: totals packages=33 homeFile=44 xdgConfig=30 xdgData=1 xdgDesktop=0
 desktop: totals packages=51 homeFile=45 xdgConfig=31 xdgData=1 xdgDesktop=0
-  packageDelta=[aria2,baobab,deja-dup,file-roller,gparted,imv,kdenlive,keepassxc,kitty,localsend,mission-center,nautilus,papers,pavucontrol,qbittorrent,simple-scan,telegram-desktop,zathura-with-plugins]
-  homeFileDelta=[$HOME/.config/kitty/kitty.conf]
-  xdgConfigDelta=[kitty/kitty.conf]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[aria2,baobab,deja-dup,file-roller,gparted,imv,kdenlive,keepassxc,kitty,localsend,mission-center,nautilus,papers,pavucontrol,qbittorrent,simple-scan,telegram-desktop,zathura-with-plugins]
+  homeFile=[$HOME/.config/kitty/kitty.conf]
+  xdgConfig=[kitty/kitty.conf]
+  xdgData=[]
+  xdgDesktop=[]
 development: totals packages=58 homeFile=45 xdgConfig=31 xdgData=1 xdgDesktop=0
-  packageDelta=[ShellCheck,bear,binutils-wrapper,bun,ccache,clang-tools,cmake,elan,gcc-wrapper,gnumake,go,lua-language-server,marksman,mold-unwrapped-wrapper,nixd,nixfmt,opam,openssl,pkg-config-wrapper,rustup,sccache,statix,uv,vscode,zed-editor]
-  homeFileDelta=[$HOME/.config/clangd/config.yaml]
-  xdgConfigDelta=[clangd/config.yaml]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[ShellCheck,bear,binutils-wrapper,bun,ccache,clang-tools,cmake,elan,gcc-wrapper,gnumake,go,lua-language-server,marksman,mold-unwrapped-wrapper,nixd,nixfmt,opam,openssl,pkg-config-wrapper,rustup,sccache,statix,uv,vscode,zed-editor]
+  homeFile=[$HOME/.config/clangd/config.yaml]
+  xdgConfig=[clangd/config.yaml]
+  xdgData=[]
+  xdgDesktop=[]
 media: totals packages=39 homeFile=48 xdgConfig=34 xdgData=1 xdgDesktop=0
-  packageDelta=[mpd,mpv-with-scripts,ncmpcpp,ncspot,obs-studio,playerctl]
-  homeFileDelta=[$HOME/.config/mpv/input.conf,$HOME/.config/mpv/mpv.conf,$HOME/.config/mpv/script-opts/autoload.conf,$HOME/.config/mpv/script-opts/thumbfast.conf]
-  xdgConfigDelta=[mpv/input.conf,mpv/mpv.conf,mpv/script-opts/autoload.conf,mpv/script-opts/thumbfast.conf]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[mpd,mpv-with-scripts,ncmpcpp,ncspot,obs-studio,playerctl]
+  homeFile=[$HOME/.config/mpv/input.conf,$HOME/.config/mpv/mpv.conf,$HOME/.config/mpv/script-opts/autoload.conf,$HOME/.config/mpv/script-opts/thumbfast.conf]
+  xdgConfig=[mpv/input.conf,mpv/mpv.conf,mpv/script-opts/autoload.conf,mpv/script-opts/thumbfast.conf]
+  xdgData=[]
+  xdgDesktop=[]
 niri: totals packages=70 homeFile=55 xdgConfig=37 xdgData=1 xdgDesktop=0
-  packageDelta=[SwayNotificationCenter,anyrun,bash-interactive,cliphist,fcitx5,fcitx5-chinese-addons,fcitx5-gtk,fcitx5-qt6,fcitx5-rime,google-chrome,grim,keepassxc,kitty,linux-wallpaperengine,lock-screen,mission-center,nautilus,niri,niri-run,noctalia,obs-studio,pavucontrol,playerctl,polkit-gnome,rofi,satty,slurp,steam-launcher,swaybg,swayidle,swaylock-effects,telegram-desktop,walker,waybar,wf-recorder,wl-clipboard,wlsunset]
-  homeFileDelta=[$HOME/.config/fcitx5/conf/classicui.conf,$HOME/.config/fcitx5/profile,$HOME/.config/kitty/kitty.conf,$HOME/.config/niri/binds.kdl,$HOME/.config/niri/config.kdl,$HOME/.config/niri/rules.kdl,$HOME/.config/noctalia/config.toml,.local/bin/lock-screen,.local/bin/niri-run,.local/bin/steam-launcher,Pictures/Wallpapers]
-  xdgConfigDelta=[fcitx5/conf/classicui.conf,fcitx5/profile,kitty/kitty.conf,niri/binds.kdl,niri/config.kdl,niri/rules.kdl,noctalia/config.toml]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[SwayNotificationCenter,anyrun,bash-interactive,cliphist,fcitx5,fcitx5-chinese-addons,fcitx5-gtk,fcitx5-qt6,fcitx5-rime,google-chrome,grim,keepassxc,kitty,linux-wallpaperengine,lock-screen,mission-center,nautilus,niri,niri-run,noctalia,obs-studio,pavucontrol,playerctl,polkit-gnome,rofi,satty,slurp,steam-launcher,swaybg,swayidle,swaylock-effects,telegram-desktop,walker,waybar,wf-recorder,wl-clipboard,wlsunset]
+  homeFile=[$HOME/.config/fcitx5/conf/classicui.conf,$HOME/.config/fcitx5/profile,$HOME/.config/kitty/kitty.conf,$HOME/.config/niri/binds.kdl,$HOME/.config/niri/config.kdl,$HOME/.config/niri/rules.kdl,$HOME/.config/noctalia/config.toml,.local/bin/lock-screen,.local/bin/niri-run,.local/bin/steam-launcher,Pictures/Wallpapers]
+  xdgConfig=[fcitx5/conf/classicui.conf,fcitx5/profile,kitty/kitty.conf,niri/binds.kdl,niri/config.kdl,niri/rules.kdl,noctalia/config.toml]
+  xdgData=[]
+  xdgDesktop=[]
 research: totals packages=49 homeFile=46 xdgConfig=31 xdgData=2 xdgDesktop=3
-  packageDelta=[biber,goldendict-ng,libreoffice,obsidian,obsidian.desktop,pandoc-cli,poppler-utils,qpdf,sioyek,sioyek.desktop,texlive,texstudio,typst,xournalpp,zotero,zotero.desktop]
-  homeFileDelta=[$HOME/.config/mimeapps.list,$HOME/.local/share/applications/mimeapps.list]
-  xdgConfigDelta=[mimeapps.list]
-  xdgDataDelta=[applications/mimeapps.list]
-  xdgDesktopDelta=[obsidian,sioyek,zotero]
+  packages=[biber,goldendict-ng,libreoffice,obsidian,obsidian.desktop,pandoc-cli,poppler-utils,qpdf,sioyek,sioyek.desktop,texlive,texstudio,typst,xournalpp,zotero,zotero.desktop]
+  homeFile=[$HOME/.config/mimeapps.list,$HOME/.local/share/applications/mimeapps.list]
+  xdgConfig=[mimeapps.list]
+  xdgData=[applications/mimeapps.list]
+  xdgDesktop=[obsidian,sioyek,zotero]
 china-apps: totals packages=44 homeFile=46 xdgConfig=30 xdgData=3 xdgDesktop=3
-  packageDelta=[ani-cli,bilibili,clash-nyanpasu,clash-nyanpasu.desktop,clash-verge-rev,clash-verge.desktop,io.github.msojocs.bilibili.desktop,mangayomi,metacubexd,wemeet,wemeet-xwayland-mesa]
-  homeFileDelta=[$HOME/.local/share/applications/io.github.Predidit.Kazumi.desktop,$HOME/.local/share/applications/wemeetapp.desktop]
-  xdgConfigDelta=[]
-  xdgDataDelta=[applications/io.github.Predidit.Kazumi.desktop,applications/wemeetapp.desktop]
-  xdgDesktopDelta=[clash-nyanpasu,clash-verge,io.github.msojocs.bilibili]
+  packages=[ani-cli,bilibili,clash-nyanpasu,clash-nyanpasu.desktop,clash-verge-rev,clash-verge.desktop,io.github.msojocs.bilibili.desktop,mangayomi,metacubexd,wemeet,wemeet-xwayland-mesa]
+  homeFile=[$HOME/.local/share/applications/io.github.Predidit.Kazumi.desktop,$HOME/.local/share/applications/wemeetapp.desktop]
+  xdgConfig=[]
+  xdgData=[applications/io.github.Predidit.Kazumi.desktop,applications/wemeetapp.desktop]
+  xdgDesktop=[clash-nyanpasu,clash-verge,io.github.msojocs.bilibili]
 nixvim: totals packages=34 homeFile=46 xdgConfig=32 xdgData=1 xdgDesktop=0
-  packageDelta=[nixvim]
-  homeFileDelta=[$HOME/.config/nvim/init.lua,$HOME/.config/nvim/queries/nix/injections.scm]
-  xdgConfigDelta=[nvim/init.lua,nvim/queries/nix/injections.scm]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[nixvim]
+  homeFile=[$HOME/.config/nvim/init.lua,$HOME/.config/nvim/queries/nix/injections.scm]
+  xdgConfig=[nvim/init.lua,nvim/queries/nix/injections.scm]
+  xdgData=[]
+  xdgDesktop=[]
 nixos: totals packages=33 homeFile=54 xdgConfig=40 xdgData=1 xdgDesktop=0
-  packageDelta=[]
-  homeFileDelta=[$HOME/.config/fish/functions/_mcb_flake_dir.fish,$HOME/.config/fish/functions/_mcb_flake_ref.fish,$HOME/.config/fish/functions/_mcb_flake_source.fish,$HOME/.config/fish/functions/_mcb_flake_target.fish,$HOME/.config/fish/functions/nfu.fish,$HOME/.config/fish/functions/nrb.fish,$HOME/.config/fish/functions/nrc.fish,$HOME/.config/fish/functions/nrs.fish,$HOME/.config/fish/functions/nrt.fish,$HOME/.config/fish/functions/nru.fish]
-  xdgConfigDelta=[fish/functions/_mcb_flake_dir.fish,fish/functions/_mcb_flake_ref.fish,fish/functions/_mcb_flake_source.fish,fish/functions/_mcb_flake_target.fish,fish/functions/nfu.fish,fish/functions/nrb.fish,fish/functions/nrc.fish,fish/functions/nrs.fish,fish/functions/nrt.fish,fish/functions/nru.fish]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[]
+  homeFile=[$HOME/.config/fish/functions/_mcb_flake_dir.fish,$HOME/.config/fish/functions/_mcb_flake_ref.fish,$HOME/.config/fish/functions/_mcb_flake_source.fish,$HOME/.config/fish/functions/_mcb_flake_target.fish,$HOME/.config/fish/functions/nfu.fish,$HOME/.config/fish/functions/nrb.fish,$HOME/.config/fish/functions/nrc.fish,$HOME/.config/fish/functions/nrs.fish,$HOME/.config/fish/functions/nrt.fish,$HOME/.config/fish/functions/nru.fish]
+  xdgConfig=[fish/functions/_mcb_flake_dir.fish,fish/functions/_mcb_flake_ref.fish,fish/functions/_mcb_flake_source.fish,fish/functions/_mcb_flake_target.fish,fish/functions/nfu.fish,fish/functions/nrb.fish,fish/functions/nrc.fish,fish/functions/nrs.fish,fish/functions/nrt.fish,fish/functions/nru.fish]
+  xdgData=[]
+  xdgDesktop=[]
 gaming: totals packages=36 homeFile=44 xdgConfig=30 xdgData=1 xdgDesktop=0
-  packageDelta=[steam,wine-wow64,winetricks]
-  homeFileDelta=[]
-  xdgConfigDelta=[]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[steam,wine-wow64,winetricks]
+  homeFile=[]
+  xdgConfig=[]
+  xdgData=[]
+  xdgDesktop=[]
 theming: totals packages=38 homeFile=52 xdgConfig=33 xdgData=5 xdgDesktop=0
-  packageDelta=[adwaita-icon-theme,catppuccin-mocha,gnome-themes-extra,nwg-look,tela-circle-icon-theme]
-  homeFileDelta=[$HOME/.config/dconf/.keep,$HOME/.config/gtk-3.0/settings.ini,$HOME/.config/gtk-4.0/settings.ini,$HOME/.gtkrc-2.0,$HOME/.local/share/icons/Catppuccin-Mocha-Mauve-Cursors,$HOME/.local/share/themes/Catppuccin-Purple-Dark-Catppuccin,$HOME/.local/share/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi,$HOME/.local/share/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi]
-  xdgConfigDelta=[dconf/.keep,gtk-3.0/settings.ini,gtk-4.0/settings.ini]
-  xdgDataDelta=[icons/Catppuccin-Mocha-Mauve-Cursors,themes/Catppuccin-Purple-Dark-Catppuccin,themes/Catppuccin-Purple-Dark-Catppuccin-hdpi,themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi]
-  xdgDesktopDelta=[]
+  packages=[adwaita-icon-theme,catppuccin-mocha,gnome-themes-extra,nwg-look,tela-circle-icon-theme]
+  homeFile=[$HOME/.config/dconf/.keep,$HOME/.config/gtk-3.0/settings.ini,$HOME/.config/gtk-4.0/settings.ini,$HOME/.gtkrc-2.0,$HOME/.local/share/icons/Catppuccin-Mocha-Mauve-Cursors,$HOME/.local/share/themes/Catppuccin-Purple-Dark-Catppuccin,$HOME/.local/share/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi,$HOME/.local/share/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi]
+  xdgConfig=[dconf/.keep,gtk-3.0/settings.ini,gtk-4.0/settings.ini]
+  xdgData=[icons/Catppuccin-Mocha-Mauve-Cursors,themes/Catppuccin-Purple-Dark-Catppuccin,themes/Catppuccin-Purple-Dark-Catppuccin-hdpi,themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi]
+  xdgDesktop=[]
 containers: totals packages=36 homeFile=44 xdgConfig=30 xdgData=1 xdgDesktop=0
-  packageDelta=[distrobox,firecracker,podman-compose]
-  homeFileDelta=[]
-  xdgConfigDelta=[]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[distrobox,firecracker,podman-compose]
+  homeFile=[]
+  xdgConfig=[]
+  xdgData=[]
+  xdgDesktop=[]
 hardware: totals packages=48 homeFile=44 xdgConfig=30 xdgData=1 xdgDesktop=0
-  packageDelta=[blueman,bluez,bluez-tools,cpuid,dmidecode,efibootmgr,flashrom,fwupd,hdparm,nvme-cli,pciutils,sbctl,sdparm,smartmontools,usbutils]
-  homeFileDelta=[]
-  xdgConfigDelta=[]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[blueman,bluez,bluez-tools,cpuid,dmidecode,efibootmgr,flashrom,fwupd,hdparm,nvme-cli,pciutils,sbctl,sdparm,smartmontools,usbutils]
+  homeFile=[]
+  xdgConfig=[]
+  xdgData=[]
+  xdgDesktop=[]
 observability: totals packages=46 homeFile=44 xdgConfig=30 xdgData=1 xdgDesktop=0
-  packageDelta=[FlameGraph,bcc,bpftrace,fio,hotspot,ioping,kernelshark,lnav,perf-linux,rr,sysdig,trace-cmd,valgrind]
-  homeFileDelta=[]
-  xdgConfigDelta=[]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[FlameGraph,bcc,bpftrace,fio,hotspot,ioping,kernelshark,lnav,perf-linux,rr,sysdig,trace-cmd,valgrind]
+  homeFile=[]
+  xdgConfig=[]
+  xdgData=[]
+  xdgDesktop=[]
 security-tools: totals packages=43 homeFile=44 xdgConfig=30 xdgData=1 xdgDesktop=0
-  packageDelta=[autopsy,burpsuite,foremost,gitleaks,gnupg,hashcat,john,metasploit-framework,paperkey,trivy]
-  homeFileDelta=[]
-  xdgConfigDelta=[]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[autopsy,burpsuite,foremost,gitleaks,gnupg,hashcat,john,metasploit-framework,paperkey,trivy]
+  homeFile=[]
+  xdgConfig=[]
+  xdgData=[]
+  xdgDesktop=[]
 nix-tools: totals packages=40 homeFile=44 xdgConfig=30 xdgData=1 xdgDesktop=0
-  packageDelta=[comma,nh,nix-du,nix-index,nix-output-monitor,nix-tree,nurl]
-  homeFileDelta=[]
-  xdgConfigDelta=[]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[comma,nh,nix-du,nix-index,nix-output-monitor,nix-tree,nurl]
+  homeFile=[]
+  xdgConfig=[]
+  xdgData=[]
+  xdgDesktop=[]
 terminal-tools: totals packages=36 homeFile=44 xdgConfig=30 xdgData=1 xdgDesktop=0
-  packageDelta=[herdr,jujutsu,zellij]
-  homeFileDelta=[]
-  xdgConfigDelta=[]
-  xdgDataDelta=[]
-  xdgDesktopDelta=[]
+  packages=[herdr,jujutsu,zellij]
+  homeFile=[]
+  xdgConfig=[]
+  xdgData=[]
+  xdgDesktop=[]
 ```
 
 The inventory proves the generic module owns the baseline package/config set; each dedicated feature contributes a deterministic delta in the listed deployment namespaces. NixOS contributes no package delta and only its explicit Fish helper files; its source assets are platform-only because of the import boundary above.
@@ -451,9 +448,917 @@ The inventory proves the generic module owns the baseline package/config set; ea
 
 Repository search was used for active source references (`source`, `builtins.readFile`, `builtins.pathExists`, generated text, and imports) across `home/` and `flake/`. The retained raw assets were all found beside their owners: Fastfetch logos under `config/fastfetch`, MPV Lua/patch files under `config/mpv`, Nixvim patch under `config/nixvim/patches`, Fcitx5 profile/config, Niri KDL files, Helix TOML files, shell startup/functions, and theme/wallpaper data each have active owner references. The previously identified orphan files remain absent. The catch-all search above also confirms the deleted root deployment modules are not active.
 
-## Gate 6 — Shell and runtime smoke checks
+### Raw-file ownership probe
 
-### Fish
+The following executable Nix probe recursively enumerates every regular file under `home/config`, `home/assets`, and `home/scripts`, excludes only Nix module files, maps each retained raw file to its dedicated owner, checks that both paths exist, and checks the owner source text contains the expected source/read/import marker. An unmapped file or missing marker throws; every emitted record must be `PASS`.
+
+Exact command (run from the worktree root):
+
+```bash
+nix eval --impure --raw --show-trace --expr '
+let
+  f = builtins.getFlake (toString ./.);
+  lib = f.inputs.nixpkgs.lib;
+  root = ./.;
+  walk = dir: prefix:
+    let entries = builtins.readDir dir;
+    in lib.concatLists (map (name:
+      let
+        kind = entries.${name};
+        path = dir + "/${name}";
+        rel = "${prefix}/${name}";
+      in
+      if kind == "directory" then
+        walk path rel
+      else if kind == "regular" then
+        [ { inherit path rel; } ]
+      else
+        [ ]
+    ) (builtins.attrNames entries));
+  allFiles = lib.concatLists [
+    (walk (root + "/home/config") "home/config")
+    (walk (root + "/home/assets") "home/assets")
+    (walk (root + "/home/scripts") "home/scripts")
+  ];
+  rawFiles = builtins.filter (file: !(lib.hasSuffix ".nix" file.rel)) allFiles;
+  basename = rel: builtins.elemAt (lib.splitString "/" rel) ((builtins.length (lib.splitString "/" rel)) - 1);
+  nixosFishFunctions = [ "_mcb_flake_dir" "_mcb_flake_ref" "_mcb_flake_source" "_mcb_flake_target" "nfu" "nrb" "nrc" "nrs" "nrt" "nru" ];
+  owner = rel:
+    if lib.hasPrefix "home/assets/themes/" rel then {
+      path = "home/features/theming.nix";
+      marker = "../assets/themes/";
+      relation = "recursive theme directory";
+    } else if lib.hasPrefix "home/assets/wallpapers/" rel then {
+      path = "home/config/noctalia/default.nix";
+      marker = "../../assets/wallpapers";
+      relation = "recursive wallpaper directory";
+    } else if rel == "home/scripts/mcb-toolchain" then {
+      path = "home/scripts/default.nix";
+      marker = "./mcb-toolchain";
+      relation = "builtins.readFile source";
+    } else if lib.hasPrefix "home/config/niri/" rel then {
+      path = "home/config/niri/default.nix";
+      marker = "./${basename rel}";
+      relation = "direct source";
+    } else if lib.hasPrefix "home/config/helix/" rel then
+      if basename rel == "nixos.toml" then {
+        path = "home/config/helix/nixos.nix";
+        marker = "./nixos.toml";
+        relation = "platform readFile source";
+      } else {
+        path = "home/config/helix/default.nix";
+        marker = "./${basename rel}";
+        relation = "direct source";
+      }
+    else if lib.hasPrefix "home/config/fcitx5/" rel then {
+      path = "home/config/fcitx5/default.nix";
+      marker = "./${if basename rel == "classicui.conf" then "conf/classicui.conf" else basename rel}";
+      relation = "direct source";
+    } else if lib.hasPrefix "home/config/btop/themes/" rel then {
+      path = "home/config/btop/default.nix";
+      marker = "./themes/${basename rel}";
+      relation = "direct source";
+    } else if lib.hasPrefix "home/config/btop/" rel then {
+      path = "home/config/btop/default.nix";
+      marker = "./${basename rel}";
+      relation = "direct source";
+    } else if lib.hasPrefix "home/config/fastfetch/assets/" rel then {
+      path = "home/config/fastfetch/default.nix";
+      marker = "./assets/fastfetch-logos/${basename rel}";
+      relation = "direct source";
+    } else if rel == "home/config/fastfetch/mokka.jsonc" then {
+      path = "home/config/fastfetch/default.nix";
+      marker = "./mokka.jsonc";
+      relation = "direct source";
+    } else if lib.hasPrefix "home/config/starship/" rel then {
+      path = "home/config/starship/default.nix";
+      marker = "./starship.toml";
+      relation = "direct source";
+    } else if lib.hasPrefix "home/config/nixvim/patches/" rel then {
+      path = "home/config/nixvim/plugins.nix";
+      marker = "./patches/${basename rel}";
+      relation = "postPatch readFile source";
+    } else if lib.hasPrefix "home/config/nushell/" rel then
+      if basename rel == "nixos.nu" then {
+        path = "home/config/nushell/nixos.nix";
+        marker = "./nixos.nu";
+        relation = "platform readFile source";
+      } else {
+        path = "home/config/nushell/default.nix";
+        marker = "./${basename rel}";
+        relation = "direct source";
+      }
+    else if lib.hasPrefix "home/config/zsh/" rel then
+      if basename rel == "nixos.zsh" then {
+        path = "home/config/zsh/nixos.nix";
+        marker = "./nixos.zsh";
+        relation = "platform readFile source";
+      } else {
+        path = "home/config/zsh/default.nix";
+        marker = "./.zshrc";
+        relation = "direct readFile source";
+      }
+    else if rel == "home/config/fish/config.fish" then {
+      path = "home/config/fish/default.nix";
+      marker = "./config.fish";
+      relation = "direct readFile source";
+    } else if lib.hasPrefix "home/config/fish/conf.d/" rel then {
+      path = "home/config/fish/default.nix";
+      marker = "./conf.d";
+      relation = "readDir/source mapping";
+    } else if lib.hasPrefix "home/config/fish/functions/" rel then
+      if builtins.elem (basename rel) (map (name: "${name}.fish") nixosFishFunctions) then {
+        path = "home/config/fish/nixos.nix";
+        marker = "./functions";
+        relation = "platform function mapping";
+      } else {
+        path = "home/config/fish/default.nix";
+        marker = "./functions";
+        relation = "portable function mapping";
+      }
+    else if rel == "home/config/clangd/config.yaml" then {
+      path = "home/config/clangd/default.nix";
+      marker = "./config.yaml";
+      relation = "direct source";
+    } else if rel == "home/config/kitty/kitty.conf" then {
+      path = "home/config/kitty/default.nix";
+      marker = "./kitty.conf";
+      relation = "direct source";
+    } else if rel == "home/config/toolchain/tools.json" then {
+      path = "home/config/toolchain/default.nix";
+      marker = "./tools.json";
+      relation = "direct source";
+    } else if rel == "home/config/mpv/hold_forward.lua" then {
+      path = "home/config/mpv/default.nix";
+      marker = "./hold_forward.lua";
+      relation = "readFile source";
+    } else if lib.hasPrefix "home/config/mpv/patches/" rel then {
+      path = "home/config/mpv/default.nix";
+      marker = "./patches/${basename rel}";
+      relation = "postPatch readFile source";
+    } else if rel == "home/config/tmux/tmux.conf" then {
+      path = "home/config/tmux/default.nix";
+      marker = "./tmux.conf";
+      relation = "readFile source";
+    } else
+      throw "unmapped retained raw file: ${rel}";
+  checked = map (file:
+    let
+      o = owner file.rel;
+      ownerPath = root + "/${o.path}";
+      ownerText = builtins.readFile ownerPath;
+      markerOk = lib.hasInfix o.marker ownerText;
+      pathOk = builtins.pathExists file.path && builtins.pathExists ownerPath;
+    in {
+      inherit (file) rel;
+      owner = o.path;
+      relation = o.relation;
+      ok = pathOk && markerOk;
+    }
+  ) rawFiles;
+  render = item: "${if item.ok then "PASS" else "FAIL"} ${item.rel} -> ${item.owner} (${item.relation})";
+in builtins.concatStringsSep "\n" (map render checked)' > /tmp/task8-raw-ownership.txt
+status=$?
+printf 'raw-probe-exit=%s\n' "$status"
+wc -l -c /tmp/task8-raw-ownership.txt
+exit "$status"
+```
+
+Result: exit 0; the probe emitted 730 per-file records, with no `FAIL` lines. The exact stdout was captured at `/tmp/task8-raw-ownership.txt` (730 lines, 105532 bytes; SHA-256 `0f113d256004f0ec5539eb8ff97e764d2479a29365bf59fe94997f043fdf04e1`) and is reproduced below.
+
+```text
+PASS home/config/btop/btop.conf -> home/config/btop/default.nix (direct source)
+PASS home/config/btop/themes/noctalia.theme -> home/config/btop/default.nix (direct source)
+PASS home/config/clangd/config.yaml -> home/config/clangd/default.nix (direct source)
+PASS home/config/fastfetch/assets/fastfetch-logos/logo-01.png -> home/config/fastfetch/default.nix (direct source)
+PASS home/config/fastfetch/assets/fastfetch-logos/logo-02.png -> home/config/fastfetch/default.nix (direct source)
+PASS home/config/fastfetch/assets/fastfetch-logos/logo-03.webp -> home/config/fastfetch/default.nix (direct source)
+PASS home/config/fastfetch/mokka.jsonc -> home/config/fastfetch/default.nix (direct source)
+PASS home/config/fcitx5/conf/classicui.conf -> home/config/fcitx5/default.nix (direct source)
+PASS home/config/fcitx5/profile -> home/config/fcitx5/default.nix (direct source)
+PASS home/config/fish/conf.d/01-colors.fish -> home/config/fish/default.nix (readDir/source mapping)
+PASS home/config/fish/conf.d/02-env.fish -> home/config/fish/default.nix (readDir/source mapping)
+PASS home/config/fish/conf.d/03-options.fish -> home/config/fish/default.nix (readDir/source mapping)
+PASS home/config/fish/conf.d/05-fzf.fish -> home/config/fish/default.nix (readDir/source mapping)
+PASS home/config/fish/conf.d/08-bang-bang.fish -> home/config/fish/default.nix (readDir/source mapping)
+PASS home/config/fish/config.fish -> home/config/fish/default.nix (direct readFile source)
+PASS home/config/fish/functions/_mcb_flake_dir.fish -> home/config/fish/nixos.nix (platform function mapping)
+PASS home/config/fish/functions/_mcb_flake_ref.fish -> home/config/fish/nixos.nix (platform function mapping)
+PASS home/config/fish/functions/_mcb_flake_source.fish -> home/config/fish/nixos.nix (platform function mapping)
+PASS home/config/fish/functions/_mcb_flake_target.fish -> home/config/fish/nixos.nix (platform function mapping)
+PASS home/config/fish/functions/_mcb_toolchain.fish -> home/config/fish/default.nix (portable function mapping)
+PASS home/config/fish/functions/backup.fish -> home/config/fish/default.nix (portable function mapping)
+PASS home/config/fish/functions/bootstrap-toolchain.fish -> home/config/fish/default.nix (portable function mapping)
+PASS home/config/fish/functions/check-toolchain.fish -> home/config/fish/default.nix (portable function mapping)
+PASS home/config/fish/functions/copy.fish -> home/config/fish/default.nix (portable function mapping)
+PASS home/config/fish/functions/extract.fish -> home/config/fish/default.nix (portable function mapping)
+PASS home/config/fish/functions/fcd.fish -> home/config/fish/default.nix (portable function mapping)
+PASS home/config/fish/functions/fe.fish -> home/config/fish/default.nix (portable function mapping)
+PASS home/config/fish/functions/history.fish -> home/config/fish/default.nix (portable function mapping)
+PASS home/config/fish/functions/mkcd.fish -> home/config/fish/default.nix (portable function mapping)
+PASS home/config/fish/functions/nfu.fish -> home/config/fish/nixos.nix (platform function mapping)
+PASS home/config/fish/functions/nrb.fish -> home/config/fish/nixos.nix (platform function mapping)
+PASS home/config/fish/functions/nrc.fish -> home/config/fish/nixos.nix (platform function mapping)
+PASS home/config/fish/functions/nrs.fish -> home/config/fish/nixos.nix (platform function mapping)
+PASS home/config/fish/functions/nrt.fish -> home/config/fish/nixos.nix (platform function mapping)
+PASS home/config/fish/functions/nru.fish -> home/config/fish/nixos.nix (platform function mapping)
+PASS home/config/fish/functions/upgrade-toolchain.fish -> home/config/fish/default.nix (portable function mapping)
+PASS home/config/helix/config.toml -> home/config/helix/default.nix (direct source)
+PASS home/config/helix/languages.toml -> home/config/helix/default.nix (direct source)
+PASS home/config/helix/nixos.toml -> home/config/helix/nixos.nix (platform readFile source)
+PASS home/config/kitty/kitty.conf -> home/config/kitty/default.nix (direct source)
+PASS home/config/mpv/hold_forward.lua -> home/config/mpv/default.nix (readFile source)
+PASS home/config/mpv/patches/secure-uosc-post-patch.sh -> home/config/mpv/default.nix (postPatch readFile source)
+PASS home/config/niri/binds.kdl -> home/config/niri/default.nix (direct source)
+PASS home/config/niri/config.kdl -> home/config/niri/default.nix (direct source)
+PASS home/config/niri/outputs.kdl -> home/config/niri/default.nix (direct source)
+PASS home/config/niri/rules.kdl -> home/config/niri/default.nix (direct source)
+PASS home/config/nixvim/patches/markdown-preview-bun-post-patch.sh -> home/config/nixvim/plugins.nix (postPatch readFile source)
+PASS home/config/nushell/config.nu -> home/config/nushell/default.nix (direct source)
+PASS home/config/nushell/env.nu -> home/config/nushell/default.nix (direct source)
+PASS home/config/nushell/nixos.nu -> home/config/nushell/nixos.nix (platform readFile source)
+PASS home/config/starship/starship.toml -> home/config/starship/default.nix (direct source)
+PASS home/config/tmux/tmux.conf -> home/config/tmux/default.nix (readFile source)
+PASS home/config/toolchain/tools.json -> home/config/toolchain/default.nix (direct source)
+PASS home/config/zsh/.zshrc -> home/config/zsh/default.nix (direct readFile source)
+PASS home/config/zsh/nixos.zsh -> home/config/zsh/nixos.nix (platform readFile source)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/00000000000000020006000e7e9ffc3f -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/00008160000006810000408080010102 -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/03b6e0fcb3499374a867c041f52298f0 -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/08e8e1c95fe2fc01f976f1e063a24ccd -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/1081e37283d90000800003c07f3ef6bf -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/3085a0e285430894940527032f8b26df -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/3ecb610c1bf2410f44200f48c40d3599 -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/4498f0e0c1937ffe01fd06f973665830 -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/5c6cd98b3f3ebcb1f9c7f1c204630408 -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/6407b0e94181790501fd1e167b474872 -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/640fb0e74195791501fd1ed57b41487f -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/9081237383d90e509aa00f00170e968f -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/9d800788f1b08800ae810202380a0822 -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/X_cursor -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/a2a266d0498c3104214a47bd64ab0fc8 -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/alias -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/all-scroll -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/arrow -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/b66166c04f8c3109214a4fbd64a50fc8 -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/bottom_left_corner -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/bottom_right_corner -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/bottom_side -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/cell -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/center_ptr -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/circle -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/closedhand -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/col-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/color-picker -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/context-menu -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/copy -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/cross -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/crossed_circle -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/crosshair -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/d9ce0ab605698f320427677b458ad60b -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/default -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/dnd-copy -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/dnd-move -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/dnd-no-drop -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/dnd-none -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/down-arrow -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/draft -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/e-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/e29285e634086352946a0e7090d73106 -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/ew-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/fcf21c00b30f7e3f83fe0dfd12e71cff -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/fleur -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/forbidden -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/grab -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/grabbing -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/h_double_arrow -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/half-busy -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/hand -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/hand1 -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/hand2 -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/help -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/ibeam -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/left-arrow -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/left_ptr -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/left_ptr_help -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/left_ptr_watch -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/left_side -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/link -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/ll_angle -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/lr_angle -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/move -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/n-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/ne-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/nesw-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/no-drop -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/not-allowed -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/ns-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/nw-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/nwse-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/openhand -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/pencil -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/pirate -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/plus -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/pointer -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/pointing_hand -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/progress -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/question_arrow -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/right-arrow -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/right_ptr -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/right_side -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/row-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/s-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/sb_h_double_arrow -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/sb_v_double_arrow -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/se-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/size-bdiag -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/size-fdiag -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/size-hor -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/size-ver -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/size_all -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/size_bdiag -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/size_fdiag -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/size_hor -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/size_ver -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/split_h -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/split_v -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/sw-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/text -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/top_left_arrow -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/top_left_corner -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/top_right_corner -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/top_side -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/ul_angle -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/up-arrow -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/ur_angle -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/v_double_arrow -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/vertical-text -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/w-resize -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/wait -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/watch -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/wayland-cursor -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/whats_this -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/x-cursor -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/xterm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/zoom-in -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/cursors/zoom-out -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Mocha-Mauve-Cursors/index.theme -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/add-workspace-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/add-workspace-hover.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/add-workspace.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/calendar-arrow-left.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/calendar-arrow-right.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/checkbox-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/checkbox-off.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/checkbox.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/close-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/close-hover.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/close.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/corner-ripple.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/radiobutton-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/radiobutton-off.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/radiobutton.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/toggle-off.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/toggle-on-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/toggle-on.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/assets/trash-icon.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/cinnamon.css -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/cinnamon/thumbnail.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/calendar-arrow-left.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/calendar-arrow-right.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/calendar-today.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/checkbox-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/checkbox-off-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/checkbox-off-hover.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/checkbox-off.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/checkbox.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/dash-placeholder.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/noise-texture.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/process-working.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/toggle-off.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/toggle-on-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/assets/toggle-on.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/gnome-shell.css -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gnome-shell/pad-osd.css -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/apps.rc -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/border.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/button-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/button-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/button-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/button.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/checkbox-checked-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/checkbox-checked-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/checkbox-checked-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/checkbox-checked.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/checkbox-mixed-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/checkbox-mixed-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/checkbox-mixed-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/checkbox-mixed.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/checkbox-unchecked-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/checkbox-unchecked-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/checkbox-unchecked-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/checkbox-unchecked.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/combo-left-entry-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/combo-left-entry-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/combo-left-entry-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/combo-left-entry.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/combo-right-entry-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/combo-right-entry-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/combo-right-entry-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/combo-right-entry.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/entry-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/entry-background-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/entry-background.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/entry-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/entry-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/entry.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/flat-button-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/flat-button-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/flat-button-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/flat-button.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/focus.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/frame-inline.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/frame-notebook.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/frame.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/handle-horz-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/handle-horz-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/handle-horz.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/handle-vert-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/handle-vert-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/handle-vert.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/menu-checkbox-checked-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/menu-checkbox-checked.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/menu-checkbox-mixed-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/menu-checkbox-mixed.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/menu-checkbox-unchecked-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/menu-checkbox-unchecked.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/menu-radio-checked-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/menu-radio-checked.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/menu-radio-mixed-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/menu-radio-mixed.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/menu-radio-unchecked-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/menu-radio-unchecked.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-down-alt-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-down-alt.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-down-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-down.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-left-alt-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-left-alt.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-left-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-left-semi.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-left.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-right-alt-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-right-alt.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-right-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-right-semi.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-right.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-up-alt-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-up-alt.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-up-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/pan-up.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/progressbar-progress.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/progressbar-trough.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/radio-checked-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/radio-checked-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/radio-checked-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/radio-checked.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/radio-mixed-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/radio-mixed-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/radio-mixed-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/radio-mixed.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/radio-unchecked-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/radio-unchecked-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/radio-unchecked-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/radio-unchecked.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scale-horz-trough-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scale-horz-trough-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scale-horz-trough.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scale-slider-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scale-slider-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scale-slider-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scale-slider.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scale-vert-trough-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scale-vert-trough-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scale-vert-trough.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-horz-slider-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-horz-slider-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-horz-slider-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-horz-slider.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-horz-trough.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-vert-ltr-slider-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-vert-ltr-slider-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-vert-ltr-slider-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-vert-ltr-slider.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-vert-ltr-trough.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-vert-rtl-slider-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-vert-rtl-slider-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-vert-rtl-slider-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-vert-rtl-slider.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/scrollbar-vert-rtl-trough.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-ltr-down-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-ltr-down-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-ltr-down-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-ltr-down.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-ltr-up-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-ltr-up-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-ltr-up-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-ltr-up.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-rtl-down-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-rtl-down-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-rtl-down-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-rtl-down.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-rtl-up-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-rtl-up-disabled.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-rtl-up-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/spin-rtl-up.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/tab.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/treeview-ltr-button-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/treeview-ltr-button-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/treeview-ltr-button.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/treeview-rtl-button-active.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/treeview-rtl-button-hover.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/assets/treeview-rtl-button.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/gtkrc -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/hacks.rc -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-2.0/main.rc -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/checkbox-checked-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/checkbox-checked-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/checkbox-mixed-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/checkbox-mixed-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/close-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/close-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/cursor-handle-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/maximize-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/maximize-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/menu-radio-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/menu-radio-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/minimize-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/minimize-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/radio-checked-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/radio-checked-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-after-slider-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-after-slider-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-after-slider-disabled-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-after-slider-disabled-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-after-slider-disabled.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-after-slider-disabled@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-after-slider.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-after-slider@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-before-slider-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-before-slider-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-before-slider-disabled-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-before-slider-disabled-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-before-slider-disabled.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-before-slider-disabled@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-before-slider.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-horz-marks-before-slider@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-after-slider-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-after-slider-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-after-slider-disabled-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-after-slider-disabled-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-after-slider-disabled.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-after-slider-disabled@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-after-slider.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-after-slider@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-before-slider-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-before-slider-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-before-slider-disabled-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-before-slider-disabled-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-before-slider-disabled.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-before-slider-disabled@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-before-slider.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/scale-vert-marks-before-slider@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/selectionmode-checkbox-checked-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/selectionmode-checkbox-checked-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/selectionmode-checkbox-checked.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/selectionmode-checkbox-checked@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/selectionmode-checkbox-unchecked-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/selectionmode-checkbox-unchecked-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/selectionmode-checkbox-unchecked.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/selectionmode-checkbox-unchecked@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/small-checkbox-checked-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/small-checkbox-checked-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/small-checkbox-mixed-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/small-checkbox-mixed-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/small-radio-checked-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/small-radio-checked-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/unmaximize-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/assets/unmaximize-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/gtk-dark.css -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/gtk.css -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-3.0/thumbnail.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/checkbox-checked-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/checkbox-checked-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/checkbox-mixed-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/checkbox-mixed-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/close-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/close-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/cursor-handle-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/maximize-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/maximize-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/menu-radio-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/menu-radio-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/minimize-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/minimize-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/radio-checked-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/radio-checked-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-after-slider-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-after-slider-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-after-slider-disabled-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-after-slider-disabled-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-after-slider-disabled.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-after-slider-disabled@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-after-slider.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-after-slider@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-before-slider-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-before-slider-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-before-slider-disabled-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-before-slider-disabled-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-before-slider-disabled.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-before-slider-disabled@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-before-slider.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-horz-marks-before-slider@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-after-slider-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-after-slider-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-after-slider-disabled-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-after-slider-disabled-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-after-slider-disabled.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-after-slider-disabled@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-after-slider.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-after-slider@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-before-slider-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-before-slider-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-before-slider-disabled-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-before-slider-disabled-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-before-slider-disabled.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-before-slider-disabled@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-before-slider.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/scale-vert-marks-before-slider@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/selectionmode-checkbox-checked-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/selectionmode-checkbox-checked-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/selectionmode-checkbox-checked.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/selectionmode-checkbox-checked@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/selectionmode-checkbox-unchecked-dark.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/selectionmode-checkbox-unchecked-dark@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/selectionmode-checkbox-unchecked.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/selectionmode-checkbox-unchecked@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/small-checkbox-checked-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/small-checkbox-checked-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/small-checkbox-mixed-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/small-checkbox-mixed-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/small-radio-checked-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/small-radio-checked-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/unmaximize-symbolic.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/assets/unmaximize-symbolic@2.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/gtk-dark.css -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/gtk.css -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/gtk-4.0/thumbnail.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/index.theme -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/metacity-1/assets/button.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/metacity-1/assets/close.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/metacity-1/assets/maximize.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/metacity-1/assets/menu.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/metacity-1/assets/minimize.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/metacity-1/assets/shade.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/metacity-1/assets/unmaximize.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/metacity-1/assets/unshade.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/metacity-1/metacity-theme-3.xml -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/metacity-1/thumbnail.png -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/plank/dock.theme -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/bottom-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/bottom-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/bottom-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/bottom-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/bottom-left-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/bottom-left-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/bottom-left-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/bottom-left-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/bottom-right-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/bottom-right-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/bottom-right-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/bottom-right-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/button-active-Normal.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/button-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/button-inactive-Normal.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/button-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/close-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/close-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/close-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/close-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/hide-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/hide-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/hide-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/hide-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/left-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/left-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/left-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/left-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/maximize-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/maximize-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/maximize-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/maximize-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/maximize-toggled-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/maximize-toggled-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/maximize-toggled-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/maximize-toggled-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/menu-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/menu-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/menu-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/menu-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/right-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/right-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/shade-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/shade-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/shade-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/shade-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/shade-toggled-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/shade-toggled-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/shade-toggled-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/shade-toggled-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/stick-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/stick-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/stick-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/stick-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/stick-toggled-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/stick-toggled-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/stick-toggled-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/stick-toggled-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/themerc -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/title-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/title-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/title-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/title-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/top-left-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/top-left-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/top-left-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/top-left-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/top-right-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/top-right-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/top-right-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin/xfwm4/top-right-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/bottom-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/bottom-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/bottom-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/bottom-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/bottom-left-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/bottom-left-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/bottom-left-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/bottom-left-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/bottom-right-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/bottom-right-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/bottom-right-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/bottom-right-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/button-active-Normal.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/button-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/button-inactive-Normal.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/button-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/close-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/close-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/close-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/close-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/hide-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/hide-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/hide-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/hide-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/left-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/left-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/left-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/left-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/maximize-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/maximize-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/maximize-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/maximize-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/maximize-toggled-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/maximize-toggled-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/maximize-toggled-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/maximize-toggled-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/menu-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/menu-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/menu-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/menu-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/right-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/right-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/shade-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/shade-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/shade-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/shade-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/shade-toggled-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/shade-toggled-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/shade-toggled-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/shade-toggled-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/stick-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/stick-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/stick-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/stick-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/stick-toggled-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/stick-toggled-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/stick-toggled-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/stick-toggled-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/themerc -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/title-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/title-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/title-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/title-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/top-left-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/top-left-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/top-left-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/top-left-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/top-right-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/top-right-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/top-right-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-hdpi/xfwm4/top-right-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/bottom-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/bottom-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/bottom-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/bottom-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/bottom-left-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/bottom-left-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/bottom-left-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/bottom-left-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/bottom-right-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/bottom-right-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/bottom-right-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/bottom-right-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/button-active-Normal.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/button-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/button-inactive-Normal.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/button-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/close-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/close-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/close-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/close-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/hide-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/hide-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/hide-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/hide-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/left-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/left-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/left-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/left-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/maximize-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/maximize-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/maximize-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/maximize-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/maximize-toggled-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/maximize-toggled-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/maximize-toggled-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/maximize-toggled-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/menu-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/menu-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/menu-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/menu-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/right-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/right-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/shade-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/shade-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/shade-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/shade-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/shade-toggled-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/shade-toggled-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/shade-toggled-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/shade-toggled-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/stick-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/stick-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/stick-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/stick-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/stick-toggled-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/stick-toggled-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/stick-toggled-prelight.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/stick-toggled-pressed.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/themerc -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/title-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/title-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/title-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/title-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/top-left-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/top-left-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/top-left-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/top-left-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/top-right-active.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/top-right-active.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/top-right-inactive.svg -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/themes/Catppuccin-Purple-Dark-Catppuccin-xhdpi/xfwm4/top-right-inactive.xpm -> home/features/theming.nix (recursive theme directory)
+PASS home/assets/wallpapers/Abstract.jpg -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/Circuit.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/Dragon.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/Garuda Broadwing.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/Garuda Desert.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/Patak Remix.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/Raptor TilliDie SGS.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/Raptor jpg.jpg -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/Raptor.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/River-city-Mocha-Blurred.jpg -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/Shani.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/Stripes.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/file_0000000011a871fdae91f3b43e3e3cf7.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/file_000000002c8871fda19c9bf0d501686f.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/file_00000000742071fdaf9437c4c95c1af9.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/file_00000000d2387206ae00a5a75693a188 (1).png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/rust2.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/rust3.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/assets/wallpapers/wall.png -> home/config/noctalia/default.nix (recursive wallpaper directory)
+PASS home/scripts/mcb-toolchain -> home/scripts/default.nix (builtins.readFile source)
+```
 
 Isolated startup smoke:
 
@@ -512,9 +1417,11 @@ Before staging, the worktree contained:
 - Report correction follow-up: `282ce2268bc4d1dd1d131c224473d3369ba56757` — `docs: record Task 8 delivery commit`
 - Final evidence follow-up: `41de938c7dbdaab39df31cc063f8c04cf01414cb` — `docs: expand Task 8 ownership evidence`
 - Final metadata follow-up: `51b7d4e527e872a968f15f3c15cdfd9c477b500b` — `docs: record final Task 8 evidence hash`
-- The current final report tip is the checked-out `HEAD` containing this section; verify its exact hash with `git rev-parse HEAD`. It supersedes the preceding metadata follow-up and contains report metadata only.
+- Report tip-identification follow-up: `583962d32ebaab461364c9c6b4f37b663fd83c15` — `docs: identify Task 8 report tip`
+- Complete evidence report commit: `8fdd61bfe601af9fc82df363ec46f312f9bca675` — `docs: record complete Task 8 probe evidence`
+- This report-only commit records the raw ownership probe transcript and the corrected inventory metadata.
 
-The first delivery commit contains the three formatter changes and the initial report. The two follow-ups contain report metadata/evidence only. The pre-existing `task-3-report.md` correction remains unstaged and excluded.
+The first delivery commit contains the three formatter changes and the initial report. The follow-ups contain report metadata/evidence only. The pre-existing `task-3-report.md` correction remains unstaged and excluded.
 
 
 ## Unresolved risks
