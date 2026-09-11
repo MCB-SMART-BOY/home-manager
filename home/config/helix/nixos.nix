@@ -3,12 +3,13 @@
 
 let
   portableLanguages = builtins.readFile ./languages.toml;
-  nixosLanguages = builtins.replaceStrings
-    [ "  \"--header-insertion=iwyu\",\n" ]
-    [
-      "  \"--header-insertion=iwyu\",\n  \"--query-driver=/nix/store/*/bin/gcc,/nix/store/*/bin/g++,/nix/store/*/bin/cc,/nix/store/*/bin/c++\",\n"
-    ]
-    portableLanguages;
+  nixosLanguages =
+    builtins.replaceStrings
+      [ "  \"--header-insertion=iwyu\",\n" ]
+      [
+        "  \"--header-insertion=iwyu\",\n  \"--query-driver=/nix/store/*/bin/gcc,/nix/store/*/bin/g++,/nix/store/*/bin/cc,/nix/store/*/bin/c++\",\n"
+      ]
+      portableLanguages;
 in
 {
   xdg.configFile."helix/languages.toml".source = lib.mkForce (

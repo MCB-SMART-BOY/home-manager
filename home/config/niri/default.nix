@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   niriRun = pkgs.writeShellApplication {
@@ -23,7 +28,8 @@ let
   };
 in
 {
-  options.mcb.niri.hostOutputs.enable = lib.mkEnableOption "machine-specific Niri output configuration";
+  options.mcb.niri.hostOutputs.enable =
+    lib.mkEnableOption "machine-specific Niri output configuration";
 
   config = {
     home.packages = [
@@ -46,7 +52,8 @@ in
       "niri/config.kdl".source = ./config.kdl;
       "niri/rules.kdl".source = ./rules.kdl;
       "niri/binds.kdl".source = ./binds.kdl;
-    } // lib.optionalAttrs config.mcb.niri.hostOutputs.enable {
+    }
+    // lib.optionalAttrs config.mcb.niri.hostOutputs.enable {
       "niri/outputs.kdl".source = ./outputs.kdl;
     };
 

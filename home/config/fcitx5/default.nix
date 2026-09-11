@@ -9,7 +9,6 @@
     pkgs.qt6Packages.fcitx5-qt
   ];
 
-
   xdg.configFile = {
     "fcitx5/profile".source = ./profile;
     "fcitx5/conf/classicui.conf".source = ./conf/classicui.conf;
