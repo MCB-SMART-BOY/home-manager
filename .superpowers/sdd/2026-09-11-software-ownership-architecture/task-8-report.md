@@ -510,7 +510,7 @@ Before staging, the worktree contained:
 - Baseline verified architecture commit: `0d709a615e9a914fd5ac77148808445e147e0b61`
 - Formatter/report commit: `eb99b7fc815867311651b3a32d9e34168a32cbe8` — `chore: complete Task 8 verification gate`
 - Report correction follow-up: `282ce2268bc4d1dd1d131c224473d3369ba56757` — `docs: record Task 8 delivery commit`
-- Final evidence follow-up: recorded after this report-only commit.
+- Final evidence follow-up: `41de938c7dbdaab39df31cc063f8c04cf01414cb` — `docs: expand Task 8 ownership evidence`
 
 The first delivery commit contains the three formatter changes and the initial report. The two follow-ups contain report metadata/evidence only. The pre-existing `task-3-report.md` correction remains unstaged and excluded.
 
