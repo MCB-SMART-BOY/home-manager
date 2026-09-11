@@ -5,11 +5,11 @@
     ./base.nix
     ./packages.nix
     ./programs.nix
-    ./shell.nix
     ./git.nix
     ./files.nix
     ./scripts
     ./config/git
+    ./config/shell
     ./config/fish
     ./config/zsh
     ./config/nushell
