@@ -1,7 +1,11 @@
 { pkgs, ... }:
 
 {
-  imports = [ ../config/clangd ];
+  imports = [
+    ../config/helix
+    ../config/clangd
+    ../config/toolchain
+  ];
 
   home.packages = with pkgs; [
     rustup

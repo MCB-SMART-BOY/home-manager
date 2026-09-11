@@ -2,7 +2,9 @@
 
 # Niri binds launch these desktop commands directly. They are listed here so
 # the public niri feature remains self-contained instead of relying on another
-# optional feature's package set.
+# optional feature's package set. Steam itself is intentionally supplied by
+# the separate gaming feature or by the host; this feature retains only the
+# launcher integration required by its Mod+G binding.
 {
   imports = [
     ../desktop.nix

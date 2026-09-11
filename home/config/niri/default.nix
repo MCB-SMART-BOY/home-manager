@@ -30,7 +30,6 @@ in
       pkgs.bash
       pkgs.niri
       pkgs.swayidle
-      pkgs.steam
       pkgs.polkit_gnome
       niriRun
       lockScreen
