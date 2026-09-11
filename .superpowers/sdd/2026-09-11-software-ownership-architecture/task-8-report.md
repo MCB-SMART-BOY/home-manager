@@ -321,7 +321,9 @@ Only the three formatter files and this report are to be staged. `task-3-report.
 ## Commits
 
 - Baseline verified architecture commit: `0d709a615e9a914fd5ac77148808445e147e0b61`
-- Task 8 delivery commit: recorded below after staging and committing the formatter/report changes.
+- Task 8 delivery commit: `eb99b7fc815867311651b3a32d9e34168a32cbe8` — `chore: complete Task 8 verification gate`
+
+The delivery commit contains only the formatter changes and this report. The pre-existing `task-3-report.md` correction remains unstaged and excluded.
 
 ## Unresolved risks
 
