@@ -11,7 +11,7 @@ let
       lang = "zh-Hans";
       settings_show_advanced = true;
       clipboard_history_max_entries = 200;
-      polkit_agent = true; # Niri 无内置 polkit agent；polkit_gnome 已装但未启动，由 Noctalia 接管
+      polkit_agent = true; # Noctalia 直接提供 polkit agent
 
       panel = {
         transparency_mode = "soft"; # 配合 Catppuccin 主题的半透明面板

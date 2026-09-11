@@ -31,21 +31,23 @@ in
   home.packages =
     (with pkgs; [
       niri
-      noctalia-shell
+      noctalia
       swayidle
       steam
-      polkit_gnome
-      waybar
-      walker
-      anyrun
-      swaynotificationcenter
-      swaylock-effects
-      swaybg
+      kitty
+      nautilus
+      google-chrome
+      telegram-desktop
+      obs-studio
+      pavucontrol
+      keepassxc
+      mission-center
+      grim
+      slurp
+      wl-clipboard
+      playerctl
+      linux-wallpaperengine
       satty
-      cliphist
-      wf-recorder
-      wlsunset
-      rofi
     ])
     ++ [
       niriRun

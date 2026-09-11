@@ -6,7 +6,6 @@
     gnome-themes-extra
     (tela-circle-icon-theme.override { colorVariants = [ "dracula" ]; })
     nwg-look
-    nixos-artwork.wallpapers.catppuccin-mocha
   ];
 
   gtk = {

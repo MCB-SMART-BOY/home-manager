@@ -1,46 +1,118 @@
-# Home Manager cleanup implementation plan
+# Configuration effect cleanup implementation plan
 
-## Goal
+> **For agentic workers:** This plan is executed in the current repository after the read-only audit and its evidence review.
 
-Make the repository Nix-first, keep `allowUnfree` true, centralize compatible aliases through Home Manager, isolate real runtime scripts under `home/scripts/`, and expose one coherent optional feature namespace.
+**Goal:** Remove repository-unreferenced configuration and redundant Niri packages, then make the standalone Niri feature provide every executable required by its active keybindings.
 
-## Task 1 — Flake boundary
+**Architecture:** Keep Home Manager native options as the owner of GTK, Starship, and desktop behavior. Delete only raw files proven to have no deployment path. Keep recursive theme/wallpaper assets and conditional NixOS/Niri files. Make `home/features/niri.nix` an explicit session dependency boundary instead of relying on unrelated optional feature composition.
 
-Modify `flake/default.nix` and `flake.nix` using the current two-space style.
+**Tech Stack:** Nix, Home Manager, nixpkgs unstable, Niri, Noctalia.
 
-- Fix the top-level description typo.
-- Keep Linux system generation and the thin flake entry.
-- Make `mkPkgs` always import nixpkgs with `config.allowUnfree = true`.
-- Expose `modules ? []` as the only public extension argument.
-- Remove the public `allowUnfree` argument and every false override.
-- Keep the explicit impure default environment error.
-- Remove duplicate Home Manager CLI packages/apps and checks that only inspect an activation file.
-- Export only the actual configuration modules plus formatter and meaningful checks.
+**Spec:** `.agent/design.md`
 
-## Task 2 — Nix-owned shell behavior
+## Global Constraints
 
-Modify `home/shell.nix`, `home/files.nix`, `home/packages.nix`, and approved raw alias/integration blocks under `home/config/fish` and `home/config/zsh`.
+- Do not delete `home/assets/themes/**` or `home/assets/wallpapers/**`; these are recursively deployed by active modules.
+- Do not delete NixOS-only or Niri-only raw configuration files; they are conditionally deployed.
+- GTK raw files under `home/config/gtk-{2,3,4}.0` are repository-unreferenced and must not be confused with the active theme assets under `home/assets/themes/**`.
+- Noctalia remains the owner of launcher, bar, notification, lockscreen, wallpaper, clipboard-history, and polkit-agent behavior.
+- `homeModules.niri` must not reference an executable that its own package composition does not provide, except explicitly documented host-provided services.
 
-- Add one `home.shellAliases` map for simple cross-shell aliases.
-- Set `programs.fish.preferAbbrs = true`.
-- Use `programs.eza` for Eza aliases and native integration options for Starship, Zoxide, and Direnv.
-- Remove duplicated alias and integration blocks from raw Fish/Zsh files.
-- Stop force-replacing Home Manager's generated Fish config; feed the remaining Fish config as `interactiveShellInit`.
-- Keep shell-specific functions, Fish-only abbreviations, Zsh completion, and Nushell structured commands in their native files/options.
-- Remove runtime alias cleanup fragments.
+---
 
-## Task 3 — Script boundary
+### Task 1: Remove confirmed orphan configuration
 
-Move the real toolchain implementation from `home/scripts.nix` into `home/scripts/mcb-toolchain` and use `home/scripts/default.nix` as the short Nix module. Remove the Fastfetch runtime wrapper because the existing Fastfetch glob configuration already selects logos. Keep only short Nix wrappers for genuinely required host integration.
+**Files:**
+- Delete: `home/config/alacritty/alacritty.toml`
+- Delete: `home/config/fuzzel/fuzzel.ini`
+- Delete: `home/config/mako/config`
+- Delete: `home/config/swaylock/config`
+- Delete: `home/config/gtk-2.0/gtkrc`
+- Delete: `home/config/gtk-3.0/settings.ini`
+- Delete: `home/config/gtk-4.0/settings.ini`
+- Delete: `home/config/starship/mokka.toml`
 
-## Task 4 — Feature ownership
+**Acceptance:** No Nix source references these paths; `home/assets/themes/**/gtk-*` remains intact.
 
-Move package-only profiles into cohesive `home/features/*.nix` modules. Make `home/features` the only public optional namespace. Remove pass-through wrappers, the unused Linux module, stale commented WinBoat code, and obsolete comments. Ensure Niri's package/config/service dependencies are explicit rather than accidentally inherited.
+### Task 2: Remove redundant Niri software
 
-## Verification
+**Files:**
+- Modify: `home/features/niri.nix`
 
-- Use Nix evaluation probes for the public factory, `allowUnfree`, shared alias output, and feature composition.
-- Run the standalone default build and `nix flake check`.
-- Evaluate development, research, China-apps, security, Niri, and NixOS compositions.
-- Check no Nix file contains a runtime shell body over three lines except unavoidable data/build glue; longer runtime programs must be files under `home/scripts/`.
-- Recompute `home/config` and `home/assets` hashes and report the intentional alias/integration source changes.
+Remove packages with no active configuration path or command reference:
+
+```nix
+polkit_gnome
+waybar
+walker
+anyrun
+swaynotificationcenter
+swaylock-effects
+swaybg
+cliphist
+wf-recorder
+wlsunset
+rofi
+```
+
+Retain `niri`, `noctalia`, `swayidle`, `steam`, and `satty`, plus the three local wrappers. Remove the unused `nixos-artwork.wallpapers.catppuccin-mocha` package from `home/features/theming.nix`; the active wallpaper source is the recursively deployed `home/assets/wallpapers` tree.
+
+### Task 3: Declare Niri keybinding dependencies
+
+**Files:**
+- Modify: `home/features/niri.nix`
+
+Add packages for active commands in `home/config/niri/*.kdl`:
+
+```nix
+kitty
+nautilus
+google-chrome
+telegram-desktop
+obs-studio
+pavucontrol
+keepassxc
+mission-center
+grim
+slurp
+wl-clipboard
+playerctl
+linux-wallpaperengine
+```
+
+The resulting package set must contain the binaries used by terminal, application, screenshot, media, and Noctalia W Engine bindings. `fcitx5` remains an explicit host/system dependency because this repository only deploys its profile/config files; `linux-wallpaperengine` is available in the pinned nixpkgs and should be added to the Niri feature.
+
+### Task 4: Verify behavior and repository cleanliness
+
+Run:
+
+```bash
+nix flake check --impure --no-write-lock-file --show-trace
+env USER=alice HOME=/tmp/alice-final \
+  home-manager build --impure --flake .#default --no-write-lock-file
+nix eval --impure --json --expr '
+  let
+    f = builtins.getFlake (toString ./.);
+    c = f.lib.mkHomeConfiguration {
+      system = builtins.currentSystem;
+      username = "niri-audit";
+      homeDirectory = "/tmp/niri-audit";
+      modules = [ f.homeModules.niri ];
+    };
+    packageNames = map (p: p.pname or p.name or "") c.config.home.packages;
+    required = [
+      "noctalia" "kitty" "nautilus" "google-chrome" "telegram-desktop"
+      "obs-studio" "pavucontrol" "keepassxc" "mission-center"
+      "grim" "slurp" "wl-clipboard" "playerctl"
+      "linux-wallpaperengine"
+    ];
+  in builtins.listToAttrs (map (name: {
+    inherit name;
+    value = builtins.any (pkg: builtins.match ("^.*" + name + ".*$") pkg != null) packageNames;
+  }) required)
+'
+fish -n home/config/fish/config.fish home/config/fish/conf.d/*.fish home/config/fish/functions/*.fish
+bash -n home/scripts/*.sh
+```
+
+The Niri probe must return `true` for every required package, and all eight orphan paths must be absent from the source tree. Inspect the final diff before committing.

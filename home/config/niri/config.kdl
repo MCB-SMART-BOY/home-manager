@@ -1,6 +1,6 @@
 // Niri 配置文件（Wayland 滚动平铺窗口管理器）
 // ~/.config/niri/config.kdl
-// 由 Home Manager 管理：home/files.nix
+// 由 Home Manager 的 home/features/niri.nix 管理
 //
 // 适配目标：niri 26.04
 //
@@ -20,7 +20,7 @@
 //   rules.kdl   — 窗口规则
 //   binds.kdl   — 快捷键（含设计语义表）
 // niri 26.04 include 是 merge 语义：多实例节点按位置插入，冲突键后定义者覆盖。
-// Home Manager 部署声明见 home/files.nix。
+// Home Manager 部署声明见 home/features/niri.nix。
 
 // 机器特定显示器配置 → outputs.kdl
 include "outputs.kdl"
