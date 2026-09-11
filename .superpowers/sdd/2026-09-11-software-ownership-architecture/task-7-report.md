@@ -106,4 +106,9 @@ Result: PASS (exit 0; no whitespace errors).
 
 ## Commit
 
-`refactor: remove catch-all ownership modules` (the final commit ID is returned with the Task 7 status; it is intentionally not embedded here because changing a commit's own ID would require another content change).
+`592a39c` — `refactor: remove catch-all ownership modules`
+
+## Fix-round follow-up
+
+- Corrected the btop ownership comment to name the repository-relative owner path `home/config/btop/nixos.nix`.
+- Recorded the original focused cleanup commit as `592a39c`; this follow-up is committed separately after the focused checks below.
