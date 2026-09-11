@@ -1,0 +1,405 @@
+# Helix 语言配置
+# ~/.config/helix/languages.toml
+
+# ══════════════════════════════════════════════════════════════════
+# 🛠️ 语言服务器定义（LSP）
+# ══════════════════════════════════════════════════════════════════
+
+# 这里定义 LSP 的启动命令；下面的语言配置会引用这些名称。
+# 原则：编辑器只调用 PATH 中的稳定命令，不在启动时下载工具。
+# Rust/Go/Python/JS/OCaml 工具由各生态管理；通用工具由 Home Manager 提供。
+#
+# ══════════════════════════════════════════════════════════════════
+# 📦 工具安装指引 — 运行 `bootstrap-toolchain` 一键完成
+# ══════════════════════════════════════════════════════════════════
+#
+# 全局工具由 `mcb-toolchain` 按当前 registry 最新稳定版本管理。
+# 工具清单与 package/binary 映射位于 home/config/toolchain/tools.json。
+#
+# Rust / Lean → stable channel
+# Go             → go install <module>@latest
+# Cargo          → cargo install <crate>
+# Python         → uv tool install / uv tool upgrade --all
+# JavaScript     → bun add/update --global <package>@latest
+# OCaml          → opam install / opam update + upgrade
+#
+# 项目级版本由项目自己的 flake.nix、Cargo.lock、uv.lock、go.mod
+# 和 lean-toolchain 等文件负责；不要在这里写全局版本号。
+
+[language-server.rust-analyzer]
+command = "rust-analyzer"
+
+[language-server.rust-analyzer.config]
+inlayHints.bindingModeHints.enable = false
+inlayHints.closingBraceHints.minLines = 10
+inlayHints.closureReturnTypeHints.enable = "with_block"
+inlayHints.discriminantHints.enable = "fieldless"
+inlayHints.lifetimeElisionHints.enable = "skip_trivial"
+inlayHints.typeHints.hideClosureInitialization = false
+check.command = "clippy"
+cargo.allFeatures = true
+cargo.buildScripts.enable = true
+procMacro.enable = true
+
+[language-server.nixd]
+command = "nixd"
+
+[language-server.bash-language-server]
+command = "bash-language-server"
+args = ["start"]
+
+[language-server.ty]
+command = "ty"
+args = ["server"]
+
+[language-server.taplo]
+command = "taplo"
+args = ["lsp", "stdio"]
+
+[language-server.marksman]
+command = "marksman"
+args = ["server"]
+
+[language-server.yaml-language-server]
+command = "yaml-language-server"
+args = ["--stdio"]
+
+[language-server.yaml-language-server.config.yaml]
+keyOrdering = false
+
+[language-server.vtsls]
+command = "vtsls"
+args = ["--stdio"]
+
+[language-server.vscode-html-language-server]
+command = "vscode-html-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-css-language-server]
+command = "vscode-css-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-json-language-server]
+command = "vscode-json-language-server"
+args = ["--stdio"]
+
+[language-server.clangd]
+command = "clangd"
+args = [
+  "--background-index",
+  "--clang-tidy",
+  "--completion-style=detailed",
+  "--header-insertion=iwyu",
+  "--query-driver=/nix/store/*/bin/gcc,/nix/store/*/bin/g++,/nix/store/*/bin/cc,/nix/store/*/bin/c++"
+]
+
+[language-server.lua-language-server]
+command = "lua-language-server"
+
+[language-server.lua-language-server.config.Lua]
+runtime.version = "LuaJIT"
+diagnostics.globals = ["vim"]
+workspace.checkThirdParty = false
+completion.callSnippet = "Replace"
+hint.enable = true
+telemetry.enable = false
+
+[language-server.gopls]
+command = "gopls"
+
+[language-server.ocamllsp]
+command = "opam"
+args = ["exec", "--", "ocamllsp"]
+
+[language-server.lean]
+command = "lean"
+args = ["--server", "--memory=1024"]
+
+# ══════════════════════════════════════════════════════════════════
+# 👅 语言绑定配置
+# ══════════════════════════════════════════════════════════════════
+
+# 这里将语言与对应的 LSP/格式化工具关联起来
+
+# 🦀 Rust
+[[language]]
+name = "rust"
+scope = "source.rust"
+injection-regex = "rust"
+file-types = ["rs"]
+roots = ["Cargo.toml", "Cargo.lock"]
+auto-format = true
+language-servers = ["rust-analyzer"]
+indent = { tab-width = 4, unit = "    " }
+formatter = { command = "rustfmt" }
+
+# ❄️ Nix
+[[language]]
+name = "nix"
+scope = "source.nix"
+injection-regex = "nix"
+file-types = ["nix"]
+roots = ["flake.nix", "shell.nix", "default.nix"]
+comment-token = "#"
+language-servers = ["nixd"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "nixfmt" }
+
+# 📝 TOML
+[[language]]
+name = "toml"
+scope = "source.toml"
+injection-regex = "toml"
+file-types = ["toml", "Cargo.lock"]
+roots = []
+comment-token = "#"
+language-servers = ["taplo"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+
+# 📖 Markdown
+[[language]]
+name = "markdown"
+scope = "source.markdown"
+injection-regex = "md|markdown"
+file-types = ["md", "markdown", "mkd", "mdwn", "mkdn", "mdx"]
+roots = []
+language-servers = ["marksman"]
+indent = { tab-width = 2, unit = "  " }
+formatter = { command = "prettier", args = ["--parser", "markdown"] }
+auto-format = true
+soft-wrap.enable = true
+
+# 📋 YAML
+[[language]]
+name = "yaml"
+scope = "source.yaml"
+file-types = ["yml", "yaml"]
+roots = []
+comment-token = "#"
+language-servers = ["yaml-language-server"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "yaml"] }
+
+# 🐚 Bash
+[[language]]
+name = "bash"
+scope = "source.bash"
+injection-regex = "(shell|bash|zsh|sh)"
+file-types = ["sh", "bash", "zsh", ".zshrc", ".bashrc", ".bash_profile", ".zshenv", ".zprofile"]
+roots = []
+comment-token = "#"
+language-servers = ["bash-language-server"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "shfmt", args = ["-i", "2"] }
+
+# 🐍 Python
+[[language]]
+name = "python"
+scope = "source.python"
+injection-regex = "python"
+file-types = ["py", "pyi", "py3", "pyw", "ptl"]
+roots = ["pyproject.toml", "setup.py", "Poetry.lock", "requirements.txt"]
+comment-token = "#"
+language-servers = ["ty"]
+indent = { tab-width = 4, unit = "    " }
+auto-format = true
+formatter = { command = "ruff", args = ["format", "-"] }
+
+# 🔷 TypeScript / JavaScript
+[[language]]
+name = "typescript"
+scope = "source.ts"
+injection-regex = "(ts|typescript)"
+file-types = ["ts", "mts", "cts"]
+roots = ["package.json", "tsconfig.json"]
+language-servers = ["vtsls"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+
+[[language]]
+name = "tsx"
+scope = "source.tsx"
+injection-regex = "(tsx)"
+file-types = ["tsx"]
+roots = ["package.json", "tsconfig.json"]
+language-servers = ["vtsls"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+
+[[language]]
+name = "javascript"
+scope = "source.js"
+injection-regex = "(js|javascript)"
+file-types = ["js", "mjs", "cjs"]
+roots = ["package.json"]
+language-servers = ["vtsls"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "babel"] }
+
+[[language]]
+name = "jsx"
+scope = "source.jsx"
+injection-regex = "(jsx)"
+file-types = ["jsx"]
+roots = ["package.json"]
+language-servers = ["vtsls"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "babel"] }
+
+# 🔵 C / C++
+[[language]]
+name = "c"
+scope = "source.c"
+injection-regex = "c"
+file-types = ["c", "h"]
+roots = ["compile_commands.json", "Makefile", "CMakeLists.txt"]
+comment-token = "//"
+language-servers = ["clangd"]
+indent = { tab-width = 4, unit = "    " }
+auto-format = true
+formatter = { command = "clang-format" }
+
+[[language]]
+name = "cpp"
+scope = "source.cpp"
+injection-regex = "cpp"
+file-types = ["cc", "cpp", "cxx", "c++", "hpp", "hxx", "h++", "hh"]
+roots = ["compile_commands.json", "Makefile", "CMakeLists.txt"]
+comment-token = "//"
+language-servers = ["clangd"]
+indent = { tab-width = 4, unit = "    " }
+auto-format = true
+formatter = { command = "clang-format" }
+
+# 🌙 Lua
+[[language]]
+name = "lua"
+scope = "source.lua"
+injection-regex = "lua"
+file-types = ["lua"]
+roots = [".luarc.json", ".luacheckrc", "stylua.toml"]
+comment-token = "--"
+language-servers = ["lua-language-server"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "stylua", args = ["-"] }
+
+# 🐹 Go
+[[language]]
+name = "go"
+scope = "source.go"
+injection-regex = "go"
+file-types = ["go"]
+roots = ["go.mod", "go.work"]
+comment-token = "//"
+language-servers = ["gopls"]
+indent = { tab-width = 4, unit = "\t" }
+auto-format = true
+formatter = { command = "gofumpt" }
+
+# 🌐 HTML / CSS
+[[language]]
+name = "html"
+scope = "text.html.basic"
+injection-regex = "html"
+file-types = ["html", "htm"]
+language-servers = ["vscode-html-language-server"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "html"] }
+
+[[language]]
+name = "css"
+scope = "source.css"
+injection-regex = "css"
+file-types = ["css"]
+language-servers = ["vscode-css-language-server"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "css"] }
+
+# 📄 JSON / JSONC / JSON5
+[[language]]
+name = "json"
+scope = "source.json"
+injection-regex = "json"
+file-types = ["json"]
+roots = []
+language-servers = ["vscode-json-language-server"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "json"] }
+
+[[language]]
+name = "jsonc"
+scope = "source.json"
+injection-regex = "json"
+file-types = ["jsonc"]
+roots = []
+language-servers = ["vscode-json-language-server"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "jsonc"] }
+
+[[language]]
+name = "json5"
+scope = "source.json"
+injection-regex = "json"
+file-types = ["json5"]
+roots = []
+language-servers = ["vscode-json-language-server"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "json5"] }
+
+# ✍️ Prose / Git messages
+[[language]]
+name = "git-commit"
+text-width = 72
+soft-wrap.enable = true
+
+[[language]]
+name = "mail"
+text-width = 72
+soft-wrap.enable = true
+
+# 🐫 OCaml
+[[language]]
+name = "ocaml"
+scope = "source.ocaml"
+injection-regex = "ocaml"
+file-types = ["ml", "eliom"]
+roots = ["dune-project", "dune", ".merlin", "opam"]
+language-servers = ["ocamllsp"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "opam", args = ["exec", "--", "ocamlformat", "--impl", "-"] }
+block-comment-tokens = { start = "(*", end = "*)" }
+
+[[language]]
+name = "ocaml-interface"
+scope = "source.ocaml.interface"
+injection-regex = "ocaml"
+file-types = ["mli"]
+roots = ["dune-project", "dune", ".merlin", "opam"]
+language-servers = ["ocamllsp"]
+indent = { tab-width = 2, unit = "  " }
+auto-format = true
+formatter = { command = "opam", args = ["exec", "--", "ocamlformat", "--intf", "-"] }
+block-comment-tokens = { start = "(*", end = "*)" }
+
+
+# Lean
+[[language]]
+name = "lean"
+file-types = ["lean"]
+roots = ["lakefile.lean", "lean-toolchain", ".git"]
+language-servers = ["lean"]

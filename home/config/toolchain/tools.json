@@ -1,0 +1,46 @@
+{
+  "rust": {
+    "channel": "stable",
+    "components": ["rust-analyzer", "rustfmt", "clippy"]
+  },
+  "lean": {
+    "channel": "stable"
+  },
+  "opam": [
+    {"package": "ocaml-lsp-server", "binary": "ocamllsp"},
+    {"package": "ocamlformat", "binary": "ocamlformat"}
+  ],
+  "cargo": [
+    {"package": "cargo-audit", "binary": "cargo-audit"},
+    {"package": "taplo-cli", "binary": "taplo"},
+    {"package": "stylua", "binary": "stylua"},
+    {"package": "atuin", "binary": "atuin"},
+    {"package": "broot", "binary": "broot"},
+  ],
+  "go": [
+    {"package": "golang.org/x/tools/gopls", "binary": "gopls"},
+    {"package": "mvdan.cc/sh/v3/cmd/shfmt", "binary": "shfmt"},
+    {"package": "mvdan.cc/gofumpt", "binary": "gofumpt"},
+    {"package": "github.com/golangci/golangci-lint/cmd/golangci-lint", "binary": "golangci-lint"},
+    {"package": "github.com/go-delve/delve/cmd/dlv", "binary": "dlv"},
+    {"package": "github.com/metafates/mangal", "binary": "mangal"},
+    {"package": "github.com/projectdiscovery/nuclei/v3/cmd/nuclei", "binary": "nuclei"},
+    {"package": "github.com/ffuf/ffuf/v2", "binary": "ffuf"}
+  ],
+  "uv": [
+    {"package": "aider-chat", "binary": "aider"},
+    {"package": "ruff", "binary": "ruff"},
+    {"package": "ty", "binary": "ty"},
+    {"package": "debugpy", "binary": "debugpy-adapter"},
+    {"package": "yt-dlp", "binary": "yt-dlp"},
+    {"package": "sqlmap", "binary": "sqlmap"}
+  ],
+  "bun": [
+    {"package": "@vtsls/language-server", "binary": "vtsls"},
+    {"package": "typescript", "binary": "tsc"},
+    {"package": "bash-language-server", "binary": "bash-language-server"},
+    {"package": "prettier", "binary": "prettier"},
+    {"package": "markdownlint-cli2", "binary": "markdownlint-cli2"},
+    {"package": "markdown-toc", "binary": "markdown-toc"}
+  ]
+}

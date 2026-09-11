@@ -1,0 +1,264 @@
+# Helix 编辑器配置
+# ~/.config/helix/config.toml
+
+# 主题配色
+theme = "nord-night"
+
+[editor]
+# 基础体验
+line-number = "relative"
+cursorline = true
+cursorcolumn = true
+popup-border = "all"
+# 自动保存/格式化（保存时触发）
+auto-save = true
+auto-format = true
+scrolloff = 8
+scroll-lines = 3
+mouse = true
+true-color = true
+# 空闲刷新间隔（影响插件/LSP 提示）
+idle-timeout = 100
+# 标尺（默认 100 列提示）
+rulers = [100]
+
+# 缓冲区管理
+bufferline = "multiple" # 多文件时显示标签栏
+color-modes = true      # 状态栏模式变色
+
+# Shell 环境
+shell = ["zsh", "-c"]
+
+# 格式化与换行
+text-width = 100
+default-line-ending = "lf"
+
+# ✅ 新特性: 粘性上下文 (Sticky Context)
+# 在函数/类过长时，将定义行吸附在顶部
+#[editor.sticky-context]
+#enable = true
+#indicator = true
+
+# 状态栏（Statusline）
+[editor.statusline]
+left = ["mode", "spinner", "version-control", "file-name", "read-only-indicator", "file-modification-indicator"]
+center = ["diagnostics", "workspace-diagnostics"]
+right = ["selections", "register", "position", "position-percentage", "file-encoding", "file-line-ending", "file-type"]
+separator = "│"
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+
+# LSP 行为
+[editor.lsp]
+enable = true
+display-messages = true
+display-inlay-hints = true  # 内嵌提示 (Inlay Hints)
+auto-signature-help = true
+snippets = true
+
+# 光标形状
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+# 文件选择器
+[editor.file-picker]
+# LazyVim 风格：能找隐藏文件，但继续尊重 gitignore，避免把 build 产物扫进来。
+hidden = true
+git-ignore = true
+git-global = true
+git-exclude = true
+
+# 自动配对
+[editor.auto-pairs]
+'(' = ')'
+'{' = '}'
+'[' = ']'
+'"' = '"'
+'`' = '`'
+'<' = '>'
+
+# 搜索
+[editor.search]
+# 智能大小写：有大写才区分大小写
+smart-case = true
+wrap-around = true
+
+# 空白字符 (默认隐藏，按需开启)
+[editor.whitespace]
+# 空白符显示策略
+render = "none"
+
+[editor.whitespace.characters]
+space = "·"
+nbsp = "⍽"
+tab = "→"
+newline = "↵"
+
+# 缩进参考线
+[editor.indent-guides]
+render = true
+character = "│"
+skip-levels = 0
+
+# 侧边栏 (Gutters)
+[editor.gutters]
+# 侧边栏：诊断、行号、diff 等
+layout = ["diagnostics", "spacer", "line-numbers", "spacer", "diff"]
+
+[editor.gutters.line-numbers]
+min-width = 3
+
+# 软换行 (Soft Wrap)
+[editor.soft-wrap]
+enable = false
+max-wrap = 20
+max-indent-retain = 40
+wrap-indicator = "↪ "
+
+# 智能 Tab (Smart Tab)
+[editor.smart-tab]
+enable = true
+supersede-menu = false
+
+# ══════════════════════════════════════════════════════════════════
+# ⌨️ 快捷键
+# ══════════════════════════════════════════════════════════════════
+
+[keys.normal]
+# 系统操作
+"C-s" = ":w"
+"C-q" = ":q"
+"C-o" = "jump_backward"
+"C-i" = "jump_forward"
+
+# 窗口导航（类 Tmux/Vim）
+"C-h" = "jump_view_left"
+"C-j" = "jump_view_down"
+"C-k" = "jump_view_up"
+"C-l" = "jump_view_right"
+
+# 缓冲区切换
+"H" = "goto_previous_buffer"
+"L" = "goto_next_buffer"
+"[" = { b = "goto_previous_buffer", d = "goto_prev_diag", g = "goto_prev_change" }
+"]" = { b = "goto_next_buffer", d = "goto_next_diag", g = "goto_next_change" }
+
+# 编辑
+"C-/" = "toggle_comments"
+"A-j" = "move_line_down"
+"A-k" = "move_line_up"
+"y" = "yank_to_clipboard"
+"p" = "paste_clipboard_after"
+"P" = "paste_clipboard_before"
+
+# 搜索
+"n" = "search_next"
+"N" = "search_prev"
+"*" = "search_selection_detect_word_boundaries"
+
+# Go 模式增强
+"g" = { l = "goto_line_end", h = "goto_line_start", d = "goto_definition", D = "goto_declaration", r = "goto_reference", i = "goto_implementation", t = "goto_type_definition", y = "goto_type_definition", K = "signature_help" }
+"K" = "hover"
+
+# Leader 键（Space），按 LazyVim 的 file/buffer/search/window/code 习惯分组。
+[keys.normal.space]
+space = "file_picker"
+"/" = "global_search"
+"?" = "command_palette"
+"-" = "hsplit"
+"|" = "vsplit"
+K = "hover"
+a = "code_action"
+h = "hover"
+r = "rename_symbol"
+Q = ":qa!"
+
+[keys.normal.space.b]
+b = "buffer_picker"
+d = ":buffer-close"
+D = ":buffer-close!"
+n = "goto_next_buffer"
+p = "goto_previous_buffer"
+o = ":buffer-close-others"
+O = ":buffer-close-others!"
+
+[keys.normal.space.c]
+a = "code_action"
+c = ":config-open"
+d = "diagnostics_picker"
+D = "workspace_diagnostics_picker"
+f = ":format"
+h = "hover"
+r = "rename_symbol"
+R = ":config-reload"
+s = "symbol_picker"
+S = "workspace_symbol_picker"
+"=" = "format_selections"
+
+[keys.normal.space.f]
+f = "file_picker"
+F = "file_picker_in_current_directory"
+c = ":config-open"
+g = "global_search"
+
+[keys.normal.space.g]
+b = ":echo %sh{git blame -L %{cursor_line},+1 -- \"%{buffer_name}\"}"
+d = ":sh git diff -- \"%{buffer_name}\""
+g = ":sh git status --short --branch"
+l = ":sh git log --oneline --decorate -n 20"
+s = ":sh git status --short --branch"
+
+[keys.normal.space.s]
+s = "symbol_picker"
+S = "workspace_symbol_picker"
+g = "global_search"
+
+[keys.normal.space.w]
+"-" = "hsplit"
+"|" = "vsplit"
+h = "jump_view_left"
+j = "jump_view_down"
+k = "jump_view_up"
+l = "jump_view_right"
+o = "wonly"
+q = "wclose"
+d = "wclose"
+s = "hsplit"
+v = "vsplit"
+
+[keys.normal.space.x]
+x = "diagnostics_picker"
+X = "workspace_diagnostics_picker"
+
+[keys.normal.space.u]
+f = ":toggle auto-format"
+h = ":toggle file-picker.hidden"
+i = ":toggle lsp.display-inlay-hints"
+l = ":toggle line-number absolute relative"
+r = ":toggle rulers [] [100]"
+s = ":toggle search.smart-case"
+w = ":toggle soft-wrap.enable"
+W = ":toggle whitespace.render all none"
+
+[keys.normal.space.q]
+q = ":qa"
+Q = ":qa!"
+
+[keys.insert]
+"C-s" = ":w"
+j = { k = "normal_mode" } # jk 大法
+"C-space" = "completion"
+"C-k" = "signature_help"
+
+[keys.select]
+"C-/" = "toggle_comments"
+"A-j" = "move_line_down"
+"A-k" = "move_line_up"
+y = "yank_to_clipboard"
+p = "paste_clipboard_after"
+P = "paste_clipboard_before"
+"[" = { d = "goto_prev_diag", g = "goto_prev_change" }
+"]" = { d = "goto_next_diag", g = "goto_next_change" }

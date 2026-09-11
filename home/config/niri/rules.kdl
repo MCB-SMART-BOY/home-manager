@@ -1,0 +1,49 @@
+// 窗口规则配置
+// 由 config.kdl 通过 include "rules.kdl" 引入。
+//
+// 所有应用级别的窗口行为（浮动、圆角、尺寸约束）统一管理。
+// 新增应用的窗口规则只应修改本文件。
+// 快捷键通过 binds.kdl 中的 spawn/class 匹配本文件的 app-id 规则。
+// ══════════════════════════════════════════════════════════════════
+// 🪟 窗口规则
+// ══════════════════════════════════════════════════════════════════
+
+window-rule {
+    // 所有常规窗口统一圆角，并裁剪客户端内容，避免方形内容溢出。
+    geometry-corner-radius 18
+    clip-to-geometry true
+}
+
+window-rule {
+    // 工具型窗口默认浮动，不占据滚动平铺带。
+    match app-id=r#"^(pavucontrol|org\.keepassxc\.KeePassXC)$"#
+    open-floating true
+}
+
+window-rule {
+    // 同时兼容原生 Firefox 与 Flatpak Firefox 的 app-id 结尾。
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+// 浮动终端（Mod+N）：用于临时命令、快速查询，不改变当前平铺结构。
+window-rule {
+    match app-id="float-term"
+    open-floating true
+    default-column-width { proportion 0.4; }
+}
+
+// OBS：默认浮动，避免录制控制窗口把工作区主布局挤乱。
+window-rule {
+    match app-id="obs"
+    open-floating true
+    default-column-width { proportion 0.6; }
+}
+
+// Noctalia v5 Settings：固定合理尺寸并浮动显示。
+window-rule {
+    match app-id="dev.noctalia.Noctalia"
+    open-floating true
+    default-column-width { fixed 1080; }
+    default-window-height { fixed 920; }
+}

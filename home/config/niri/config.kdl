@@ -1,0 +1,302 @@
+// Niri 配置文件（Wayland 滚动平铺窗口管理器）
+// ~/.config/niri/config.kdl
+// 由 Home Manager 管理：home/files.nix
+//
+// 适配目标：niri 26.04
+//
+// 本配置不是照搬官方默认键位，而是保留并完善当前用户已经形成的操作哲学：
+//
+//   1. Mod + 助记字母      = 启动应用或打开桌面功能。
+//   2. 不加额外修饰键      = 聚焦、切换、执行当前层级操作。
+//   3. Shift               = 移动当前对象，或对循环操作执行反向切换。
+//   4. Alt                 = 下钻到“列内部的单个窗口”这一层级。
+//   5. Ctrl                = 结构性、全局性或低频管理操作。
+//   6. hjkl                = 高频键盘导航；方向键提供严格的二维布局导航。
+//   7. 离散操作 repeat=false；连续导航、移动、缩放允许按住重复。
+//
+//
+// 架构：本文件是 niri 配置入口，通过 include 拆分为 4 个文件：
+//   outputs.kdl — 机器特定显示器配置
+//   rules.kdl   — 窗口规则
+//   binds.kdl   — 快捷键（含设计语义表）
+// niri 26.04 include 是 merge 语义：多实例节点按位置插入，冲突键后定义者覆盖。
+// Home Manager 部署声明见 home/files.nix。
+
+// 机器特定显示器配置 → outputs.kdl
+include "outputs.kdl"
+
+// ══════════════════════════════════════════════════════════════════
+// ⌨️ 输入配置
+// ══════════════════════════════════════════════════════════════════
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+
+            // 交换 Ctrl 与 Caps Lock：适合终端、Helix/Vim 与大量 Ctrl 组合。
+            options "ctrl:swapcaps"
+        }
+
+        // 较短延迟和较高重复率，方便连续移动列、切工作区和调整尺寸。
+        repeat-delay 300
+        repeat-rate 50
+    }
+
+    touchpad {
+        tap
+        dwt
+        natural-scroll
+        accel-speed 0.2
+        accel-profile "adaptive"
+    }
+
+    mouse {
+        accel-speed 0.0
+        accel-profile "flat"
+    }
+
+    // 只聚焦已经完整显示在屏幕上的窗口，避免鼠标划过时自动横向滚动画面。
+    focus-follows-mouse max-scroll-amount="0%"
+}
+
+// ══════════════════════════════════════════════════════════════════
+// 🎨 布局配置
+// ══════════════════════════════════════════════════════════════════
+
+layout {
+    // Noctalia 管理静态回退壁纸，W Engine 管理动态壁纸；工作区背景保持透明。
+    background-color "transparent"
+
+    // 6 个逻辑像素，在 scale=2 的显示器上等于 12 个物理像素。
+    gaps 6
+
+    // 核心改动：
+    // 不再把每个聚焦列强制居中，否则两个半宽列切换焦点时会被来回推出屏幕。
+    // "never" 允许 50% + 50%、33% + 67% 等稳定并排布局。
+    center-focused-column "never"
+
+    // 只有一个列时仍保持居中，保留 niri 单窗口工作区的视觉特点。
+    // 当第二个 50% 列出现时，两个列会自然共同占据屏幕。
+    always-center-single-column
+
+    // 列宽预设按照常见生产力布局设计：
+    // 1/3：终端、文档、聊天等辅助窗口；
+    // 1/2：两个应用左右均分；
+    // 2/3：编辑器、浏览器等主要窗口。
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    // 列内窗口高度预设。
+    // 它配合 Mod+Alt+R 使用，使上下堆叠窗口也具备 1/3、1/2、2/3 的规则布局。
+    preset-window-heights {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    // 新窗口默认半屏宽。
+    // 这是让两个新应用天然形成左右两半、接近 Hyprland 双窗口体验的关键。
+    // 骗你的，其实我还是更喜欢全屏大小
+    default-column-width {
+        proportion 1.0
+    }
+
+    focus-ring {
+        width 1
+        active-color "#cba6f7"
+        inactive-color "#313244"
+        urgent-color "#f38ba8"
+    }
+
+    border {
+        // 只保留焦点环，避免边框和焦点环重复表达选中状态。
+        off
+    }
+
+    shadow {
+        on
+        softness 36
+        spread 4
+        offset x=0 y=6
+        color "#0b111b99"
+    }
+
+    tab-indicator {
+        // 列切换为 tabbed 模式后显示窗口标签指示器。
+        // 单窗口列无需显示，减少普通布局中的视觉噪声。
+        on
+        hide-when-single-tab
+        place-within-column
+        position "right"
+        width 3
+        gap 4
+        gaps-between-tabs 2
+        corner-radius 8
+        active-color "#cba6f7"
+        inactive-color "#45475a"
+        urgent-color "#f38ba8"
+    }
+
+    insert-hint {
+        // 拖动窗口或列时显示插入位置，降低多列重排时的不确定性。
+        on
+        color "#cba6f780"
+    }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// 🧠 兼容性 / Noctalia / W Engine
+// ══════════════════════════════════════════════════════════════════
+
+debug {
+    // Noctalia 的通知操作和窗口激活有时没有有效输入 serial。
+    // 保留该兼容开关，使点击通知后仍可激活目标应用。
+    honor-xdg-activation-with-invalid-serial
+}
+
+layer-rule {
+    match namespace="^noctalia-backdrop"
+
+    // 将 Noctalia 的模糊背景放进 niri Overview 的 backdrop，
+    // 避免任务视图缩放时壁纸图层与工作区图层割裂。
+    place-within-backdrop true
+}
+
+layer-rule {
+    match namespace="^linux-wallpaperengine$"
+
+    // W Engine 中把 Wayland layer 设为 background 后，将动态壁纸放进 niri Overview backdrop。
+    place-within-backdrop true
+}
+
+// ══════════════════════════════════════════════════════════════════
+// 🖼️ 窗口装饰
+// ══════════════════════════════════════════════════════════════════
+
+// 请求应用关闭客户端装饰，让 niri 能准确处理圆角、裁剪、焦点环和阴影。
+// 修改后需要重启已经运行的应用才会完全生效。
+prefer-no-csd
+
+// ══════════════════════════════════════════════════════════════════
+// ✨ 动画
+// ══════════════════════════════════════════════════════════════════
+
+animations {
+    // 略微放慢默认动画，但保持操作反馈迅速。
+    slowdown 1.05
+
+    workspace-switch {
+        spring damping-ratio=0.9 stiffness=800 epsilon=0.0001
+    }
+
+    window-open {
+        duration-ms 220
+        curve "ease-out-expo"
+    }
+
+    window-close {
+        duration-ms 160
+        curve "ease-out-quad"
+    }
+
+    horizontal-view-movement {
+        spring damping-ratio=0.9 stiffness=750 epsilon=0.0001
+    }
+
+    window-movement {
+        spring damping-ratio=0.9 stiffness=750 epsilon=0.0001
+    }
+
+    window-resize {
+        spring damping-ratio=0.9 stiffness=750 epsilon=0.0001
+    }
+
+    config-notification-open-close {
+        spring damping-ratio=0.6 stiffness=1000 epsilon=0.001
+    }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// 📸 截图保存路径
+// ══════════════════════════════════════════════════════════════════
+
+screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
+
+// ══════════════════════════════════════════════════════════════════
+// 🚀 自启动
+// ══════════════════════════════════════════════════════════════════
+
+// 启动 Noctalia Shell。
+spawn-at-startup "noctalia"
+
+// 继续沿用现有 swayidle 策略：
+// 5 分钟锁屏，10 分钟关闭显示器，睡眠前再次锁屏。
+// niri-run 用于把子进程放入正确的会话环境。
+spawn-at-startup "niri-run" "swayidle" "-w" "timeout" "300" "sh" "-c" "[ -x \"$HOME/.local/bin/lock-screen\" ] && \"$HOME/.local/bin/lock-screen\" || true" "timeout" "600" "niri" "msg" "action" "power-off-monitors" "before-sleep" "sh" "-c" "[ -x \"$HOME/.local/bin/lock-screen\" ] && \"$HOME/.local/bin/lock-screen\" || true"
+
+// 窗口规则 → rules.kdl
+include "rules.kdl"
+
+// ══════════════════════════════════════════════════════════════════
+// 🔁 最近窗口切换器
+// ══════════════════════════════════════════════════════════════════
+//
+// niri 25.11 起提供原生 recent-windows。
+// 为保留原有 Mod+Tab=Overview 与 Mod+Grave=前一个工作区，
+// 最近窗口切换器只使用传统 Alt 系列快捷键。
+
+recent-windows {
+    // 避免鼠标经过或连续导航产生的中间窗口污染最近使用顺序。
+    debounce-ms 500
+
+    // 快速点按 Alt+Tab 时不立即闪出大型预览；按住后再显示。
+    open-delay-ms 140
+
+    highlight {
+        padding 24
+        corner-radius 18
+        active-color "#cba6f755"
+        urgent-color "#f38ba866"
+    }
+
+    previews {
+        max-height 520
+        max-scale 0.55
+    }
+
+    binds {
+        // 当前显示器范围：最符合双屏下“只切当前任务”的预期。
+        Alt+Tab {
+            next-window scope="output";
+        }
+
+        Alt+Shift+Tab {
+            previous-window scope="output";
+        }
+
+        // 当前工作区内切换同一 app-id，例如多个终端或多个 Firefox 窗口。
+        Alt+Grave {
+            next-window scope="workspace" filter="app-id";
+        }
+
+        Alt+Shift+Grave {
+            previous-window scope="workspace" filter="app-id";
+        }
+
+        // 低频全局切换：跨越全部显示器和工作区。
+        Alt+Ctrl+Tab {
+            next-window scope="all";
+        }
+
+        Alt+Ctrl+Shift+Tab {
+            previous-window scope="all";
+        }
+    }
+}
+
+// 快捷键 → binds.kdl
+include "binds.kdl"

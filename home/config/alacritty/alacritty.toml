@@ -1,0 +1,200 @@
+# Alacritty 配置
+# ~/.config/alacritty/alacritty.toml
+# DMS/Noctalia 风格主题
+
+# 热更新配置（无需重启）
+[general]
+live_config_reload = true
+
+# ══════════════════════════════════════════════════════════════════
+# 🪟 窗口
+# ══════════════════════════════════════════════════════════════════
+[window]
+padding = { x = 18, y = 18 }
+decorations = "None" # 无边框，适合平铺窗口管理器
+opacity = 0.96 # 轻微透明，减少压迫感
+blur = true    # 需要合成器支持
+dynamic_padding = true
+dynamic_title = true
+
+[window.dimensions]
+columns = 120
+lines = 36
+
+# ══════════════════════════════════════════════════════════════════
+# 📜 滚动
+# ══════════════════════════════════════════════════════════════════
+[scrolling]
+history = 20000 # 更大的回滚，便于排错
+multiplier = 3
+
+# ══════════════════════════════════════════════════════════════════
+# 🔤 字体（Maple Mono NF CN: Latin + CJK + Nerd Font 全内置，标准 2:1 等宽）
+# ══════════════════════════════════════════════════════════════════
+[font]
+size = 15.5
+
+[font.normal]
+family = "Maple Mono NF CN"
+style = "Regular"
+
+[font.bold]
+family = "Maple Mono NF CN"
+style = "Bold"
+
+[font.italic]
+family = "Maple Mono NF CN"
+style = "Italic"
+
+[font.bold_italic]
+family = "Maple Mono NF CN"
+style = "Bold Italic"
+
+[font.offset]
+x = 2
+y = 0
+
+# ══════════════════════════════════════════════════════════════════
+# 🎨 配色 - DMS/Noctalia 风格
+# ══════════════════════════════════════════════════════════════════
+[colors.primary]
+background = "#0c1116"
+foreground = "#e6edf3"
+dim_foreground = "#9aa4b2"
+bright_foreground = "#f1f5f9"
+
+[colors.cursor]
+text = "#0c1116"
+cursor = "#5eead4"
+
+[colors.vi_mode_cursor]
+text = "#0c1116"
+cursor = "#fbbf24"
+
+[colors.search.matches]
+foreground = "#0c1116"
+background = "#fbbf24"
+
+[colors.search.focused_match]
+foreground = "#0c1116"
+background = "#5eead4"
+
+[colors.footer_bar]
+foreground = "#0c1116"
+background = "#9aa4b2"
+
+[colors.hints.start]
+foreground = "#0c1116"
+background = "#fbbf24"
+
+[colors.hints.end]
+foreground = "#0c1116"
+background = "#9aa4b2"
+
+[colors.selection]
+text = "#e6edf3"
+background = "#1f2937"
+
+[colors.normal]
+black = "#1b2430"
+red = "#fb7185"
+green = "#34d399"
+yellow = "#fbbf24"
+blue = "#60a5fa"
+magenta = "#f472b6"
+cyan = "#5eead4"
+white = "#e2e8f0"
+
+[colors.bright]
+black = "#334155"
+red = "#fda4af"
+green = "#6ee7b7"
+yellow = "#fde68a"
+blue = "#93c5fd"
+magenta = "#f9a8d4"
+cyan = "#99f6e4"
+white = "#f8fafc"
+
+[colors.dim]
+black = "#0f172a"
+red = "#e87979"
+green = "#22c55e"
+yellow = "#eab308"
+blue = "#3b82f6"
+magenta = "#ec4899"
+cyan = "#2dd4bf"
+white = "#cbd5e1"
+
+# ══════════════════════════════════════════════════════════════════
+# ⌨️ 键盘
+# ══════════════════════════════════════════════════════════════════
+[[keyboard.bindings]]
+key = "V"
+mods = "Control|Shift"
+action = "Paste"
+
+[[keyboard.bindings]]
+key = "C"
+mods = "Control|Shift"
+action = "Copy"
+
+[[keyboard.bindings]]
+key = "N"
+mods = "Control|Shift"
+action = "SpawnNewInstance"
+
+[[keyboard.bindings]]
+key = "Plus"
+mods = "Control"
+action = "IncreaseFontSize"
+
+[[keyboard.bindings]]
+key = "Minus"
+mods = "Control"
+action = "DecreaseFontSize"
+
+[[keyboard.bindings]]
+key = "Key0"
+mods = "Control"
+action = "ResetFontSize"
+
+# ══════════════════════════════════════════════════════════════════
+# 🖱️ 鼠标
+# ══════════════════════════════════════════════════════════════════
+[mouse]
+hide_when_typing = true
+
+# 选中文本自动进剪贴板（Wayland/GUI 常见习惯）
+[selection]
+save_to_clipboard = true # 选中文本即写入剪贴板
+
+# ══════════════════════════════════════════════════════════════════
+# 🔔 提示音
+# ══════════════════════════════════════════════════════════════════
+[bell]
+duration = 0
+
+# ══════════════════════════════════════════════════════════════════
+# 📏 光标
+# ══════════════════════════════════════════════════════════════════
+[cursor]
+unfocused_hollow = true
+blink_interval = 500
+
+[cursor.style]
+shape = "Block"
+blinking = "On"
+
+[cursor.vi_mode_style]
+shape = "Block"
+blinking = "Off"
+
+# ══════════════════════════════════════════════════════════════════
+# 🖥️ 终端
+# ══════════════════════════════════════════════════════════════════
+# [terminal]
+# 建议注释掉，让系统自动使用默认 Shell（zsh）
+# shell = { program = "zsh" }
+
+[env]
+TERM = "alacritty"

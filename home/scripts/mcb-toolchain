@@ -1,0 +1,143 @@
+config="${XDG_CONFIG_HOME:-$HOME/.config}/toolchain/tools.json"
+failures=0
+
+usage() {
+  printf '%s\n' \
+    "Usage: mcb-toolchain {bootstrap|upgrade|check} [--dry-run]" \
+    "  bootstrap  install configured language tools" \
+    "  upgrade    update configured language tools" \
+    "  check      report configured tools that are unavailable"
+}
+
+require_config() {
+  if [ ! -r "$config" ]; then
+    printf 'mcb-toolchain: configuration not found: %s\n' "$config" >&2
+    exit 1
+  fi
+}
+
+run_command() {
+  if [ "$dry_run" = true ]; then
+    printf '+'
+    printf ' %q' "$@"
+    printf '\n'
+  else
+    "$@"
+  fi
+}
+
+require_command() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    printf 'mcb-toolchain: required command not found: %s\n' "$1" >&2
+    failures=$((failures + 1))
+    return 1
+  fi
+  return 0
+}
+
+check_binary() {
+  local binary="$1"
+  if ! command -v "$binary" >/dev/null 2>&1; then
+    printf 'missing: %s\n' "$binary"
+    failures=$((failures + 1))
+  else
+    printf 'ok: %s\n' "$binary"
+  fi
+}
+
+install_rust() {
+  local channel
+  channel="$(jq -r '.rust.channel // empty' "$config")"
+  [ -n "$channel" ] || return 0
+  require_command rustup || return 0
+  run_command rustup toolchain install "$channel"
+  while IFS= read -r component; do
+    [ -n "$component" ] || continue
+    run_command rustup component add "$component" --toolchain "$channel"
+  done < <(jq -r '.rust.components[]? // empty' "$config")
+}
+
+install_lean() {
+  local channel
+  channel="$(jq -r '.lean.channel // empty' "$config")"
+  [ -n "$channel" ] || return 0
+  require_command elan || return 0
+  run_command elan toolchain install "$channel"
+  run_command elan default "$channel"
+}
+
+install_registry() {
+  local manager="$1"
+  local jq_path="$2"
+  local package
+  require_command "$manager" || return 0
+  while IFS= read -r package; do
+    [ -n "$package" ] || continue
+    case "$manager:$operation" in
+      opam:bootstrap) run_command opam install --yes "$package" ;;
+      opam:upgrade) run_command opam install --yes "$package" ;;
+      cargo:bootstrap) run_command cargo install --locked "$package" ;;
+      cargo:upgrade) run_command cargo install --locked --force "$package" ;;
+      go:*) run_command go install "$package@latest" ;;
+      uv:bootstrap) run_command uv tool install "$package" ;;
+      uv:upgrade) run_command uv tool upgrade "$package" ;;
+      bun:bootstrap) run_command bun add --global "$package" ;;
+      bun:upgrade) run_command bun update --global "$package" ;;
+    esac
+  done < <(jq -r "${jq_path}[]?.package // empty" "$config")
+}
+
+check_registry() {
+  local jq_path="$1"
+  local binary
+  while IFS= read -r binary; do
+    [ -n "$binary" ] || continue
+    check_binary "$binary"
+  done < <(jq -r "${jq_path}[]?.binary // empty" "$config")
+}
+
+operation="${1:-}"
+shift || true
+dry_run=false
+if [ "${1:-}" = "--dry-run" ]; then
+  dry_run=true
+  shift
+fi
+if [ "$#" -ne 0 ] || [ -z "$operation" ]; then
+  usage >&2
+  exit 2
+fi
+case "$operation" in
+  bootstrap|upgrade|check) ;;
+  *) usage >&2; exit 2 ;;
+esac
+require_config
+normalized_config="$(mktemp)"
+trap 'rm -f "$normalized_config"' EXIT
+tr '\n' ' ' < "$config" | sed -E 's/,[[:space:]]*]/]/g; s/,[[:space:]]*}/}/g' > "$normalized_config"
+config="$normalized_config"
+
+if [ "$operation" = check ]; then
+  for manager in rustup elan opam cargo go uv bun; do
+    require_command "$manager" || true
+  done
+  check_binary rust-analyzer
+  check_binary rustfmt
+  check_binary clippy-driver
+  check_binary lean
+  check_registry '.opam'
+  check_registry '.cargo'
+  check_registry '.go'
+  check_registry '.uv'
+  check_registry '.bun'
+  exit "$failures"
+fi
+
+install_rust
+install_lean
+install_registry opam '.opam'
+install_registry cargo '.cargo'
+install_registry go '.go'
+install_registry uv '.uv'
+install_registry bun '.bun'
+exit "$failures"

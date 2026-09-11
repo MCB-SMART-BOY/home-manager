@@ -1,0 +1,12 @@
+# 用户私有模块示例：复制为 local.nix，并通过 `modules = [ ./home/local.nix ];` 显式传入。
+{ pkgs, ... }:
+{
+  # 使用 Home Manager 原生 Git 设置覆盖身份。
+  programs.git.settings.user = {
+    name = "你的名字";
+    email = "你的邮箱@example.com";
+  };
+
+  # 个人额外软件示例。
+  # home.packages = with pkgs; [ localsend ];
+}

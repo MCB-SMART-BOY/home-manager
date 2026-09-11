@@ -1,0 +1,78 @@
+[language-server.nixd.config]
+nixpkgs.expr = '''
+let
+  configuredSource = builtins.getEnv "MCB_NIXOS_FLAKE_DIR";
+  hasScheme = builtins.match ".*:.*" configuredSource != null;
+  hasQueryOrFragment = builtins.match ".*[?#].*" configuredSource != null;
+  sourcePath =
+    if configuredSource == "" then
+      "/etc/nixos"
+    else if hasScheme || hasQueryOrFragment then
+      throw "MCB_NIXOS_FLAKE_DIR must be an absolute local directory path without a URI scheme, query, or fragment"
+    else if builtins.substring 0 1 configuredSource != "/" then
+      throw "MCB_NIXOS_FLAKE_DIR must be an absolute local directory path"
+    else
+      configuredSource;
+  source =
+    if builtins.pathExists (/. + sourcePath) then
+      "path:" + sourcePath
+    else
+      throw "MCB_NIXOS_FLAKE_DIR does not exist: " + sourcePath;
+  flake = builtins.getFlake source;
+in
+import flake.inputs.nixpkgs { system = builtins.currentSystem; }
+'''
+options.nixos.expr = '''
+let
+  configuredSource = builtins.getEnv "MCB_NIXOS_FLAKE_DIR";
+  hasScheme = builtins.match ".*:.*" configuredSource != null;
+  hasQueryOrFragment = builtins.match ".*[?#].*" configuredSource != null;
+  sourcePath =
+    if configuredSource == "" then
+      "/etc/nixos"
+    else if hasScheme || hasQueryOrFragment then
+      throw "MCB_NIXOS_FLAKE_DIR must be an absolute local directory path without a URI scheme, query, or fragment"
+    else if builtins.substring 0 1 configuredSource != "/" then
+      throw "MCB_NIXOS_FLAKE_DIR must be an absolute local directory path"
+    else
+      configuredSource;
+  source =
+    if builtins.pathExists (/. + sourcePath) then
+      "path:" + sourcePath
+    else
+      throw "MCB_NIXOS_FLAKE_DIR does not exist: " + sourcePath;
+  flake = builtins.getFlake source;
+  targetEnv = builtins.getEnv "MCB_NIXOS_FLAKE_TARGET";
+  hostEnv = builtins.getEnv "NIXD_HOST";
+  hostFile =
+    if builtins.pathExists /etc/hostname then
+      builtins.replaceStrings ["\n"] [""] (builtins.readFile /etc/hostname)
+    else
+      "";
+  cfgs = flake.nixosConfigurations;
+  explicitHost =
+    if targetEnv != "" then
+      targetEnv
+    else
+      hostEnv;
+  selectedHost =
+    if explicitHost != "" then
+      if builtins.hasAttr explicitHost cfgs then
+        explicitHost
+      else
+        throw "NixOS target not found in flake: " + explicitHost
+    else if hostFile != "" && builtins.hasAttr hostFile cfgs then
+      hostFile
+    else if builtins.hasAttr "nixos" cfgs then
+      "nixos"
+    else
+      let
+        cfgNames = builtins.attrNames cfgs;
+      in
+      if builtins.length cfgNames == 1 then
+        builtins.head cfgNames
+      else
+        throw "Cannot select a unique NixOS target; set MCB_NIXOS_FLAKE_TARGET";
+in
+cfgs.${selectedHost}.options
+'''

@@ -1,0 +1,529 @@
+// 快捷键配置
+// 由 config.kdl 通过 include "binds.kdl" 引入。
+//
+// 设计哲学（与 config.kdl 头部一致）：
+//   1. Mod + 助记字母      = 启动应用或打开桌面功能
+//   2. Shift               = 移动当前对象，或反向循环
+//   3. Alt                 = 列内部单窗口层级
+//   4. Ctrl                = 结构性、全局性、低频操作
+//   5. hjkl                = 高频键盘导航；方向键 = 严格二维布局
+//   6. 离散操作 repeat=false；连续导航、移动、缩放允许按住重复
+//
+// 包含 15 个子组：
+//   应用启动 → 系统控制 → 焦点导航 → 移动 → 首尾跳转 →
+//   列结构 → 尺寸体系 → 全屏最大化 → 浮动层 → 显示器 →
+//   工作区 → 数字工作区 → 截图 → 媒体 → 可选高级
+// ══════════════════════════════════════════════════════════════════
+// ⌨️ 快捷键
+// ══════════════════════════════════════════════════════════════════
+
+binds {
+    // ┌────────────────────────────────────────────────────────────┐
+    // │ 设计语义                                                   │
+    // ├────────────────────────────────────────────────────────────┤
+    // │ Mod                 聚焦、切换、执行                       │
+    // │ Mod+Shift           移动当前对象 / 反向循环                │
+    // │ Mod+Alt             进入列内部的单窗口层级                 │
+    // │ Mod+Ctrl            结构性、全局性、重置类操作             │
+    // │ Mod+Alt+Shift       移动列内部的单个窗口                   │
+    // │ Mod+Ctrl+Shift      移动整个工作区等高层结构               │
+    // └────────────────────────────────────────────────────────────┘
+
+    // ──────────────────────────────────────────────────────────────
+    // 🚀 应用与 Noctalia：Mod + 助记键
+    // ──────────────────────────────────────────────────────────────
+    //
+    // 启动动作全部 repeat=false，避免长按误开多个实例。
+
+    Mod+Return repeat=false hotkey-overlay-title="打开终端" {
+        // 需要展开 $TERMINAL，因此显式通过 sh 执行。
+        spawn "niri-run" "sh" "-c" "${TERMINAL:-kitty}";
+    }
+
+    Mod+Space repeat=false hotkey-overlay-title="Noctalia：应用启动器" {
+        spawn "noctalia" "msg" "panel-toggle" "launcher";
+    }
+
+    Mod+Ctrl+Space repeat=false hotkey-overlay-title="Noctalia：控制中心" {
+        // Ctrl 表示系统级控制面板，与普通应用启动器区分。
+        spawn "noctalia" "msg" "panel-toggle" "control-center";
+    }
+
+    Mod+Ctrl+Comma repeat=false hotkey-overlay-title="Noctalia：设置" {
+        // Ctrl+, 是桌面应用中常见的“设置”语义。
+        spawn "noctalia" "msg" "settings-toggle";
+    }
+
+    Mod+Ctrl+W repeat=false hotkey-overlay-title="Noctalia：Wallpaper Engine" {
+        // Mod+W 已用于列的标签页切换；Ctrl 保留给全局管理面板。
+        spawn "noctalia" "msg" "panel-toggle" "tadomika_ari/w-engine:w-engine-panel";
+    }
+
+    Mod+E repeat=false hotkey-overlay-title="文件管理器" {
+        spawn "niri-run" "nautilus";
+    }
+
+    Mod+B repeat=false hotkey-overlay-title="浏览器" {
+        spawn "niri-run" "google-chrome-stable";
+    }
+
+    Mod+T repeat=false hotkey-overlay-title="Telegram" {
+        spawn "niri-run" "telegram-desktop";
+    }
+
+    Mod+O repeat=false hotkey-overlay-title="OBS Studio" {
+        spawn "niri-run" "obs";
+    }
+
+    Mod+P repeat=false hotkey-overlay-title="音量控制" {
+        spawn "niri-run" "pavucontrol";
+    }
+
+    Mod+Ctrl+K repeat=false hotkey-overlay-title="KeePassXC" {
+        // 保留原键位；Ctrl 用于避免占用高频的 Mod+K 工作区导航。
+        spawn "niri-run" "keepassxc";
+    }
+
+    Mod+S repeat=false hotkey-overlay-title="系统监视器" {
+        spawn "niri-run" "missioncenter";
+    }
+
+    Mod+G repeat=false hotkey-overlay-title="Steam 游戏库" {
+        // spawn 不经过 shell，原来的 "~/.local/..." 可能不会展开。
+        // 改用 spawn-sh 和 $HOME，修复路径型快捷键失效问题。
+        spawn-sh "$HOME/.local/bin/steam-launcher";
+    }
+
+    Mod+N repeat=false hotkey-overlay-title="浮动终端" {
+        // N = new/notes；app-id 由前面的 window-rule 自动识别为浮动窗口。
+        spawn "niri-run" "kitty" "--class" "float-term";
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // 🛡️ 系统控制与逃生键
+    // ──────────────────────────────────────────────────────────────
+
+    Mod+Q repeat=false hotkey-overlay-title="关闭窗口" {
+        close-window;
+    }
+
+    Mod+Shift+Q repeat=false hotkey-overlay-title="退出 niri" {
+        // niri 会显示确认对话框，避免误退出会话。
+        quit;
+    }
+
+    Mod+Shift+Slash repeat=false hotkey-overlay-title="显示快捷键帮助" {
+        show-hotkey-overlay;
+    }
+
+    Mod+Escape repeat=false allow-inhibiting=false hotkey-overlay-title="锁定屏幕" {
+        // allow-inhibiting=false：即使虚拟机或远程桌面请求接管快捷键也始终可用。
+        spawn "niri-run" "lock-screen";
+    }
+
+    Mod+Ctrl+Escape repeat=false allow-inhibiting=false hotkey-overlay-title="恢复/切换 niri 快捷键" {
+        // 远程桌面、游戏或虚拟机错误抑制快捷键时的逃生开关。
+        toggle-keyboard-shortcuts-inhibit;
+    }
+
+    Mod+Shift+P repeat=false hotkey-overlay-title="关闭显示器" {
+        power-off-monitors;
+    }
+
+    Mod+Shift+C repeat=false hotkey-overlay-title="随机壁纸" {
+        spawn "noctalia" "msg" "wallpaper-random";
+    }
+
+    Mod+Shift+W repeat=false hotkey-overlay-title="下一张壁纸" {
+        spawn "noctalia" "msg" "wallpaper-next";
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // 🧭 焦点导航：两套互补模型
+    // ──────────────────────────────────────────────────────────────
+    //
+    // Vim 键：
+    //   h/l       = 滚动平铺带中的左右列
+    //   j/k       = niri 的上下工作区
+    //   Alt+j/k   = 当前列内部的上下窗口
+    //
+    // 方向键：
+    //   Left/Right = 左右列
+    //   Up/Down    = 列内上下窗口
+    //
+    // 这样既保留现有高频工作区习惯，也提供严格的二维窗口导航。
+
+    Mod+H { focus-column-left; }
+    Mod+L { focus-column-right; }
+
+    Mod+J { focus-workspace-down; }
+    Mod+K { focus-workspace-up; }
+
+    Mod+Alt+J { focus-window-down; }
+    Mod+Alt+K { focus-window-up; }
+
+    Mod+Left { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Down { focus-window-down; }
+    Mod+Up { focus-window-up; }
+
+    // 快速跳到当前列的顶部/底部窗口，对 tabbed 列尤其有用。
+    Mod+Alt+Home { focus-window-top; }
+    Mod+Alt+End { focus-window-bottom; }
+
+    // ──────────────────────────────────────────────────────────────
+    // 🚚 移动对象：Shift = 移动
+    // ──────────────────────────────────────────────────────────────
+    //
+    // 与上面的焦点动作严格成对：
+    //   Mod+h/l             聚焦列
+    //   Mod+Shift+h/l       移动列
+    //
+    //   Mod+j/k             聚焦工作区
+    //   Mod+Shift+j/k       把当前列移动到相邻工作区
+    //
+    //   Mod+Alt+j/k         聚焦列内窗口
+    //   Mod+Alt+Shift+j/k   移动列内窗口
+
+    Mod+Shift+H { move-column-left; }
+    Mod+Shift+L { move-column-right; }
+
+    Mod+Shift+J { move-column-to-workspace-down; }
+    Mod+Shift+K { move-column-to-workspace-up; }
+
+    Mod+Alt+Shift+J { move-window-down; }
+    Mod+Alt+Shift+K { move-window-up; }
+
+    // 方向键始终对应屏幕中的真实几何方向。
+    Mod+Shift+Left { move-column-left; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+Down { move-window-down; }
+    Mod+Shift+Up { move-window-up; }
+
+    // ──────────────────────────────────────────────────────────────
+    // ⏭️ 当前工作区内的首尾跳转
+    // ──────────────────────────────────────────────────────────────
+
+    Mod+Home { focus-column-first; }
+    Mod+End { focus-column-last; }
+
+    Mod+Shift+Home { move-column-to-first; }
+    Mod+Shift+End { move-column-to-last; }
+
+    // ──────────────────────────────────────────────────────────────
+    // 🧱 列结构：合并、拆分与标签页
+    // ──────────────────────────────────────────────────────────────
+
+    Mod+BracketLeft repeat=false {
+        // 单窗口列：合并进左列；多窗口列：从当前列向左拆出。
+        consume-or-expel-window-left;
+    }
+
+    Mod+BracketRight repeat=false {
+        // 单窗口列：合并进右列；多窗口列：从当前列向右拆出。
+        consume-or-expel-window-right;
+    }
+
+    Mod+W repeat=false hotkey-overlay-title="切换列的堆叠/标签页显示" {
+        // 不改变窗口所属列，只改变同列窗口的展示方式。
+        toggle-column-tabbed-display;
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // 📐 尺寸体系：列宽与列内窗口高度
+    // ──────────────────────────────────────────────────────────────
+    //
+    // R 家族：
+    //   Mod+R                 列宽预设正向循环
+    //   Mod+Shift+R           列宽预设反向循环
+    //   Mod+Alt+R             列内窗口高度正向循环
+    //   Mod+Alt+Shift+R       列内窗口高度反向循环
+    //   Mod+Ctrl+R            恢复自动高度分配
+    //
+    // Alt 在这里继续表示“列内部的单个窗口”。
+
+    Mod+R {
+        switch-preset-column-width;
+    }
+
+    Mod+Shift+R {
+        switch-preset-column-width-back;
+    }
+
+    Mod+Alt+R {
+        switch-preset-window-height;
+    }
+
+    Mod+Alt+Shift+R {
+        switch-preset-window-height-back;
+    }
+
+    Mod+Ctrl+R repeat=false {
+        reset-window-height;
+    }
+
+    // 精细调整列宽；允许按住连续缩放。
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+
+    // Alt 表示调整列内部当前窗口的高度。
+    Mod+Alt+Minus { set-window-height "-10%"; }
+    Mod+Alt+Equal { set-window-height "+10%"; }
+
+    // ──────────────────────────────────────────────────────────────
+    // 🖥️ 填充、最大化、全屏与居中
+    // ──────────────────────────────────────────────────────────────
+
+    Mod+F repeat=false hotkey-overlay-title="当前窗口全屏" {
+        // 真全屏：覆盖面板并进入应用全屏状态。
+        fullscreen-window;
+    }
+
+    Mod+Ctrl+F repeat=false hotkey-overlay-title="当前列最大化" {
+        // 最大化列，但仍属于 niri 平铺布局，便于再次切回原宽度。
+        maximize-column;
+    }
+
+    Mod+Alt+F repeat=false hotkey-overlay-title="填满可见列剩余空间" {
+        // 保留其他完整可见列，让当前列填充余下空间。
+        // 这是实现 1/3 + 2/3、辅助窗口 + 主窗口布局的核心动作。
+        expand-column-to-available-width;
+    }
+
+    Mod+M repeat=false hotkey-overlay-title="窗口最大化到屏幕边缘" {
+        // 类似传统桌面双击标题栏的最大化，不保留外侧 gap。
+        maximize-window-to-edges;
+    }
+
+    Mod+C repeat=false {
+        center-column;
+    }
+
+    Mod+Ctrl+C repeat=false {
+        // 将当前屏幕中所有完整可见列作为整体居中。
+        center-visible-columns;
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // 🪶 浮动层
+    // ──────────────────────────────────────────────────────────────
+    //
+    // 从旧的 Mod+Shift+F 迁移到 V 家族，避免 F 同时表示 fullscreen 与 floating。
+    // 两个 V 动作构成一组：一个移动窗口，一个切换焦点所在层。
+
+    Mod+V repeat=false hotkey-overlay-title="切换窗口浮动/平铺" {
+        toggle-window-floating;
+    }
+
+    Mod+Shift+V repeat=false hotkey-overlay-title="切换浮动层/平铺层焦点" {
+        switch-focus-between-floating-and-tiling;
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // 🖥️ 显示器层级
+    // ──────────────────────────────────────────────────────────────
+    //
+    // , / . 表示上一个 / 下一个显示器。
+    //
+    //   Mod+,/.                 聚焦显示器
+    //   Mod+Shift+,/.           移动当前列
+    //   Mod+Alt+Shift+,/.       只移动当前单个窗口
+    //   Mod+Ctrl+Shift+,/.      移动整个当前工作区
+    //
+    // 这套层级同时覆盖 niri 官方提供的列、窗口、工作区三个移动粒度。
+
+    Mod+Comma { focus-monitor-previous; }
+    Mod+Period { focus-monitor-next; }
+
+    Mod+Shift+Comma repeat=false { move-column-to-monitor-previous; }
+    Mod+Shift+Period repeat=false { move-column-to-monitor-next; }
+
+    Mod+Alt+Shift+Comma repeat=false { move-window-to-monitor-previous; }
+    Mod+Alt+Shift+Period repeat=false { move-window-to-monitor-next; }
+
+    Mod+Ctrl+Shift+Comma repeat=false { move-workspace-to-monitor-previous; }
+    Mod+Ctrl+Shift+Period repeat=false { move-workspace-to-monitor-next; }
+
+    // ──────────────────────────────────────────────────────────────
+    // 🗂️ 工作区：聚焦、迁移单元、重排结构
+    // ──────────────────────────────────────────────────────────────
+    //
+    // j/k 是高频工作区轴；Page Up/Down 是完整功能轴。
+    //
+    //   Mod+j/k                  聚焦相邻工作区
+    //   Mod+Shift+j/k            移动当前列
+    //
+    // Page 键承担完整的低频结构操作：
+    // 移动单个窗口，以及重排整个工作区。
+
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+Page_Up { focus-workspace-up; }
+
+    Mod+Shift+Page_Down { move-column-to-workspace-down; }
+    Mod+Shift+Page_Up { move-column-to-workspace-up; }
+
+    Mod+Alt+Shift+Page_Down { move-window-to-workspace-down; }
+    Mod+Alt+Shift+Page_Up { move-window-to-workspace-up; }
+
+    Mod+Ctrl+Page_Down { move-workspace-down; }
+    Mod+Ctrl+Page_Up { move-workspace-up; }
+
+    // 工作区重排只保留在 Ctrl+Page Up/Down：
+    // 这是低频结构操作，同时避免覆盖原有 Mod+Ctrl+K = KeePassXC。
+
+    Mod+Grave repeat=false hotkey-overlay-title="返回前一个工作区" {
+        focus-workspace-previous;
+    }
+
+    Mod+Tab repeat=false hotkey-overlay-title="打开/关闭 Overview" {
+        // 保留原有任务视图语义；最近窗口切换改用 Alt+Tab。
+        toggle-overview;
+    }
+
+    // 鼠标滚轮：上下切工作区；Shift 后携带当前列移动。
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
+    Mod+Shift+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Shift+WheelScrollUp cooldown-ms=150 { move-column-to-workspace-up; }
+
+    // 支持带横向滚轮的鼠标和触控板离散横滚事件。
+    Mod+WheelScrollRight { focus-column-right; }
+    Mod+WheelScrollLeft { focus-column-left; }
+    Mod+Shift+WheelScrollRight { move-column-right; }
+    Mod+Shift+WheelScrollLeft { move-column-left; }
+
+    // ──────────────────────────────────────────────────────────────
+    // 🔢 数字工作区
+    // ──────────────────────────────────────────────────────────────
+    //
+    // niri 是动态工作区：
+    // 数字表示当前显示器上“此刻处于该位置”的工作区，而不是永久编号。
+    //
+    //   Mod+数字              聚焦
+    //   Mod+Shift+数字        移动当前列
+    //   Mod+Alt+Shift+数字    只移动当前窗口
+    //
+    // 单窗口粒度是低频操作，但保留后能完整覆盖 niri 的对象层级。
+
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+
+    Mod+Alt+Shift+1 { move-window-to-workspace 1; }
+    Mod+Alt+Shift+2 { move-window-to-workspace 2; }
+    Mod+Alt+Shift+3 { move-window-to-workspace 3; }
+    Mod+Alt+Shift+4 { move-window-to-workspace 4; }
+    Mod+Alt+Shift+5 { move-window-to-workspace 5; }
+    Mod+Alt+Shift+6 { move-window-to-workspace 6; }
+    Mod+Alt+Shift+7 { move-window-to-workspace 7; }
+    Mod+Alt+Shift+8 { move-window-to-workspace 8; }
+    Mod+Alt+Shift+9 { move-window-to-workspace 9; }
+
+    // ──────────────────────────────────────────────────────────────
+    // 📸 截图
+    // ──────────────────────────────────────────────────────────────
+    //
+    // 外部 grim/slurp/satty 负责“截取后立即编辑”；
+    // niri 原生截图动作负责交互选择和精确窗口截图。
+    // 使用这些快捷键前需确保 grim、slurp、satty、wl-clipboard 已安装。
+
+    Print repeat=false hotkey-overlay-title="截图：全部输出并编辑" {
+        spawn "niri-run" "sh" "-c" "grim - | satty --filename -";
+    }
+
+    Shift+Print repeat=false hotkey-overlay-title="截图：选择区域并编辑" {
+        spawn "niri-run" "sh" "-c" "grim -g \"$(slurp)\" - | satty --filename -";
+    }
+
+    Ctrl+Print repeat=false hotkey-overlay-title="截图：选择区域到剪贴板" {
+        spawn "niri-run" "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy --type image/png";
+    }
+
+    Alt+Print repeat=false hotkey-overlay-title="niri 交互式截图" {
+        screenshot;
+    }
+
+    Mod+Print repeat=false hotkey-overlay-title="截图：当前窗口" {
+        screenshot-window;
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // 🔊 媒体、音量与亮度
+    // ──────────────────────────────────────────────────────────────
+    //
+    // 音量、麦克风和亮度交给 Noctalia IPC：
+    // 除了修改系统状态，还能同步 Noctalia UI 并显示统一 OSD。
+    //
+    // 音量/亮度允许按住重复；切换类动作 repeat=false。
+
+    XF86AudioRaiseVolume allow-when-locked=true {
+        spawn "noctalia" "msg" "volume-up";
+    }
+
+    XF86AudioLowerVolume allow-when-locked=true {
+        spawn "noctalia" "msg" "volume-down";
+    }
+
+    XF86AudioMute repeat=false allow-when-locked=true {
+        spawn "noctalia" "msg" "volume-mute";
+    }
+
+    XF86AudioMicMute repeat=false allow-when-locked=true {
+        spawn "noctalia" "msg" "mic-mute";
+    }
+
+    XF86MonBrightnessUp allow-when-locked=true {
+        spawn "noctalia" "msg" "brightness-up";
+    }
+
+    XF86MonBrightnessDown allow-when-locked=true {
+        spawn "noctalia" "msg" "brightness-down";
+    }
+
+    // MPRIS 媒体控制继续使用 playerctl，兼容浏览器、音乐播放器和视频播放器。
+    XF86AudioPlay repeat=false allow-when-locked=true {
+        spawn "niri-run" "playerctl" "play-pause";
+    }
+
+    XF86AudioStop repeat=false allow-when-locked=true {
+        spawn "niri-run" "playerctl" "stop";
+    }
+
+    XF86AudioPrev repeat=false allow-when-locked=true {
+        spawn "niri-run" "playerctl" "previous";
+    }
+
+    XF86AudioNext repeat=false allow-when-locked=true {
+        spawn "niri-run" "playerctl" "next";
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // 🧪 可选高级功能（默认不占用键位）
+    // ──────────────────────────────────────────────────────────────
+    //
+    // 下列动作只在明确需要时再取消注释，避免为了“功能全覆盖”制造难记组合。
+    //
+    // 动态投屏目标：
+    // Mod+Ctrl+Shift+S { set-dynamic-cast-window; }
+    // Mod+Ctrl+Alt+S   { set-dynamic-cast-monitor; }
+    // Mod+Ctrl+Alt+Shift+S { clear-dynamic-cast-target; }
+    //
+    // 临时查看窗口规则透明度：
+    // Mod+Ctrl+O { toggle-window-rule-opacity; }
+}
