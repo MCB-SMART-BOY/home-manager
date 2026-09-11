@@ -1,10 +1,12 @@
 { pkgs, ... }:
 
 {
-  imports = [ ../desktop.nix ];
+  imports = [
+    ../desktop.nix
+    ../config/kitty
+  ];
 
   home.packages = with pkgs; [
-    kitty
     telegram-desktop
     nautilus
     file-roller

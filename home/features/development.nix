@@ -1,6 +1,8 @@
 { pkgs, ... }:
 
 {
+  imports = [ ../config/clangd ];
+
   home.packages = with pkgs; [
     rustup
     opam
@@ -14,7 +16,6 @@
     openssl
     gcc
     binutils
-    clang-tools
     bear
     mold
     sccache
