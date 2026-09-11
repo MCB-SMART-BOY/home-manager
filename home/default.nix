@@ -4,8 +4,6 @@
   imports = [
     ./base.nix
     ./packages.nix
-    ./git.nix
-    ./files.nix
     ./scripts
     ./config/git
     ./config/shell
