@@ -5,6 +5,17 @@
   ...
 }:
 let
+  mcbNixos = pkgs.writeShellApplication {
+    name = "mcb-nixos";
+    runtimeInputs = with pkgs; [
+      coreutils
+      jq
+      nix
+      nixos-rebuild
+    ];
+    text = builtins.readFile ./mcb-nixos;
+  };
+
   flakeSourceExpression = ''
     let
       configuredSource = builtins.getEnv "MCB_NIXOS_FLAKE_DIR";
@@ -19,11 +30,17 @@ let
           throw "MCB_NIXOS_FLAKE_DIR must be an absolute local directory path"
         else
           configuredSource;
+      sourceDir = /. + sourcePath;
+      flakeFile = sourceDir + "/flake.nix";
       source =
-        if builtins.pathExists (/. + sourcePath) then
-          "path:" + sourcePath
+        if !builtins.pathExists sourceDir then
+          throw "MCB_NIXOS_FLAKE_DIR does not exist: " + sourcePath
+        else if !builtins.pathExists flakeFile then
+          throw "MCB_NIXOS_FLAKE_DIR must contain a regular flake.nix: " + sourcePath
+        else if builtins.readFileType flakeFile != "regular" then
+          throw "MCB_NIXOS_FLAKE_DIR must contain a regular flake.nix: " + sourcePath
         else
-          throw "MCB_NIXOS_FLAKE_DIR does not exist: " + sourcePath;
+          "path:" + sourcePath;
     in
   '';
 
@@ -91,6 +108,8 @@ in
   ];
 
   config = {
+    home.packages = [ mcbNixos ];
+
     assertions = [
       {
         assertion = pkgs.stdenv.hostPlatform.isLinux;

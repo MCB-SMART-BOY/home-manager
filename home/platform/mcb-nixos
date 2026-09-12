@@ -1,0 +1,210 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+error() {
+  printf 'mcb-nixos: %s\n' "$*" >&2
+  return 1
+}
+
+source_dir() {
+  local configured_source=${MCB_NIXOS_FLAKE_DIR:-/etc/nixos}
+  local canonical_source
+
+  if [[ "$configured_source" != /* ]]; then
+    error "invalid source '$configured_source': expected an absolute local directory path"
+    return 1
+  fi
+  if [[ "$configured_source" == *:* || "$configured_source" == *\?* || "$configured_source" == *#* ]]; then
+    error "invalid source '$configured_source': URI schemes, queries, and fragments are not supported"
+    return 1
+  fi
+  if [[ ! -d "$configured_source" ]]; then
+    error "invalid source '$configured_source': directory does not exist"
+    return 1
+  fi
+  if [[ ! -f "$configured_source/flake.nix" || -L "$configured_source/flake.nix" ]]; then
+    error "invalid source '$configured_source': regular flake.nix is required"
+    return 1
+  fi
+
+  if ! canonical_source=$(realpath --canonicalize-existing -- "$configured_source"); then
+    error "invalid source '$configured_source': could not canonicalize directory"
+    return 1
+  fi
+  if [[ ! -d "$canonical_source" || ! -f "$canonical_source/flake.nix" || -L "$canonical_source/flake.nix" ]]; then
+    error "invalid source '$configured_source': regular flake.nix is required"
+    return 1
+  fi
+
+  printf '%s\n' "$canonical_source"
+}
+
+source_ref() {
+  local directory
+  directory=$(source_dir) || return 1
+  printf 'path:%s\n' "$directory"
+}
+
+nixos_configurations() {
+  local source
+  local configurations
+
+  source=$(source_ref) || return 1
+  if ! configurations=$(nix eval --json --no-write-lock-file "$source#nixosConfigurations" --apply builtins.attrNames); then
+    error "invalid source '$source': could not evaluate nixosConfigurations"
+    return 1
+  fi
+  if ! jq -e 'type == "array" and all(.[]; type == "string")' >/dev/null <<<"$configurations"; then
+    error "invalid source '$source': nixosConfigurations output is not a list of names"
+    return 1
+  fi
+
+  printf '%s\n' "$configurations"
+}
+
+target_exists() {
+  local configurations=$1
+  local target=$2
+
+  jq -e --arg target "$target" 'index($target) != null' >/dev/null <<<"$configurations"
+}
+
+select_target() {
+  local source
+  local source_dir_path
+  local configurations
+  local explicit_target
+  local host_target
+  local hostname_target
+  local configuration_count
+  local only_target
+
+  source=$(source_ref) || return 1
+  source_dir_path=${source#path:}
+  configurations=$(nixos_configurations) || return 1
+
+  explicit_target=${MCB_NIXOS_FLAKE_TARGET:-}
+  if [[ -n "$explicit_target" ]]; then
+    if ! target_exists "$configurations" "$explicit_target"; then
+      error "invalid target '$explicit_target' for source '$source_dir_path'"
+      return 1
+    fi
+    printf '%s\n' "$explicit_target"
+    return 0
+  fi
+
+  host_target=${NIXD_HOST:-}
+  if [[ -n "$host_target" ]]; then
+    if ! target_exists "$configurations" "$host_target"; then
+      error "invalid target '$host_target' for source '$source_dir_path'"
+      return 1
+    fi
+    printf '%s\n' "$host_target"
+    return 0
+  fi
+
+  hostname_target=''
+  if [[ -r /etc/hostname ]]; then
+    hostname_target=$(< /etc/hostname)
+  fi
+  if [[ -n "$hostname_target" ]] && target_exists "$configurations" "$hostname_target"; then
+    printf '%s\n' "$hostname_target"
+    return 0
+  fi
+
+  if target_exists "$configurations" nixos; then
+    printf '%s\n' nixos
+    return 0
+  fi
+
+  configuration_count=$(jq 'length' <<<"$configurations")
+  if [[ "$configuration_count" == 1 ]]; then
+    only_target=$(jq -r '.[0]' <<<"$configurations")
+    printf '%s\n' "$only_target"
+    return 0
+  fi
+
+  error "cannot determine a unique NixOS target for source '$source_dir_path'; set MCB_NIXOS_FLAKE_TARGET"
+  return 1
+}
+
+workflow_ref() {
+  local source
+  local target
+
+  source=$(source_ref) || return 1
+  target=$(select_target) || return 1
+  printf '%s#%s\n' "$source" "$target"
+}
+
+run_rebuild() {
+  local operation=$1
+  shift
+  local reference
+  reference=$(workflow_ref) || return 1
+  sudo nixos-rebuild "$operation" --flake "$reference" --show-trace "$@"
+}
+
+run_update() {
+  shift
+  local source
+  source=$(source_ref) || return 1
+  sudo nix flake update --flake "$source" "$@"
+}
+
+run_check() {
+  if [[ $# -gt 2 ]]; then
+    usage
+  fi
+
+  local flake=${2:-}
+  if [[ -z "$flake" ]]; then
+    local source
+    local target
+    source=$(source_ref) || return 1
+    target=$(select_target) || return 1
+    flake="$source#nixosConfigurations.$target.config.system.build.toplevel"
+  fi
+  nix build "$flake" --dry-run
+}
+
+usage() {
+  printf 'mcb-nixos: usage: mcb-nixos {source|target|ref|switch|test|boot|update|update-switch|check} [args...]\n' >&2
+  exit 1
+}
+
+if [[ $# -eq 0 ]]; then
+  usage
+fi
+
+command_name=$1
+case "$command_name" in
+  source)
+    [[ $# -eq 1 ]] || usage
+    source_ref
+    ;;
+  target)
+    [[ $# -eq 1 ]] || usage
+    select_target
+    ;;
+  ref)
+    [[ $# -eq 1 ]] || usage
+    workflow_ref
+    ;;
+  switch|test|boot)
+    run_rebuild "$command_name" "${@:2}"
+    ;;
+  update)
+    run_update "$@"
+    ;;
+  update-switch)
+    run_update "$1"
+    run_rebuild switch "${@:2}"
+    ;;
+  check)
+    run_check "$@"
+    ;;
+  *)
+    usage
+    ;;
+esac
