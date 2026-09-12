@@ -50,7 +50,7 @@ target_output="$(env -u MCB_NIXOS_FLAKE_TARGET -u NIXD_HOST MCB_NIXOS_FLAKE_DIR=
 ref_output="$(MCB_NIXOS_FLAKE_DIR="$fixture" MCB_NIXOS_FLAKE_TARGET=alpha bash "$repo/home/platform/mcb-nixos" ref)"
 [[ "$ref_output" == "path:$fixture#alpha" ]] || fail "explicit ref output was '$ref_output'"
 
-host_target_output="$(MCB_NIXOS_FLAKE_DIR="$fixture" NIXD_HOST=alpha bash "$repo/home/platform/mcb-nixos" target)"
+host_target_output="$(env -u MCB_NIXOS_FLAKE_TARGET MCB_NIXOS_FLAKE_DIR="$fixture" NIXD_HOST=alpha bash "$repo/home/platform/mcb-nixos" target)"
 [[ "$host_target_output" == "alpha" ]] || fail "NIXD_HOST target output was '$host_target_output'"
 
 precedence_target_output="$(MCB_NIXOS_FLAKE_DIR="$fixture" MCB_NIXOS_FLAKE_TARGET=alpha NIXD_HOST=nixos bash "$repo/home/platform/mcb-nixos" target)"
