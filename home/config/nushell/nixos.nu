@@ -1,4 +1,4 @@
-# NixOS-specific helpers. Loaded only by home.nixos.
+# NixOS-specific helpers. Loaded by the explicit home.platform.nixos entry point.
 
 def please [...args: string] {
     ^/run/wrappers/bin/sudo ...$args

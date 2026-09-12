@@ -1,6 +1,12 @@
 { pkgs, ... }:
 
 {
+  imports = [
+    ../config/helix
+    ../config/clangd
+    ../config/toolchain
+  ];
+
   home.packages = with pkgs; [
     rustup
     opam
@@ -14,7 +20,6 @@
     openssl
     gcc
     binutils
-    clang-tools
     bear
     mold
     sccache

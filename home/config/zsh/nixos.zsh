@@ -1,4 +1,4 @@
-# NixOS-specific helpers. Loaded only by home.nixos.
+# NixOS-specific helpers. Loaded by the explicit home.platform.nixos entry point.
 
 # --- NixOS 管理 ---
 _mcb_flake_dir() {

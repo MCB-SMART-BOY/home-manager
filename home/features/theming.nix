@@ -17,9 +17,6 @@
       size = 24;
     };
     gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
-    gtk2.extraConfig = ''
-      gtk-im-module="fcitx"
-    '';
   };
 
   xdg.dataFile = {

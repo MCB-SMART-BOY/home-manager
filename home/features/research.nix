@@ -1,9 +1,13 @@
 { pkgs, ... }:
 
 {
+  imports = [
+    ../config/sioyek
+    ../config/zotero
+    ../config/obsidian
+  ];
+
   home.packages = with pkgs; [
-    sioyek
-    zotero
     pandoc
     typst
     texstudio
@@ -11,7 +15,6 @@
     biber
     qpdf
     poppler-utils
-    obsidian
     libreoffice-still
     xournalpp
     goldendict-ng
@@ -41,55 +44,6 @@
       "x-scheme-handler/zotero" = [ "zotero.desktop" ];
       "text/x-bibtex" = [ "zotero.desktop" ];
       "application/x-research-info-systems" = [ "zotero.desktop" ];
-    };
-  };
-
-  xdg.desktopEntries = {
-    sioyek = {
-      name = "Sioyek";
-      genericName = "PDF Viewer";
-      comment = "PDF viewer optimized for research papers";
-      exec = "sioyek %U";
-      icon = "sioyek";
-      categories = [
-        "Office"
-        "Viewer"
-      ];
-      mimeType = [
-        "application/pdf"
-        "application/postscript"
-      ];
-      startupNotify = true;
-      terminal = false;
-    };
-    zotero = {
-      name = "Zotero";
-      genericName = "Reference Manager";
-      comment = "Collect, organize and cite research";
-      exec = "zotero %U";
-      icon = "zotero";
-      categories = [
-        "Office"
-        "Education"
-        "Science"
-      ];
-      mimeType = [
-        "x-scheme-handler/zotero"
-        "text/x-bibtex"
-        "application/x-research-info-systems"
-      ];
-      startupNotify = true;
-      terminal = false;
-    };
-    obsidian = {
-      name = "Obsidian";
-      comment = "Knowledge base";
-      exec = "obsidian %U";
-      icon = "obsidian";
-      categories = [ "Office" ];
-      mimeType = [ "x-scheme-handler/obsidian" ];
-      startupNotify = true;
-      terminal = false;
     };
   };
 }

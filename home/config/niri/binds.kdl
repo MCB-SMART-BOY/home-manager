@@ -68,7 +68,7 @@ binds {
     }
 
     Mod+T repeat=false hotkey-overlay-title="Telegram" {
-        spawn "niri-run" "telegram-desktop";
+        spawn "niri-run" "Telegram";
     }
 
     Mod+O repeat=false hotkey-overlay-title="OBS Studio" {

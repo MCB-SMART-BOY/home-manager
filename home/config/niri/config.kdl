@@ -1,6 +1,6 @@
 // Niri 配置文件（Wayland 滚动平铺窗口管理器）
 // ~/.config/niri/config.kdl
-// 由 Home Manager 的 home/features/niri.nix 管理
+// 由 Home Manager 管理：home/config/niri/default.nix
 //
 // 适配目标：niri 26.04
 //
@@ -14,16 +14,10 @@
 //   6. hjkl                = 高频键盘导航；方向键提供严格的二维布局导航。
 //   7. 离散操作 repeat=false；连续导航、移动、缩放允许按住重复。
 //
-//
-// 架构：本文件是 niri 配置入口，通过 include 拆分为 4 个文件：
-//   outputs.kdl — 机器特定显示器配置
-//   rules.kdl   — 窗口规则
-//   binds.kdl   — 快捷键（含设计语义表）
-// niri 26.04 include 是 merge 语义：多实例节点按位置插入，冲突键后定义者覆盖。
-// Home Manager 部署声明见 home/features/niri.nix。
-
-// 机器特定显示器配置 → outputs.kdl
-include "outputs.kdl"
+// 主机特定输出文件仅在会话选择 hostOutputs 时部署；缺失时自动探测。
+// Noctalia 的 W Engine 插件由 config/noctalia 提供 linux-wallpaperengine。
+// $TERMINAL 可由主机覆盖，默认值 kitty 由 niri feature 提供。
+include optional=true "outputs.kdl"
 
 // ══════════════════════════════════════════════════════════════════
 // ⌨️ 输入配置
@@ -59,6 +53,7 @@ input {
     // 只聚焦已经完整显示在屏幕上的窗口，避免鼠标划过时自动横向滚动画面。
     focus-follows-mouse max-scroll-amount="0%"
 }
+
 
 // ══════════════════════════════════════════════════════════════════
 // 🎨 布局配置

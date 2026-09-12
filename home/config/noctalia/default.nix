@@ -1,6 +1,5 @@
 # Noctalia v5 user configuration.
-# The caller or operating system supplies Noctalia; this module only generates
-# and validates its user-level TOML configuration.
+# This module owns Noctalia's generated and validated user-level TOML.
 
 { pkgs, ... }:
 
@@ -95,5 +94,14 @@ let
       '';
 in
 {
+  # Noctalia v5 provides the TOML configuration and `noctalia msg` IPC command.
+  home.packages = [
+    pkgs.noctalia
+    pkgs.linux-wallpaperengine
+  ];
+  home.file."Pictures/Wallpapers" = {
+    source = ../../assets/wallpapers;
+    recursive = true;
+  };
   xdg.configFile."noctalia/config.toml".source = validatedConfig;
 }
