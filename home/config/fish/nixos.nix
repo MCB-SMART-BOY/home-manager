@@ -3,10 +3,6 @@
 
 let
   nixosFishFunctions = [
-    "_mcb_flake_dir"
-    "_mcb_flake_ref"
-    "_mcb_flake_source"
-    "_mcb_flake_target"
     "nfu"
     "nrb"
     "nrc"
