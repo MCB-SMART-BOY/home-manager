@@ -12,15 +12,19 @@
     ../config/noctalia
     ../config/fcitx5
     ../config/kitty
+    ../config/chrome
+    ../config/waybar
   ];
+
+  programs = {
+    keepassxc.enable = true;
+    obs-studio.enable = true;
+  };
 
   home.packages = with pkgs; [
     nautilus
-    google-chrome
     telegram-desktop
-    obs-studio
     pavucontrol
-    keepassxc
     mission-center
     playerctl
     grim
@@ -28,7 +32,6 @@
     wl-clipboard
     satty
 
-    waybar
     walker
     anyrun
     swaynotificationcenter

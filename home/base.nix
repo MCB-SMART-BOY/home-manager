@@ -7,8 +7,6 @@ in
   programs.home-manager.enable = true;
 
   home.sessionVariables = {
-    EDITOR = "hx";
-    VISUAL = "hx";
     MANPAGER = "less -R";
 
     XDG_CONFIG_HOME = "${homeDir}/.config";

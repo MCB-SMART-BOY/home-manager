@@ -1,9 +1,10 @@
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    zellij
-    herdr
-    jujutsu
-  ];
+  programs = {
+    zellij.enable = true;
+    jujutsu.enable = true;
+  };
+
+  home.packages = with pkgs; [ herdr ];
 }

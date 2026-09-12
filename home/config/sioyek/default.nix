@@ -1,7 +1,10 @@
 { pkgs, ... }:
 
 {
-  home.packages = [ pkgs.sioyek ];
+  programs.sioyek = {
+    enable = true;
+    package = pkgs.sioyek;
+  };
 
   xdg.desktopEntries.sioyek = {
     name = "Sioyek";

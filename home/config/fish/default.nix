@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, ... }:
 
 let
   portableFishFunctions = [
@@ -15,10 +15,41 @@ let
     "upgrade-toolchain"
   ];
 
-  fishFunctionFiles = builtins.listToAttrs (
+  functionArguments = {
+    backup = [ "filename" ];
+    extract = [ "archive" ];
+  };
+
+  findFunctionLine =
+    lines:
+    let
+      go =
+        index:
+        if index >= builtins.length lines then
+          throw "Fish function definition is missing its function header."
+        else if lib.hasPrefix "function " (builtins.elemAt lines index) then
+          index
+        else
+          go (index + 1);
+    in
+    go 0;
+
+  functionBody =
+    name:
+    let
+      lines = lib.splitString "\n" (builtins.readFile (./functions + "/${name}.fish"));
+      functionLine = findFunctionLine lines;
+      bodyLines = lib.sublist (functionLine + 1) (builtins.length lines - functionLine - 3) lines;
+    in
+    lib.concatStringsSep "\n" bodyLines;
+
+  fishFunctions = builtins.listToAttrs (
     map (name: {
-      name = "fish/functions/${name}.fish";
-      value.source = ./functions + "/${name}.fish";
+      inherit name;
+      value = {
+        body = functionBody name;
+        argumentNames = lib.attrByPath [ name ] null functionArguments;
+      };
     }) portableFishFunctions
   );
 
@@ -33,6 +64,7 @@ in
   programs.fish = {
     enable = true;
     preferAbbrs = true;
+    functions = fishFunctions;
     interactiveShellInit = builtins.readFile ./config.fish;
     shellAbbrs = {
       "..." = "cd ../..";
@@ -59,5 +91,5 @@ in
     };
   };
 
-  xdg.configFile = fishFunctionFiles // fishConfDFiles;
+  xdg.configFile = fishConfDFiles;
 }

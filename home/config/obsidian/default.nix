@@ -1,7 +1,10 @@
 { pkgs, ... }:
 
 {
-  home.packages = [ pkgs.obsidian ];
+  programs.obsidian = {
+    enable = true;
+    package = pkgs.obsidian;
+  };
 
   xdg.desktopEntries.obsidian = {
     name = "Obsidian";

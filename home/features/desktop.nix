@@ -6,22 +6,25 @@
     ../config/kitty
   ];
 
+  programs = {
+    aria2.enable = true;
+    imv.enable = true;
+    keepassxc.enable = true;
+    zathura.enable = true;
+  };
+
   home.packages = with pkgs; [
     telegram-desktop
     nautilus
     file-roller
-    imv
-    zathura
     papers
     kdePackages.kdenlive
     baobab
     mission-center
     localsend
     deja-dup
-    keepassxc
     simple-scan
     qbittorrent
-    aria2
     gparted
     pavucontrol
   ];

@@ -7,15 +7,21 @@
     ../config/obsidian
   ];
 
+  programs = {
+    libreoffice = {
+      enable = true;
+      package = pkgs.libreoffice-still;
+    };
+    pandoc.enable = true;
+  };
+
   home.packages = with pkgs; [
-    pandoc
     typst
     texstudio
     (texlive.withPackages (ps: [ ps.scheme-medium ]))
     biber
     qpdf
     poppler-utils
-    libreoffice-still
     xournalpp
     goldendict-ng
   ];

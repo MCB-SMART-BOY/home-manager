@@ -1,10 +1,38 @@
 { ... }:
 
 {
-  programs.btop.enable = true;
-
-  xdg.configFile = {
-    "btop/btop.conf".source = ./btop.conf;
-    "btop/themes/noctalia.theme".source = ./themes/noctalia.theme;
+  programs.btop = {
+    enable = true;
+    settings = {
+      color_theme = "noctalia";
+      theme_background = false;
+      truecolor = true;
+      vim_keys = false;
+      rounded_corners = true;
+      terminal_sync = true;
+      graph_symbol = "braille";
+      graph_symbol_cpu = "default";
+      graph_symbol_mem = "default";
+      graph_symbol_net = "default";
+      graph_symbol_proc = "default";
+      shown_boxes = "cpu mem net proc gpu0";
+      update_ms = 2000;
+      proc_sorting = "cpu lazy";
+      proc_reversed = false;
+      proc_tree = false;
+      proc_colors = true;
+      proc_gradient = true;
+      proc_per_core = false;
+      proc_mem_bytes = true;
+      proc_cpu_graphs = true;
+      show_uptime = true;
+      check_temp = true;
+      show_cpu_freq = true;
+      clock_format = "%X";
+      mem_graphs = true;
+      show_swap = true;
+      show_disks = true;
+    };
+    themes.noctalia = ./themes/noctalia.theme;
   };
 }

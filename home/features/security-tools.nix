@@ -1,6 +1,8 @@
 { pkgs, ... }:
 
 {
+  programs.gpg.enable = true;
+
   home.packages = with pkgs; [
     hashcat
     john
@@ -8,7 +10,6 @@
     metasploit
     autopsy
     foremost
-    gnupg
     paperkey
     gitleaks
     trivy

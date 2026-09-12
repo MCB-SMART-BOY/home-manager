@@ -81,27 +81,18 @@ let
       ];
     };
   };
-  configFile = (pkgs.formats.toml { }).generate "noctalia-config.toml" settings;
-
-  validatedConfig =
-    pkgs.runCommand "noctalia-config"
-      {
-        nativeBuildInputs = [ pkgs.taplo ];
-      }
-      ''
-        taplo lint --no-auto-config --no-schema ${configFile}
-        cp ${configFile} "$out"
-      '';
 in
 {
-  # Noctalia v5 provides the TOML configuration and `noctalia msg` IPC command.
-  home.packages = [
-    pkgs.noctalia
-    pkgs.linux-wallpaperengine
-  ];
+  programs.noctalia = {
+    enable = true;
+    package = pkgs.noctalia;
+    settings = settings;
+  };
+
+  home.packages = [ pkgs.linux-wallpaperengine ];
+
   home.file."Pictures/Wallpapers" = {
     source = ../../assets/wallpapers;
     recursive = true;
   };
-  xdg.configFile."noctalia/config.toml".source = validatedConfig;
 }

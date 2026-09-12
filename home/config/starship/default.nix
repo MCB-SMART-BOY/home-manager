@@ -3,10 +3,9 @@
 {
   programs.starship = {
     enable = true;
+    enableFishIntegration = true;
     enableNushellIntegration = true;
     enableZshIntegration = true;
-    enableFishIntegration = true;
+    settings = builtins.fromTOML (builtins.readFile ./starship.toml);
   };
-
-  xdg.configFile."starship.toml".source = ./starship.toml;
 }

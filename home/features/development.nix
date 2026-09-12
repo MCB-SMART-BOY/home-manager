@@ -7,25 +7,34 @@
     ../config/toolchain
   ];
 
+  programs = {
+    gcc.enable = true;
+    go.enable = true;
+    bun.enable = true;
+    uv.enable = true;
+    opam.enable = true;
+    vscode = {
+      enable = true;
+      package = pkgs.vscode-fhs;
+    };
+    zed-editor = {
+      enable = true;
+      package = pkgs.zed-editor-fhs;
+    };
+  };
+
   home.packages = with pkgs; [
     rustup
-    opam
     elan
-    go
-    bun
-    uv
     gnumake
     cmake
     pkg-config
     openssl
-    gcc
     binutils
     bear
     mold
     sccache
     ccache
-    vscode-fhs
-    zed-editor-fhs
     lua-language-server
     marksman
     nixd
@@ -33,6 +42,7 @@
     shellcheck
     statix
   ];
+
   home.shellAliases = {
     c = "cargo";
     cb = "cargo build";
