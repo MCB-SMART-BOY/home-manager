@@ -9,6 +9,7 @@ error() {
 source_dir() {
   local configured_source=${MCB_NIXOS_FLAKE_DIR:-/etc/nixos}
   local canonical_source
+  local physical_source
 
   if [[ "$configured_source" != /* ]]; then
     error "invalid source '$configured_source': expected an absolute local directory path"
@@ -31,11 +32,18 @@ source_dir() {
     error "invalid source '$configured_source': could not normalize directory"
     return 1
   fi
+  if ! physical_source=$(cd -P -- "$configured_source" && pwd -P); then
+    error "invalid source '$configured_source': could not resolve directory"
+    return 1
+  fi
+  if [[ "$canonical_source" != "$physical_source" ]]; then
+    error "invalid source '$configured_source': symlinked directories are not supported"
+    return 1
+  fi
   if [[ ! -d "$canonical_source" || ! -f "$canonical_source/flake.nix" ]]; then
     error "invalid source '$configured_source': regular flake.nix is required"
     return 1
   fi
-
   printf '%s\n' "$canonical_source"
 }
 

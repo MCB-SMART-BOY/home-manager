@@ -31,22 +31,18 @@ let
         else
           configuredSource;
       sourceDir = /. + sourcePath;
+      sourceDirType = builtins.tryEval (builtins.readFileType sourceDir);
       canonicalSourcePath = builtins.toString sourceDir;
       canonicalSourceDir = /. + canonicalSourcePath;
       flakeFile = canonicalSourceDir + "/flake.nix";
       regularFlakeFile =
         builtins.pathExists flakeFile
-        && builtins.readFileType (
-          builtins.path {
-            path = flakeFile;
-            name = "mcb-nixos-flake";
-          }
-        ) == "regular";
+        && builtins.readFileType flakeFile == "regular";
       source =
         if !builtins.pathExists sourceDir then
           throw "MCB_NIXOS_FLAKE_DIR does not exist: " + sourcePath
-        else if !builtins.pathExists canonicalSourceDir then
-          throw "MCB_NIXOS_FLAKE_DIR does not resolve to a directory: " + sourcePath
+        else if !sourceDirType.success || sourceDirType.value != "directory" then
+          throw "MCB_NIXOS_FLAKE_DIR must be a non-symlink directory: " + sourcePath
         else if !regularFlakeFile then
           throw "MCB_NIXOS_FLAKE_DIR must contain a regular flake.nix: " + sourcePath
         else

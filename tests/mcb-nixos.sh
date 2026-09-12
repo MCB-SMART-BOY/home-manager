@@ -8,7 +8,8 @@ fail() {
 
 repo="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 fixture="$(mktemp -d)"
-trap 'rm -rf "$fixture"' EXIT
+symlink_root="$(mktemp -d)"
+trap 'rm -rf "$fixture" "$symlink_root"' EXIT
 
 cat >"$fixture/flake.nix" <<'EOF'
 {
@@ -32,6 +33,12 @@ ref_output="$(MCB_NIXOS_FLAKE_DIR="$fixture" MCB_NIXOS_FLAKE_TARGET=alpha bash "
 
 host_target_output="$(MCB_NIXOS_FLAKE_DIR="$fixture" NIXD_HOST=alpha bash "$repo/home/platform/mcb-nixos" target)"
 [[ "$host_target_output" == "alpha" ]] || fail "NIXD_HOST target output was '$host_target_output'"
+
+ln -s "$fixture" "$symlink_root/link"
+if MCB_NIXOS_FLAKE_DIR="$symlink_root/link" bash "$repo/home/platform/mcb-nixos" source; then
+  fail "direct symlink source must fail"
+fi
+
 
 if MCB_NIXOS_FLAKE_DIR="$fixture" MCB_NIXOS_FLAKE_TARGET=missing bash "$repo/home/platform/mcb-nixos" target; then
   fail "invalid explicit target must fail"
