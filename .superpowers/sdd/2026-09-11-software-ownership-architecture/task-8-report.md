@@ -1424,7 +1424,8 @@ Before staging, the worktree contained:
 - Inventory metadata follow-up: `b85039b82c6309729d3853e50491d70976e591b0` — `docs: record current Task 8 report hash`
 - Complete evidence report follow-up: `0ef31fd7f22f5024efd16c7c0c02db9e006cc7c1` — `docs: record complete Task 8 probe evidence`
 - Report tip-identification follow-up: `583962d32ebaab461364c9c6b4f37b663fd83c15` — `docs: identify Task 8 report tip`
-- Gate evidence correction follow-up: `31032595f869beac576322d583dd4e520fee144a` — `docs: correct Task 8 gate evidence`
+- Final evidence metadata correction: `463ca6193798148a4616f65d380e31ae3b3bfd32` — `docs: correct final Task 8 evidence metadata`
+- Final report metadata: `a01a79cf0c8b4216146f6c0068d86e48b80bbdce` — `docs: finalize Task 8 report metadata`
 
 The checked-out `HEAD` contains this Commit section and all report-only evidence updates; verify its exact hash with `git rev-parse HEAD`. The pre-existing `task-3-report.md` correction remains unstaged and excluded.
 
