@@ -27,10 +27,11 @@ result=$(nix eval --impure --no-write-lock-file --json --expr '
     observability = hasPackage "bpftrace";
     chinaApps = hasPackage "ani-cli";
     niri = hasPackage "niri";
+    portable = !hasPackage "mcb-nixos";
   }
 ')
 
-for field in nixvim desktop development media research containers theming security nixTools terminalTools gaming hardware observability chinaApps niri; do
+for field in nixvim desktop development media research containers theming security nixTools terminalTools gaming hardware observability chinaApps niri portable; do
   value=$(jq -r ".${field}" <<<"$result")
   [[ "$value" == true ]] || {
     printf 'default profile field %s was %s\n' "$field" "$value" >&2

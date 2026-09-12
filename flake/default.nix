@@ -55,9 +55,8 @@ let
       ];
     };
   };
-  # This repository is the user's complete profile, not a menu of opt-in features.
-  # Keep the NixOS platform module conditional so portable flake checks remain usable
-  # outside a NixOS host; the actual NixOS machine loads it automatically.
+  # This repository is the user's complete portable profile, not a menu of opt-in features.
+  # The NixOS platform module stays exported separately for explicit host integration.
   defaultModules = [
     homeModules.desktop
     homeModules.development
@@ -75,7 +74,6 @@ let
     homeModules."terminal-tools"
     homeModules.nixvim
   ]
-  ++ lib.optional (builtins.pathExists /etc/NIXOS) homeModules.nixos
   ++ lib.optional (builtins.pathExists ../home/local.nix) ../home/local.nix;
 
   # homeModules remains exported for composing additional configurations.
