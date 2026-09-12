@@ -37,8 +37,15 @@ EOF
 source_output="$(MCB_NIXOS_FLAKE_DIR="$fixture" bash "$repo/home/platform/mcb-nixos" source)"
 [[ "$source_output" == "path:$fixture" ]] || fail "source output was '$source_output'"
 
-target_output="$(MCB_NIXOS_FLAKE_DIR="$fixture" bash "$repo/home/platform/mcb-nixos" target)"
-[[ "$target_output" == "nixos" ]] || fail "hostname target output was '$target_output'"
+expected_hostname_target=nixos
+if [[ -r /etc/hostname ]]; then
+  hostname_target=$(< /etc/hostname)
+  case "$hostname_target" in
+    alpha|nixos) expected_hostname_target=$hostname_target ;;
+  esac
+fi
+target_output="$(env -u MCB_NIXOS_FLAKE_TARGET -u NIXD_HOST MCB_NIXOS_FLAKE_DIR="$fixture" bash "$repo/home/platform/mcb-nixos" target)"
+[[ "$target_output" == "$expected_hostname_target" ]] || fail "hostname target output was '$target_output' (expected '$expected_hostname_target')"
 
 ref_output="$(MCB_NIXOS_FLAKE_DIR="$fixture" MCB_NIXOS_FLAKE_TARGET=alpha bash "$repo/home/platform/mcb-nixos" ref)"
 [[ "$ref_output" == "path:$fixture#alpha" ]] || fail "explicit ref output was '$ref_output'"
