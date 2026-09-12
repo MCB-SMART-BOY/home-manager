@@ -55,6 +55,30 @@ let
       ];
     };
   };
+  # This repository is the user's complete profile, not a menu of opt-in features.
+  # Keep the NixOS platform module conditional so portable flake checks remain usable
+  # outside a NixOS host; the actual NixOS machine loads it automatically.
+  defaultModules = [
+    homeModules.desktop
+    homeModules.development
+    homeModules.media
+    homeModules.research
+    homeModules.gaming
+    homeModules."china-apps"
+    homeModules.niri
+    homeModules.theming
+    homeModules.containers
+    homeModules.hardware
+    homeModules.observability
+    homeModules."security-tools"
+    homeModules."nix-tools"
+    homeModules."terminal-tools"
+    homeModules.nixvim
+  ]
+  ++ lib.optional (builtins.pathExists /etc/NIXOS) homeModules.nixos
+  ++ lib.optional (builtins.pathExists ../home/local.nix) ../home/local.nix;
+
+  # homeModules remains exported for composing additional configurations.
 
   mkHomeConfiguration =
     {
@@ -90,6 +114,7 @@ let
       );
       username = requireImpureValue "the USER environment variable" (builtins.getEnv "USER");
       homeDirectory = requireImpureValue "the HOME environment variable" (builtins.getEnv "HOME");
+      modules = defaultModules;
     };
   };
 
