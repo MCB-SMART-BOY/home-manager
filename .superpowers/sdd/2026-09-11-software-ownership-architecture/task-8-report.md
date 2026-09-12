@@ -627,7 +627,7 @@ fi
 exit "$status"
 ```
 
-Result: exit 0; the probe emitted 731 per-file records, with no `FAIL` lines. The exact stdout was captured at `/tmp/task8-raw-ownership-final.txt` (731 lines, 105533 bytes; SHA-256 `ce8102711c742343d1e5c8b2bbd261a452a1fc5f4de0d6f50af0abd76d745e4a`) and is reproduced below.
+Result: **exit 0**; the probe emitted 731 per-file records, with no `FAIL` lines. The exact stdout was captured at `/tmp/task8-raw-ownership-final.txt` (730 newline-terminated lines, 105532 bytes; SHA-256 `0f113d256004f0ec5539eb8ff97e764d2479a29365bf59fe94997f043fdf04e1`) and is reproduced below.
 
 ```text
 PASS home/config/btop/btop.conf -> home/config/btop/default.nix (direct source)
@@ -1419,12 +1419,14 @@ Before staging, the worktree contained:
 - Baseline verified architecture commit: `0d709a615e9a914fd5ac77148808445e147e0b61`
 - Formatter/report commit: `eb99b7fc815867311651b3a32d9e34168a32cbe8` — `chore: complete Task 8 verification gate`
 - Report correction follow-up: `282ce2268bc4d1dd1d131c224473d3369ba56757` — `docs: record Task 8 delivery commit`
+- Ownership evidence follow-up: `41de938c7dbdaab39df31cc063f8c04cf01414cb` — `docs: expand Task 8 ownership evidence`
 - Final metadata follow-up: `51b7d4e527e872a968f15f3c15cdfd9c477b500b` — `docs: record final Task 8 evidence hash`
 - Inventory metadata follow-up: `b85039b82c6309729d3853e50491d70976e591b0` — `docs: record current Task 8 report hash`
 - Complete evidence report follow-up: `0ef31fd7f22f5024efd16c7c0c02db9e006cc7c1` — `docs: record complete Task 8 probe evidence`
 - Report tip-identification follow-up: `583962d32ebaab461364c9c6b4f37b663fd83c15` — `docs: identify Task 8 report tip`
+- Gate evidence correction follow-up: `31032595f869beac576322d583dd4e520fee144a` — `docs: correct Task 8 gate evidence`
 
-The checked-out `HEAD` contains this Commit section and the report-only evidence updates; verify its exact current hash with `git rev-parse HEAD`. The pre-existing `task-3-report.md` correction remains unstaged and excluded.
+The checked-out `HEAD` contains this Commit section and the report-only evidence updates; verify its exact hash with `git rev-parse HEAD`. The final evidence metadata correction remains in the worktree and must be committed separately; the pre-existing `task-3-report.md` correction remains unstaged and excluded.
 
 
 ## Unresolved risks
