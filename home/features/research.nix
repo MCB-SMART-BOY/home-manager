@@ -10,7 +10,7 @@
   programs = {
     libreoffice = {
       enable = true;
-      package = pkgs.libreoffice-still;
+      package = pkgs.libreoffice-stable;
     };
     pandoc.enable = true;
   };

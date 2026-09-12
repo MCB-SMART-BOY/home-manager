@@ -28,7 +28,6 @@
     {"package": "github.com/ffuf/ffuf/v2", "binary": "ffuf"}
   ],
   "uv": [
-    {"package": "aider-chat", "binary": "aider"},
     {"package": "ruff", "binary": "ruff"},
     {"package": "ty", "binary": "ty"},
     {"package": "yt-dlp", "binary": "yt-dlp"},

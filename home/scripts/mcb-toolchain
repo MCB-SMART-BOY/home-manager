@@ -26,6 +26,17 @@ run_command() {
   fi
 }
 
+run_checked() {
+  if run_command "$@"; then
+    return 0
+  fi
+  failures=$((failures + 1))
+  printf 'mcb-toolchain: command failed:'
+  printf ' %q' "$@"
+  printf '\n' >&2
+  return 1
+}
+
 require_command() {
   if ! command -v "$1" >/dev/null 2>&1; then
     printf 'mcb-toolchain: required command not found: %s\n' "$1" >&2
@@ -50,10 +61,10 @@ install_rust() {
   channel="$(jq -r '.rust.channel // empty' "$config")"
   [ -n "$channel" ] || return 0
   require_command rustup || return 0
-  run_command rustup toolchain install "$channel"
+  run_checked rustup toolchain install "$channel"
   while IFS= read -r component; do
     [ -n "$component" ] || continue
-    run_command rustup component add "$component" --toolchain "$channel"
+    run_checked rustup component add "$component" --toolchain "$channel"
   done < <(jq -r '.rust.components[]? // empty' "$config")
 }
 
@@ -62,8 +73,8 @@ install_lean() {
   channel="$(jq -r '.lean.channel // empty' "$config")"
   [ -n "$channel" ] || return 0
   require_command elan || return 0
-  run_command elan toolchain install "$channel"
-  run_command elan default "$channel"
+  run_checked elan toolchain install "$channel"
+  run_checked elan default "$channel"
 }
 
 install_registry() {
@@ -74,15 +85,15 @@ install_registry() {
   while IFS= read -r package; do
     [ -n "$package" ] || continue
     case "$manager:$operation" in
-      opam:bootstrap) run_command opam install --yes "$package" ;;
-      opam:upgrade) run_command opam install --yes "$package" ;;
-      cargo:bootstrap) run_command cargo install --locked "$package" ;;
-      cargo:upgrade) run_command cargo install --locked --force "$package" ;;
-      go:*) run_command go install "$package@latest" ;;
-      uv:bootstrap) run_command uv tool install "$package" ;;
-      uv:upgrade) run_command uv tool upgrade "$package" ;;
-      bun:bootstrap) run_command bun add --global "$package" ;;
-      bun:upgrade) run_command bun update --global "$package" ;;
+      opam:bootstrap) run_checked opam install --yes "$package" ;;
+      opam:upgrade) run_checked opam install --yes "$package" ;;
+      cargo:bootstrap) run_checked cargo install --locked "$package" ;;
+      cargo:upgrade) run_checked cargo install --locked --force "$package" ;;
+      go:*) run_checked go install "$package@latest" ;;
+      uv:bootstrap) run_checked uv tool install "$package" ;;
+      uv:upgrade) run_checked uv tool upgrade "$package" ;;
+      bun:bootstrap) run_checked bun add --global "$package" ;;
+      bun:upgrade) run_checked bun update --global "$package" ;;
     esac
   done < <(jq -r "${jq_path}[]?.package // empty" "$config")
 }

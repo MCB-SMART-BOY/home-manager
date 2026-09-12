@@ -20,7 +20,7 @@
       bold_font = "auto";
       italic_font = "auto";
       bold_italic_font = "auto";
-      font_size = 16.0;
+      font_size = 15.5;
       adjust_line_height = 0;
       adjust_column_width = 0;
       disable_ligatures = "never";

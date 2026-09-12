@@ -22,6 +22,7 @@
       package = pkgs.zed-editor-fhs;
     };
   };
+  home.sessionVariables.PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
 
   home.packages = with pkgs; [
     rustup
@@ -30,6 +31,7 @@
     cmake
     pkg-config
     openssl
+    openssl.dev
     binutils
     bear
     mold

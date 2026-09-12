@@ -52,8 +52,6 @@ in
       "niri/config.kdl".source = ./config.kdl;
       "niri/rules.kdl".source = ./rules.kdl;
       "niri/binds.kdl".source = ./binds.kdl;
-    }
-    // lib.optionalAttrs config.mcb.niri.hostOutputs.enable {
       "niri/outputs.kdl".source = ./outputs.kdl;
     };
 
