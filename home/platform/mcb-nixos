@@ -22,16 +22,16 @@ source_dir() {
     error "invalid source '$configured_source': directory does not exist"
     return 1
   fi
-  if [[ ! -f "$configured_source/flake.nix" || -L "$configured_source/flake.nix" ]]; then
+  if [[ ! -f "$configured_source/flake.nix" ]]; then
     error "invalid source '$configured_source': regular flake.nix is required"
     return 1
   fi
 
-  if ! canonical_source=$(realpath --canonicalize-existing -- "$configured_source"); then
-    error "invalid source '$configured_source': could not canonicalize directory"
+  if ! canonical_source=$(cd -L -- "$configured_source" && pwd -L); then
+    error "invalid source '$configured_source': could not normalize directory"
     return 1
   fi
-  if [[ ! -d "$canonical_source" || ! -f "$canonical_source/flake.nix" || -L "$canonical_source/flake.nix" ]]; then
+  if [[ ! -d "$canonical_source" || ! -f "$canonical_source/flake.nix" ]]; then
     error "invalid source '$configured_source': regular flake.nix is required"
     return 1
   fi
