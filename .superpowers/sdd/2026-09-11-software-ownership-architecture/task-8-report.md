@@ -1426,7 +1426,7 @@ Before staging, the worktree contained:
 - Report tip-identification follow-up: `583962d32ebaab461364c9c6b4f37b663fd83c15` — `docs: identify Task 8 report tip`
 - Gate evidence correction follow-up: `31032595f869beac576322d583dd4e520fee144a` — `docs: correct Task 8 gate evidence`
 
-The checked-out `HEAD` contains this Commit section and the report-only evidence updates; verify its exact hash with `git rev-parse HEAD`. The final evidence metadata correction remains in the worktree and must be committed separately; the pre-existing `task-3-report.md` correction remains unstaged and excluded.
+The checked-out `HEAD` contains this Commit section and all report-only evidence updates; verify its exact hash with `git rev-parse HEAD`. The pre-existing `task-3-report.md` correction remains unstaged and excluded.
 
 
 ## Unresolved risks
