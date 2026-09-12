@@ -23,7 +23,7 @@ source_dir() {
     error "invalid source '$configured_source': directory does not exist"
     return 1
   fi
-  if [[ ! -f "$configured_source/flake.nix" ]]; then
+  if [[ ! -f "$configured_source/flake.nix" || -L "$configured_source/flake.nix" ]]; then
     error "invalid source '$configured_source': regular flake.nix is required"
     return 1
   fi
@@ -40,7 +40,7 @@ source_dir() {
     error "invalid source '$configured_source': symlinked directories are not supported"
     return 1
   fi
-  if [[ ! -d "$canonical_source" || ! -f "$canonical_source/flake.nix" ]]; then
+  if [[ ! -d "$canonical_source" || ! -f "$canonical_source/flake.nix" || -L "$canonical_source/flake.nix" ]]; then
     error "invalid source '$configured_source': regular flake.nix is required"
     return 1
   fi
