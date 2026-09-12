@@ -13,5 +13,4 @@ let
 in
 {
   home.packages = [ mcbToolchain ];
-  home.file.".local/bin/mcb-toolchain".source = "${mcbToolchain}/bin/mcb-toolchain";
 }

@@ -1,5 +1,5 @@
-# DAP 复用现有 lldb-dap、dlv 与 uv debugpy。
-{ config, lib, ... }:
+# DAP 复用现有 lldb-dap、dlv 与 Nix 提供的 debugpy 环境。
+{ lib, pkgs, ... }:
 
 let
   launchWithLldb = {
@@ -43,7 +43,7 @@ in
       };
       dap-python = {
         enable = true;
-        adapterPythonPath = "${config.home.homeDirectory}/.local/share/uv/tools/debugpy/bin/python";
+        adapterPythonPath = lib.getExe (pkgs.python3.withPackages (pythonPackages: [ pythonPackages.debugpy ]));
       };
       dap-ui.enable = true;
       dap-virtual-text.enable = true;

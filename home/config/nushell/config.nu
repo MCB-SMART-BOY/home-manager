@@ -70,12 +70,11 @@ def up [] { cd .. }
 
 # ── Toolchain wrappers ───────────────────────────────────────────
 def _run-toolchain [operation: string, dry_run: bool] {
-    let executable = ($env.HOME | path join ".local" "bin" "mcb-toolchain")
-    if not ($executable | path exists) {
-        error make { msg: $"mcb-toolchain not found: ($executable); rebuild Home Manager first" }
+    if (which mcb-toolchain | is-empty) {
+        error make { msg: "mcb-toolchain not found; rebuild Home Manager first" }
     }
     let args = if $dry_run { ["--dry-run"] } else { [] }
-    let result = (run-external $executable $operation ...$args | complete)
+    let result = (run-external "mcb-toolchain" $operation ...$args | complete)
     if ($result.stdout | is-not-empty) {
         print -n $result.stdout
     }

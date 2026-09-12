@@ -15,7 +15,7 @@
     {"package": "taplo-cli", "binary": "taplo"},
     {"package": "stylua", "binary": "stylua"},
     {"package": "atuin", "binary": "atuin"},
-    {"package": "broot", "binary": "broot"},
+    {"package": "broot", "binary": "broot"}
   ],
   "go": [
     {"package": "golang.org/x/tools/gopls", "binary": "gopls"},
@@ -31,7 +31,6 @@
     {"package": "aider-chat", "binary": "aider"},
     {"package": "ruff", "binary": "ruff"},
     {"package": "ty", "binary": "ty"},
-    {"package": "debugpy", "binary": "debugpy-adapter"},
     {"package": "yt-dlp", "binary": "yt-dlp"},
     {"package": "sqlmap", "binary": "sqlmap"}
   ],

@@ -13,5 +13,7 @@
     curl
     ouch
     less
+    nixd
+    nixfmt
   ];
 }

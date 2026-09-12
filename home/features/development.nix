@@ -37,8 +37,6 @@
     ccache
     lua-language-server
     marksman
-    nixd
-    nixfmt
     shellcheck
     statix
   ];
