@@ -31,16 +31,20 @@ let
         else
           configuredSource;
       sourceDir = /. + sourcePath;
-      flakeFile = sourceDir + "/flake.nix";
+      canonicalSourcePath = builtins.toString sourceDir;
+      canonicalSourceDir = /. + canonicalSourcePath;
+      flakeFile = canonicalSourceDir + "/flake.nix";
       source =
         if !builtins.pathExists sourceDir then
           throw "MCB_NIXOS_FLAKE_DIR does not exist: " + sourcePath
+        else if !builtins.pathExists canonicalSourceDir then
+          throw "MCB_NIXOS_FLAKE_DIR does not resolve to a directory: " + sourcePath
         else if !builtins.pathExists flakeFile then
           throw "MCB_NIXOS_FLAKE_DIR must contain a regular flake.nix: " + sourcePath
         else if builtins.readFileType flakeFile != "regular" then
           throw "MCB_NIXOS_FLAKE_DIR must contain a regular flake.nix: " + sourcePath
         else
-          "path:" + sourcePath;
+          "path:" + canonicalSourcePath;
     in
   '';
 
