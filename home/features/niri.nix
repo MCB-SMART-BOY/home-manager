@@ -10,7 +10,7 @@
     ../desktop.nix
     ../config/niri
     ../config/noctalia
-    ../config/fcitx5
+    # ../config/fcitx5
     ../config/kitty
     ../config/chrome
     ../config/waybar

@@ -1,0 +1,12 @@
+# 可选的用户私有模块：复制为 local.nix 后，默认 Flake 配置会自动加载它。
+{ pkgs, ... }:
+{
+  # 使用 Home Manager 原生 Git 设置覆盖身份。
+  programs.git.settings.user = {
+    name = "MCB-SMART-BOY";
+    email = "2720838051@qq.com";
+  };
+
+  # 个人额外软件示例。
+  # home.packages = with pkgs; [ localsend ];
+}
