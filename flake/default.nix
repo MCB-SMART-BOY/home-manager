@@ -73,8 +73,7 @@ let
     homeModules."nix-tools"
     homeModules."terminal-tools"
     homeModules.nixvim
-  ]
-  ++ lib.optional (builtins.pathExists ../home/local.nix) ../home/local.nix;
+  ];
 
   # homeModules remains exported for composing additional configurations.
 
