@@ -6,7 +6,11 @@ let
       substituteInPlace src/renderer/data/docker.ts src/renderer/data/podman.ts \
         --replace-fail '                VERSION: "11",' \
           '                VERSION: "11",
-                VMX: "Y",'
+                VMX: "Y",
+                HV: "Y",
+                CPU_MODEL: "Broadwell-noTSX-IBRS",
+                CPU_FLAGS: "hypervisor=off,vmx=on,mpx=off,hv-time=on,hv-relaxed=on,hv-vapic=on,hv-spinlocks=0x1fff",
+                ADAPTER: "e1000e",'
     '';
   });
 in
