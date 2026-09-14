@@ -1,8 +1,22 @@
-{ ... }:
+{ lib, pkgs, ... }:
 
+let
+  btopWithNixOSDriver = pkgs.writeShellApplication {
+    name = "btop";
+    text = ''
+      export LD_LIBRARY_PATH="/run/opengl-driver/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+      exec ${pkgs.btop}/bin/btop "$@"
+    '';
+  };
+in
 {
   programs.btop = {
     enable = true;
+    # Home Manager's portable profile is also used directly on NixOS.
+    # Keep the explicit NixOS module authoritative when it is imported.
+    package = lib.mkDefault (
+      if builtins.pathExists /etc/NIXOS then btopWithNixOSDriver else pkgs.btop
+    );
     settings = {
       # Catppuccin Mocha/Purple: opaque and consistent with the desktop theme.
       color_theme = "catppuccin";
