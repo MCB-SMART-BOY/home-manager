@@ -17,5 +17,6 @@ in
     winboatWithVmx
     podman-compose
     firecracker
+    distrobox
   ];
 }

@@ -23,6 +23,7 @@ result=$(nix eval --impure --no-write-lock-file --json --expr '
     theming = config.gtk.enable;
     security = config.programs.gpg.enable;
     nixTools = config.programs.nh.enable;
+    pack = builtins.any (package: (package.name or "") == "pack") config.home.packages;
     terminalTools = config.programs.zellij.enable;
     gaming = hasPackage "steam";
     hardware = hasPackage "nvme-cli";
@@ -36,7 +37,7 @@ result=$(nix eval --impure --no-write-lock-file --json --expr '
   }
 ')
 
-for field in nixvim desktop development media research containers theming security nixTools terminalTools gaming hardware observability chinaApps niri niriOutputs portable opensslDev opensslPkgConfig; do
+for field in nixvim desktop development media research containers theming security nixTools pack terminalTools gaming hardware observability chinaApps niri niriOutputs portable opensslDev opensslPkgConfig; do
   value=$(jq -r ".${field}" <<<"$result")
   [[ "$value" == true ]] || {
     printf 'default profile field %s was %s\n' "$field" "$value" >&2

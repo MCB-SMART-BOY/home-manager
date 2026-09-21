@@ -14,9 +14,7 @@ in
     enable = true;
     # Home Manager's portable profile is also used directly on NixOS.
     # Keep the explicit NixOS module authoritative when it is imported.
-    package = lib.mkDefault (
-      if builtins.pathExists /etc/NIXOS then btopWithNixOSDriver else pkgs.btop
-    );
+    package = lib.mkDefault (if builtins.pathExists /etc/NIXOS then btopWithNixOSDriver else pkgs.btop);
     settings = {
       # Catppuccin Mocha/Purple: opaque and consistent with the desktop theme.
       color_theme = "catppuccin";

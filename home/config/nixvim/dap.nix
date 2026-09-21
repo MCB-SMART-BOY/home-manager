@@ -43,7 +43,9 @@ in
       };
       dap-python = {
         enable = true;
-        adapterPythonPath = lib.getExe (pkgs.python3.withPackages (pythonPackages: [ pythonPackages.debugpy ]));
+        adapterPythonPath = lib.getExe (
+          pkgs.python3.withPackages (pythonPackages: [ pythonPackages.debugpy ])
+        );
       };
       dap-ui.enable = true;
       dap-virtual-text.enable = true;

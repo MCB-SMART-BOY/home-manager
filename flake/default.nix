@@ -123,9 +123,18 @@ let
         homeDirectory = "/var/empty/home-manager-check";
       }).activationPackage;
   });
+
+  devShells = forAllSystems (system: {
+    default = (mkPkgs { inherit system; }).mkShell {
+      packages = with (mkPkgs { inherit system; }); [
+        deadnix
+        statix
+      ];
+    };
+  });
 in
 {
-  inherit homeConfigurations homeModules;
+  inherit devShells homeConfigurations homeModules;
 
   lib.mkHomeConfiguration = mkHomeConfiguration;
 

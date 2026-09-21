@@ -16,9 +16,7 @@ let
 
   steam = pkgs.steam.override (prev: {
     extraPkgs =
-      pkgs:
-      (if prev ? extraPkgs then prev.extraPkgs pkgs else [ ])
-      ++ [ pkgs.noto-fonts-cjk-sans ];
+      pkgs: (if prev ? extraPkgs then prev.extraPkgs pkgs else [ ]) ++ [ pkgs.noto-fonts-cjk-sans ];
     extraEnv = (prev.extraEnv or { }) // {
       FONTCONFIG_FILE = "${steamFontConfig}";
     };
