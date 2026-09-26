@@ -18,7 +18,8 @@
     nautilus
     file-roller
     papers
-    kdePackages.kdenlive
+    # kdePackages.kdenlive
+    davinci-resolve-studio
     baobab
     mission-center
     localsend
