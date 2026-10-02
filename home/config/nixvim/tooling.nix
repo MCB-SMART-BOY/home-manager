@@ -1,5 +1,5 @@
 # Formatter 与 linter 仅调用 PATH 中由各生态管理的工具。
-{ ... }:
+_:
 
 {
   programs.nixvim.plugins = {

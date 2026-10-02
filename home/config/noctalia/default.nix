@@ -86,7 +86,7 @@ in
   programs.noctalia = {
     enable = true;
     package = pkgs.noctalia;
-    settings = settings;
+    inherit settings;
   };
 
   home.packages = [ pkgs.linux-wallpaperengine ];

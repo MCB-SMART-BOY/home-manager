@@ -3,7 +3,6 @@
 {
   imports = [
     ../config/sioyek
-    ../config/zotero
     ../config/obsidian
   ];
 
@@ -47,9 +46,6 @@
         "libreoffice-impress.desktop"
       ];
       "application/vnd.oasis.opendocument.presentation" = [ "libreoffice-impress.desktop" ];
-      "x-scheme-handler/zotero" = [ "zotero.desktop" ];
-      "text/x-bibtex" = [ "zotero.desktop" ];
-      "application/x-research-info-systems" = [ "zotero.desktop" ];
     };
   };
 }

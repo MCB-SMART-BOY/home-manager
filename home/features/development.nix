@@ -22,34 +22,35 @@
       package = pkgs.zed-editor-fhs;
     };
   };
-  home.sessionVariables.PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
-
-  home.packages = with pkgs; [
-    rustup
-    elan
-    gnumake
-    cmake
-    pkg-config
-    openssl
-    openssl.dev
-    binutils
-    bear
-    mold
-    sccache
-    ccache
-    lua-language-server
-    marksman
-    shellcheck
-    statix
-  ];
-
-  home.shellAliases = {
-    c = "cargo";
-    cb = "cargo build";
-    cr = "cargo run";
-    ct = "cargo test";
-    cc = "cargo check";
-    cf = "cargo fmt";
-    ccl = "cargo clippy";
+  home = {
+    sessionVariables.PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+    packages = with pkgs; [
+      omp
+      rustup
+      elan
+      gnumake
+      cmake
+      pkg-config
+      openssl
+      openssl.dev
+      binutils
+      bear
+      mold
+      sccache
+      ccache
+      lua-language-server
+      marksman
+      shellcheck
+      statix
+    ];
+    shellAliases = {
+      c = "cargo";
+      cb = "cargo build";
+      cr = "cargo run";
+      ct = "cargo test";
+      cc = "cargo check";
+      cf = "cargo fmt";
+      ccl = "cargo clippy";
+    };
   };
 }

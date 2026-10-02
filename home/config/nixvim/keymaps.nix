@@ -1,5 +1,5 @@
 # LazyVim 与 Helix 风格的统一 leader 分组。
-{ ... }:
+_:
 
 let
   raw = text: { __raw = text; };

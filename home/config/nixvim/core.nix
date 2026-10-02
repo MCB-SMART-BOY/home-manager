@@ -1,5 +1,5 @@
 # Neovim 核心行为与全局外观。
-{ ... }:
+_:
 
 {
   programs.nixvim = {

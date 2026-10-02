@@ -106,9 +106,7 @@ let
 
   homeConfigurations = {
     default = mkHomeConfiguration {
-      system = requireImpureValue "builtins.currentSystem" (
-        if builtins ? currentSystem then builtins.currentSystem else ""
-      );
+      system = requireImpureValue "builtins.currentSystem" (builtins.currentSystem or "");
       username = requireImpureValue "the USER environment variable" (builtins.getEnv "USER");
       homeDirectory = requireImpureValue "the HOME environment variable" (builtins.getEnv "HOME");
       modules = defaultModules;

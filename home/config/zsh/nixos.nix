@@ -1,5 +1,5 @@
 # NixOS-specific Zsh helpers and aliases; portable Zsh defaults remain in default.nix.
-{ ... }:
+_:
 
 {
   programs.zsh.shellAliases = {
