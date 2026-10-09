@@ -11,10 +11,15 @@ _:
           lsp_format = "fallback";
           timeout_ms = 3000;
         };
-        format_on_save = {
-          lsp_format = "fallback";
-          timeout_ms = 3000;
-        };
+        # <leader>uf（vim.g.autoformat）关闭后保存不格式化；默认开启
+        format_on_save.__raw = ''
+          function()
+            if vim.g.autoformat == 0 then
+              return false
+            end
+            return { lsp_format = "fallback", timeout_ms = 3000 }
+          end
+        '';
         formatters = {
           ocamlformat_impl = {
             command = "opam";

@@ -7,7 +7,7 @@
 }:
 
 let
-  portableLanguages = builtins.fromTOML (builtins.readFile ./languages.toml);
+  portableLanguages = fromTOML (builtins.readFile ./languages.toml);
   portableLanguageServers = portableLanguages."language-server";
 in
 {

@@ -23,7 +23,7 @@
           options.desc = "References";
         }
         {
-          key = "gI";
+          key = "gi";
           lspBufAction = "implementation";
           options.desc = "Goto implementation";
         }
@@ -31,11 +31,6 @@
           key = "gy";
           lspBufAction = "type_definition";
           options.desc = "Goto type definition";
-        }
-        {
-          key = "K";
-          lspBufAction = "hover";
-          options.desc = "Hover";
         }
         {
           key = "gK";
@@ -53,6 +48,10 @@
         }
         {
           key = "<leader>cr";
+          mode = [
+            "n"
+            "v"
+          ];
           lspBufAction = "rename";
           options.desc = "Rename symbol";
         }

@@ -26,6 +26,7 @@ let
     import inputs.nixpkgs {
       inherit system;
       config.allowUnfree = true;
+      overlays = [ (import ../overlays/tela-circle-icon-theme.nix) ];
     };
 
   homeModules = {

@@ -126,6 +126,14 @@ supersede-menu = false
 # ══════════════════════════════════════════════════════════════════
 # ⌨️ 快捷键
 # ══════════════════════════════════════════════════════════════════
+#
+# 设计约定：
+#   f 找文件 / s 搜内容与符号 / c 代码操作 / x 诊断 / g Git / u 编辑器开关 / q 退出
+#   一个功能一个分组入口（Space xx），高频功能最多再加一个更短的直达入口
+#   Normal 与 Select 共享工作流键；编辑键按模式区分（Normal move_*，Select extend_*）
+#   Space 分组是"节点对节点"递归合并，默认项自动保留；
+#   但默认键是"叶子"时（Space f / b / g / s），改写成表会整体替换该叶子，
+#   并丢掉它的原生兄弟键 —— 改写时必须把要保留的默认项显式补回。
 
 [keys.normal]
 # 系统操作
@@ -150,18 +158,18 @@ supersede-menu = false
 "C-/" = "toggle_comments"
 "A-j" = "move_line_down"
 "A-k" = "move_line_up"
-"y" = "yank_to_clipboard"
-"p" = "paste_clipboard_after"
-"P" = "paste_clipboard_before"
+# 剪贴板策略 A：编辑器内部搬运走默认寄存器（原生 y/p/P/R 与 d/c 同一通道），
+# 与外部程序交换统一走 Space y / Space p / Space P / Space R
 
 # 搜索
 "n" = "search_next"
 "N" = "search_prev"
 "*" = "search_selection_detect_word_boundaries"
 
-# Go 模式增强
-"g" = { l = "goto_line_end", h = "goto_line_start", d = "goto_definition", D = "goto_declaration", r = "goto_reference", i = "goto_implementation", t = "goto_type_definition", y = "goto_type_definition", K = "signature_help" }
-"K" = "hover"
+# g 子图：子节点递归合并，默认项（gg/ge/gf/gs/gc/gb/gj/gk…）继续生效
+# gt = goto_window_top 保持原生；类型定义统一用 gy
+"g" = { l = "goto_line_end", h = "goto_line_start", d = "goto_definition", D = "goto_declaration", r = "goto_reference", i = "goto_implementation", y = "goto_type_definition", K = "signature_help" }
+# K 保持原生 keep_selections（按正则保留选区）；文档用默认 Space k 或 Space c h
 
 # Leader 键（Space），按 LazyVim 的 file/buffer/search/window/code 习惯分组。
 [keys.normal.space]
@@ -170,44 +178,47 @@ space = "file_picker"
 "?" = "command_palette"
 "-" = "hsplit"
 "|" = "vsplit"
-K = "hover"
 a = "code_action"
-h = "hover"
 r = "rename_symbol"
-Q = ":qa!"
+# 与外部程序交换走 Space y/p/P/R；编辑器内部搬运仍是默认寄存器（原生 y/p/P/R）
+y = "yank_to_clipboard"
+p = "paste_clipboard_after"
+P = "paste_clipboard_before"
+R = "replace_selections_with_clipboard"
+# Space h 归还原生 select_references_to_symbol_under_cursor；
+# 强制退出（Space Q / Space q Q）已撤下，需要时显式输入 :qa!
 
 [keys.normal.space.b]
 b = "buffer_picker"
 d = ":buffer-close"
-D = ":buffer-close!"
 n = "goto_next_buffer"
 p = "goto_previous_buffer"
 o = ":buffer-close-others"
-O = ":buffer-close-others!"
 
 [keys.normal.space.c]
 a = "code_action"
-c = ":config-open"
-d = "diagnostics_picker"
-D = "workspace_diagnostics_picker"
 f = ":format"
 h = "hover"
 r = "rename_symbol"
-R = ":config-reload"
-s = "symbol_picker"
-S = "workspace_symbol_picker"
 "=" = "format_selections"
 
 [keys.normal.space.f]
 f = "file_picker"
 F = "file_picker_in_current_directory"
-c = ":config-open"
-g = "global_search"
+# e/E 是默认 file_explorer 系列：默认 Space f 是叶子，改写成表时会整体替换，
+# 不显式补回就等于把它们删掉
+e = "file_explorer"
+E = "file_explorer_in_current_buffer_directory"
+# 配置源码入口：:config-open 打开的是只读生成物（nix store 符号链接），
+# 这里直接打开 Home Manager 读取的仓库源文件；改完仍需 home-manager switch
+c = ":open ~/.config/home-manager/home/config/helix/config.toml"
 
 [keys.normal.space.g]
+# c = 原生 changed_file_picker（默认 Space g 是叶子，被本分组覆盖后需显式补回）
+c = "changed_file_picker"
+# 以下都是只读弹层输出（:sh 不改动缓冲区），不是交互式 Git 面板
 b = ":echo %sh{git blame -L %{cursor_line},+1 -- \"%{buffer_name}\"}"
 d = ":sh git diff -- \"%{buffer_name}\""
-g = ":sh git status --short --branch"
 l = ":sh git log --oneline --decorate -n 20"
 s = ":sh git status --short --branch"
 
@@ -242,23 +253,32 @@ r = ":toggle rulers [] [100]"
 s = ":toggle search.smart-case"
 w = ":toggle soft-wrap.enable"
 W = ":toggle whitespace.render all none"
+# 只重载已部署配置；改仓库源码后仍需 home-manager switch
+R = ":config-reload"
 
 [keys.normal.space.q]
 q = ":qa"
-Q = ":qa!"
 
 [keys.insert]
-"C-s" = ":w"
+# C-s 保持原生 commit_undo_checkpoint（撤销边界）；保存用 Esc 回到 Normal 后按 C-s
 j = { k = "normal_mode" } # jk 大法
 "C-space" = "completion"
 "C-k" = "signature_help"
 
 [keys.select]
+# 工作流键与 Normal 共享；编辑键按模式区分（Select 用 extend_*，不是 move_*）
+"C-s" = ":w"
+"C-q" = ":q"
+"C-h" = "jump_view_left"
+"C-j" = "jump_view_down"
+"C-k" = "jump_view_up"
+"C-l" = "jump_view_right"
+"H" = "goto_previous_buffer"
+"L" = "goto_next_buffer"
 "C-/" = "toggle_comments"
-"A-j" = "move_line_down"
-"A-k" = "move_line_up"
-y = "yank_to_clipboard"
-p = "paste_clipboard_after"
-P = "paste_clipboard_before"
-"[" = { d = "goto_prev_diag", g = "goto_prev_change" }
-"]" = { d = "goto_next_diag", g = "goto_next_change" }
+# 默认 gj/gk 在 Select 下已是 extend_line_down/up，这里只是给同一语义补别名
+"A-j" = "extend_line_down"
+"A-k" = "extend_line_up"
+# y/p/P 不再走剪贴板专用命令，与 Normal 一致使用默认寄存器
+"[" = { b = "goto_previous_buffer", d = "goto_prev_diag", g = "goto_prev_change" }
+"]" = { b = "goto_next_buffer", d = "goto_next_diag", g = "goto_next_change" }

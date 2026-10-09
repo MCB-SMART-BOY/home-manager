@@ -1,12 +1,12 @@
 # 与当前 LazyVim 能力对齐的声明式插件集合。
 { pkgs, ... }:
+
 let
   markdownPreviewBun = pkgs.vimPlugins.markdown-preview-nvim.overrideAttrs (oldAttrs: {
     postPatch =
       (oldAttrs.postPatch or "") + builtins.readFile ./patches/markdown-preview-bun-post-patch.sh;
   });
 in
-
 {
   programs.nixvim = {
     dependencies = {
@@ -129,7 +129,18 @@ in
 
       flash.enable = true;
       mini-ai.enable = true;
-      mini-pairs.enable = true;
+      # 与 Helix [editor.auto-pairs] 完全一致：保留 ( ) [ ] { } " ` 与 < >，
+      # 且像 Helix 一样不配对单引号（Helix 配置显式省略了 '）
+      mini-pairs = {
+        enable = true;
+        settings.mappings = {
+          "'" = false;
+          "<" = {
+            action = "open";
+            pair = "<>";
+          };
+        };
+      };
       ts-comments.enable = true;
 
       gitsigns = {
