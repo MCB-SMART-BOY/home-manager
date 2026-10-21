@@ -1,5 +1,10 @@
 # NixOS-specific Fish functions; portable Fish defaults remain in default.nix.
-{ lib, ... }:
+{
+  lib,
+  pkgs,
+  mcbNixosExecutable,
+  ...
+}:
 
 let
   nixosFishFunctions = [
@@ -42,7 +47,11 @@ let
     map (name: {
       inherit name;
       value = {
-        body = functionBody name;
+        body =
+          lib.replaceStrings
+            [ "@MCB_NIXOS_EXECUTABLE@" "@MCB_NIXOS_ENV@" ]
+            [ mcbNixosExecutable "${pkgs.coreutils}/bin/env" ]
+            (functionBody name);
         argumentNames = lib.attrByPath [ name ] null functionArguments;
       };
     }) nixosFishFunctions
@@ -50,5 +59,14 @@ let
 
 in
 {
-  programs.fish.functions = fishFunctions;
+  programs.fish.functions = fishFunctions // {
+    _mcb_nixos_root.body = ''
+      ${pkgs.coreutils}/bin/env -i \
+        MCB_NIXOS_FLAKE_DIR="$MCB_NIXOS_FLAKE_DIR" \
+        MCB_NIXOS_FLAKE_TARGET="$MCB_NIXOS_FLAKE_TARGET" \
+        NIXD_HOST="$NIXD_HOST" \
+        /run/wrappers/bin/sudo --preserve-env=MCB_NIXOS_FLAKE_DIR,MCB_NIXOS_FLAKE_TARGET,NIXD_HOST \
+        -- ${mcbNixosExecutable} $argv
+    '';
+  };
 }

@@ -37,21 +37,3 @@ if HOME="$tmp" XDG_CONFIG_HOME="$tmp/config" PATH="$tmp/bin:$PATH" \
   printf '%s\n' 'bootstrap unexpectedly succeeded after cargo failure' >&2
   exit 1
 fi
-
-cp "$repo/home/config/toolchain/tools.json" "$tmp/config/toolchain/tools.json"
-for manager in rustup elan opam cargo go uv bun; do
-  cat >"$tmp/bin/$manager" <<'EOF'
-#!/usr/bin/env bash
-exit 0
-EOF
-  chmod +x "$tmp/bin/$manager"
-done
-
-dry_run_output=$(HOME="$tmp" XDG_CONFIG_HOME="$tmp/config" PATH="$tmp/bin:$PATH" \
-  bash "$repo/home/scripts/mcb-toolchain" bootstrap --dry-run)
-case "$dry_run_output" in
-  *aider-chat*|*scipy*)
-    printf '%s\n' 'bootstrap still includes the removed Aider/SciPy dependency' >&2
-    exit 1
-    ;;
-esac

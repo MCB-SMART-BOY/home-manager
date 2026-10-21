@@ -8,26 +8,38 @@ def ngc [] {
     ^/run/wrappers/bin/sudo nix-collect-garbage -d
 }
 
-def nrs [...args: string] {
-    ^mcb-nixos switch ...$args
+# 仅传递明确的源和目标覆盖，避免把 PATH/NIX_CONFIG 带入 root 命令。
+def --wrapped _mcb_nixos_root [...args: string] {
+    let source = $env.MCB_NIXOS_FLAKE_DIR? | default ""
+    let target = $env.MCB_NIXOS_FLAKE_TARGET? | default ""
+    let host = $env.NIXD_HOST? | default ""
+    ^@MCB_NIXOS_ENV@ -i $"MCB_NIXOS_FLAKE_DIR=($source)" $"MCB_NIXOS_FLAKE_TARGET=($target)" $"NIXD_HOST=($host)" /run/wrappers/bin/sudo --preserve-env=MCB_NIXOS_FLAKE_DIR,MCB_NIXOS_FLAKE_TARGET,NIXD_HOST -- @MCB_NIXOS_EXECUTABLE@ ...$args
 }
 
-def nrt [...args: string] {
-    ^mcb-nixos test ...$args
+def --wrapped nrs [...args: string] {
+    _mcb_nixos_root switch ...$args
 }
 
-def nrb [...args: string] {
-    ^mcb-nixos boot ...$args
+def --wrapped nrt [...args: string] {
+    _mcb_nixos_root test ...$args
 }
 
-def nfu [...args: string] {
-    ^mcb-nixos update ...$args
+def --wrapped nrb [...args: string] {
+    _mcb_nixos_root boot ...$args
 }
 
-def nru [...args: string] {
-    ^mcb-nixos update-switch ...$args
+def --wrapped nfu [...args: string] {
+    _mcb_nixos_root update ...$args
+}
+
+def --wrapped nru [...args: string] {
+    _mcb_nixos_root update-switch ...$args
 }
 
 def nrc [...args: string] {
-    ^mcb-nixos check ...$args
+    if ($args | is-empty) {
+        _mcb_nixos_root check
+    } else {
+        ^@MCB_NIXOS_EXECUTABLE@ check ...$args
+    }
 }

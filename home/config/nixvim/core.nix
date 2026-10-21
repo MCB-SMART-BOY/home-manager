@@ -29,6 +29,18 @@ _:
     # 因此不设 clipboard=unnamedplus；显式 `"+` 系列命令仍可用。
 
     opts = {
+      number = true; # 显示行号
+      relativenumber = true; # 显示相对行号
+
+      cursorline = true; # 高亮当前行
+      cursorcolumn = true; # 高亮当前列
+
+      expandtab = true; # 把tab（制表符\t）转变成多个空格
+      tabstop = 2; # 一个tab相当于2个空格（并非缩进意义上的tab）（个人喜好勿喷）
+      shiftwidth = 4; # 这才是真正意义上的缩进空格数量
+
+      autoread = true; # 自动加载被外部程序修改过后的文件（比如git branch或者其他的编辑器甚至是agent）
+
       autoindent = true;
       breakindent = true;
       # Helix [editor] rulers = [100]（<leader>ur 开关同一键位）
@@ -39,10 +51,6 @@ _:
         "noselect"
       ];
       confirm = true;
-      # Helix [editor] cursorline/cursorcolumn = true
-      cursorcolumn = true;
-      cursorline = true;
-      expandtab = true;
       # Helix [editor.cursor-shape] normal=block、insert=bar、select=underline
       # nvim 没有 underline 光标，v/ve（可视即 Helix 的 Select）用 20% 高的水平条近似。
       guicursor = "n-c-sm:block,v:hor20,ve:hor20,i-ci:ver25,o:hor20,r-cr:hor20,t:block-blinkon500-blinkoff500-TermCursor";
@@ -53,14 +61,11 @@ _:
       # （nvim 的 tab 字段需要两个字符：首格与其余格）
       listchars = "space:·,tab:→ ,nbsp:⍽,trail:·";
       mouse = "a";
-      number = true;
       # Helix [editor.gutters.line-numbers] min-width = 3
       numberwidth = 3;
       pumheight = 10;
-      relativenumber = true;
       scrolloff = 8;
       shiftround = true;
-      shiftwidth = 2;
       shortmess = "filnxtToOFWIcC";
       showmode = false;
       sidescrolloff = 8;
@@ -69,10 +74,9 @@ _:
       smartindent = true;
       # Helix [editor] shell = ["zsh" "-c"]
       shell = "zsh";
-      softtabstop = 2;
+      softtabstop = 4;
       splitbelow = true;
       splitright = true;
-      tabstop = 2;
       termguicolors = true;
       timeoutlen = 300;
       undofile = true;

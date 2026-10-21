@@ -1,5 +1,6 @@
 # NixOS-specific Helix language additions; portable languages.toml stays generic.
 {
+  config,
   lib,
   mcbNixpkgsExpression,
   mcbNixosOptionsExpression,
@@ -20,12 +21,14 @@ in
             "--query-driver=/nix/store/*/bin/gcc,/nix/store/*/bin/g++,/nix/store/*/bin/cc,/nix/store/*/bin/c++"
           ];
         };
-        nixd = portableLanguageServers.nixd // {
-          config = {
-            nixpkgs.expr = mcbNixpkgsExpression;
-            options.nixos.expr = mcbNixosOptionsExpression;
+        nixd =
+          portableLanguageServers.nixd
+          // lib.optionalAttrs config.mcb.nixos.enableHostOptions {
+            config = {
+              nixpkgs.expr = mcbNixpkgsExpression;
+              options.nixos.expr = mcbNixosOptionsExpression;
+            };
           };
-        };
       };
     }
   );

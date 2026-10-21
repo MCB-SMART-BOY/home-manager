@@ -6,6 +6,34 @@ error() {
   return 1
 }
 
+require_root() {
+  if [[ $EUID -ne 0 ]]; then
+    error "this operation requires root; run the installed mcb-nixos by its absolute path with sudo (see mcb-nixos --help)"
+    return 1
+  fi
+}
+
+check_source_access() {
+  local configured_source=$1
+  local component
+  local current=/
+  local -a components
+
+  IFS=/ read -r -a components <<<"$configured_source"
+  for component in "${components[@]}"; do
+    [[ -n "$component" ]] || continue
+    if [[ ! -x "$current" ]]; then
+      error "cannot access source '$configured_source': no permission to traverse '$current'; run the installed CLI as root for a root-only repository"
+      return 1
+    fi
+    current="${current%/}/$component"
+  done
+  if [[ ! -x "$current" || ! -r "$current" ]]; then
+    error "cannot access source '$configured_source': insufficient directory permissions; run the installed CLI as root for a root-only repository"
+    return 1
+  fi
+}
+
 source_dir() {
   local configured_source=${MCB_NIXOS_FLAKE_DIR:-/etc/nixos}
   local canonical_source
@@ -19,12 +47,25 @@ source_dir() {
     error "invalid source '$configured_source': URI schemes, queries, and fragments are not supported"
     return 1
   fi
-  if [[ ! -d "$configured_source" ]]; then
-    error "invalid source '$configured_source': directory does not exist"
+  if [[ -L "$configured_source" ]]; then
+    error "invalid source '$configured_source': symlinked directories are not supported"
     return 1
   fi
-  if [[ ! -f "$configured_source/flake.nix" || -L "$configured_source/flake.nix" ]]; then
+  if [[ ! -e "$configured_source" ]]; then
+    error "invalid source '$configured_source': directory does not exist or is inaccessible; run the installed CLI as root for a root-only repository"
+    return 1
+  fi
+  if [[ ! -d "$configured_source" ]]; then
+    error "invalid source '$configured_source': not a directory"
+    return 1
+  fi
+  check_source_access "$configured_source" || return 1
+  if [[ -L "$configured_source/flake.nix" || ! -f "$configured_source/flake.nix" ]]; then
     error "invalid source '$configured_source': regular flake.nix is required"
+    return 1
+  fi
+  if [[ ! -r "$configured_source/flake.nix" ]]; then
+    error "cannot read flake.nix in source '$configured_source'; run the installed CLI as root for a root-only repository"
     return 1
   fi
 
@@ -50,7 +91,15 @@ source_dir() {
 source_ref() {
   local directory
   directory=$(source_dir) || return 1
-  printf 'path:%s\n' "$directory"
+  if [[ ! -e "$directory/.git" ]]; then
+    error "invalid source '$directory': a Git repository root is required; non-Git directories are not imported"
+    return 1
+  fi
+  if ! git -C "$directory" ls-files --error-unmatch -- flake.nix >/dev/null; then
+    error "invalid source '$directory': flake.nix must be tracked by Git; tracked source files become visible in the Nix store"
+    return 1
+  fi
+  printf '%s\n' "$directory"
 }
 
 nixos_configurations() {
@@ -79,7 +128,6 @@ target_exists() {
 
 select_target() {
   local source
-  local source_dir_path
   local configurations
   local explicit_target
   local host_target
@@ -88,13 +136,12 @@ select_target() {
   local only_target
 
   source=$(source_ref) || return 1
-  source_dir_path=${source#path:}
   configurations=$(nixos_configurations) || return 1
 
   explicit_target=${MCB_NIXOS_FLAKE_TARGET:-}
   if [[ -n "$explicit_target" ]]; then
     if ! target_exists "$configurations" "$explicit_target"; then
-      error "invalid target '$explicit_target' for source '$source_dir_path'"
+      error "invalid target '$explicit_target' for source '$source'"
       return 1
     fi
     printf '%s\n' "$explicit_target"
@@ -104,7 +151,7 @@ select_target() {
   host_target=${NIXD_HOST:-}
   if [[ -n "$host_target" ]]; then
     if ! target_exists "$configurations" "$host_target"; then
-      error "invalid target '$host_target' for source '$source_dir_path'"
+      error "invalid target '$host_target' for source '$source'"
       return 1
     fi
     printf '%s\n' "$host_target"
@@ -132,7 +179,7 @@ select_target() {
     return 0
   fi
 
-  error "cannot determine a unique NixOS target for source '$source_dir_path'; set MCB_NIXOS_FLAKE_TARGET"
+  error "cannot determine a unique NixOS target for source '$source'; set MCB_NIXOS_FLAKE_TARGET"
   return 1
 }
 
@@ -148,16 +195,18 @@ workflow_ref() {
 run_rebuild() {
   local operation=$1
   shift
+  require_root || return 1
   local reference
   reference=$(workflow_ref) || return 1
-  sudo nixos-rebuild "$operation" --flake "$reference" --show-trace "$@"
+  nixos-rebuild "$operation" --flake "$reference" --show-trace "$@"
 }
 
 run_update() {
   shift
+  require_root || return 1
   local source
   source=$(source_ref) || return 1
-  sudo nix flake update --flake "$source" "$@"
+  nix flake update --flake "$source" "$@"
 }
 
 run_check() {
@@ -171,9 +220,10 @@ run_check() {
     local target
     source=$(source_ref) || return 1
     target=$(select_target) || return 1
+    target=$(jq -cn --arg target "$target" '$target')
     flake="$source#nixosConfigurations.$target.config.system.build.toplevel"
   fi
-  nix build "$flake" --dry-run
+  nix build "$flake" --no-write-lock-file --no-link --dry-run
 }
 
 usage() {
@@ -181,11 +231,43 @@ usage() {
   exit 1
 }
 
+show_help() {
+  cat <<'EOF'
+Usage: mcb-nixos {source|target|ref|switch|test|boot|update|update-switch|check} [args...]
+  source       Print the Git-filtered local flake source reference
+  target       Select a nixosConfigurations target
+  ref          Print the local source and target reference
+  switch|test|boot [args...]  Run nixos-rebuild as root
+  update [args...]            Update the system flake.lock as root
+  update-switch [args...]     Update then switch as root
+  check [flake]               Dry-run a build (without changing the system)
+
+  MCB_NIXOS_FLAKE_DIR overrides the configured local source directory.
+  MCB_NIXOS_FLAKE_TARGET overrides the selected target (then NIXD_HOST).
+  For a root-only source, run the installed CLI with sudo and its absolute
+  path, e.g. sudo -- "$(command -v mcb-nixos)" switch. Shell shortcuts
+  nrs/nrt/nrb/nfu/nru and nrc without an explicit flake do this at entry,
+  preserving only the three named source/target overrides above.
+  The CLI itself never escalates privileges; nrc with a flake stays unprivileged.
+  Ordinary-user editors retain generic Nix completion, not host options
+  from a root-only repository. Do not loosen repository permissions.
+  The configured source must be a Git repository root with tracked flake.nix.
+  Nix imports tracked source files into its normally readable store. Keep
+  secrets outside the tracked source; root directory permissions do not
+  make store copies private. Ignored and untracked files are not imported.
+EOF
+}
+
 if [[ $# -eq 0 ]]; then
   usage
 fi
 
 command_name=$1
+if [[ "$command_name" == --help || "$command_name" == -h ]]; then
+  [[ $# -eq 1 ]] || usage
+  show_help
+  exit 0
+fi
 case "$command_name" in
   source)
     [[ $# -eq 1 ]] || usage
@@ -206,6 +288,7 @@ case "$command_name" in
     run_update "$@"
     ;;
   update-switch)
+    require_root || exit 1
     run_update "$1"
     run_rebuild switch "${@:2}"
     ;;

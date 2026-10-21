@@ -17,7 +17,7 @@ let
   requireImpureValue =
     name: value:
     if value == "" then
-      throw "homeConfigurations.default requires ${name}; re-run the flake command with --impure."
+      throw "Current-user Home Manager profiles require ${name}; re-run the flake command with --impure."
     else
       value;
 
@@ -57,7 +57,7 @@ let
     };
   };
   # This repository is the user's complete portable profile, not a menu of opt-in features.
-  # The NixOS platform module stays exported separately for explicit host integration.
+  # The separate NixOS profile opts into host operations; default stays portable.
   defaultModules = [
     homeModules.desktop
     homeModules.development
@@ -74,6 +74,16 @@ let
     homeModules."nix-tools"
     homeModules."terminal-tools"
     homeModules.nixvim
+  ];
+
+  nixosModules = defaultModules ++ [
+    homeModules.nixos
+    {
+      mcb.nixos = {
+        flakeDirectory = "/root/nixos-config";
+        enableHostOptions = false;
+      };
+    }
   ];
 
   # homeModules remains exported for composing additional configurations.
@@ -105,23 +115,40 @@ let
         ++ modules;
       };
 
-  homeConfigurations = {
-    default = mkHomeConfiguration {
+  mkCurrentHomeConfiguration =
+    modules:
+    mkHomeConfiguration {
       system = requireImpureValue "builtins.currentSystem" (builtins.currentSystem or "");
       username = requireImpureValue "the USER environment variable" (builtins.getEnv "USER");
       homeDirectory = requireImpureValue "the HOME environment variable" (builtins.getEnv "HOME");
-      modules = defaultModules;
+      inherit modules;
     };
+
+  homeConfigurations = {
+    default = mkCurrentHomeConfiguration defaultModules;
+    nixos = mkCurrentHomeConfiguration nixosModules;
   };
 
-  checks = forAllSystems (system: {
-    home-configuration =
-      (mkHomeConfiguration {
-        inherit system;
-        username = "home-manager-check";
-        homeDirectory = "/var/empty/home-manager-check";
-      }).activationPackage;
-  });
+  mkCheckHomeConfiguration =
+    system: modules:
+    (mkHomeConfiguration {
+      inherit system modules;
+      username = "home-manager-check";
+      homeDirectory = "/var/empty/home-manager-check";
+    }).activationPackage;
+
+  checks = forAllSystems (
+    system:
+    {
+      home-configuration = mkCheckHomeConfiguration system [ ];
+    }
+    # Keep the portable base checks on every existing platform. The complete
+    # desktop build is checked on the workstation architecture, not advertised
+    # as supporting every Linux architecture in lib.systems.flakeExposed.
+    // lib.optionalAttrs (system == "x86_64-linux") {
+      full-home-configuration = mkCheckHomeConfiguration system defaultModules;
+    }
+  );
 
   devShells = forAllSystems (system: {
     default = (mkPkgs { inherit system; }).mkShell {

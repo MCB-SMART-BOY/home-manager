@@ -1,19 +1,28 @@
 # NixOS platform entry point. Import this only on a NixOS host; portable defaults stay in home/default.nix.
 {
+  config,
   lib,
   pkgs,
   ...
 }:
 let
+  nixosConfig = config.mcb.nixos;
+
   mcbNixos = pkgs.writeShellApplication {
     name = "mcb-nixos";
     runtimeInputs = with pkgs; [
       coreutils
+      git
       jq
       nix
       nixos-rebuild
     ];
-    text = builtins.readFile ./mcb-nixos;
+    text = ''
+      if [[ -z "''${MCB_NIXOS_FLAKE_DIR:-}" ]]; then
+        export MCB_NIXOS_FLAKE_DIR=${lib.escapeShellArg nixosConfig.flakeDirectory}
+      fi
+      ${builtins.readFile ./mcb-nixos}
+    '';
   };
 
   flakeSourceExpression = ''
@@ -23,7 +32,7 @@ let
       hasQueryOrFragment = builtins.match ".*[?#].*" configuredSource != null;
       sourcePath =
         if configuredSource == "" then
-          "/etc/nixos"
+          ${builtins.toJSON nixosConfig.flakeDirectory}
         else if hasScheme || hasQueryOrFragment then
           throw "MCB_NIXOS_FLAKE_DIR must be an absolute local directory path without a URI scheme, query, or fragment"
         else if builtins.substring 0 1 configuredSource != "/" then
@@ -40,13 +49,15 @@ let
         && builtins.readFileType flakeFile == "regular";
       source =
         if !builtins.pathExists sourceDir then
-          throw "MCB_NIXOS_FLAKE_DIR does not exist: " + sourcePath
+          throw "MCB_NIXOS_FLAKE_DIR does not exist or is inaccessible to the editor user: " + sourcePath
         else if !sourceDirType.success || sourceDirType.value != "directory" then
           throw "MCB_NIXOS_FLAKE_DIR must be a non-symlink directory: " + sourcePath
         else if !regularFlakeFile then
           throw "MCB_NIXOS_FLAKE_DIR must contain a regular flake.nix: " + sourcePath
+        else if !builtins.pathExists (canonicalSourceDir + "/.git") then
+          throw "MCB_NIXOS_FLAKE_DIR must be a Git repository root; non-Git directories are not imported: " + sourcePath
         else
-          "path:" + canonicalSourcePath;
+          canonicalSourcePath;
     in
   '';
 
@@ -101,6 +112,7 @@ in
   imports = [
     {
       _module.args = {
+        mcbNixosExecutable = "${mcbNixos}/bin/mcb-nixos";
         mcbNixpkgsExpression = nixpkgsExpression;
         mcbNixosOptionsExpression = nixosOptionsExpression;
       };
@@ -112,6 +124,35 @@ in
     ../config/helix/nixos.nix
     ../config/nixvim/nixos.nix
   ];
+
+  options.mcb.nixos = {
+    flakeDirectory = lib.mkOption {
+      type = lib.types.strMatching "/[^:?#]*";
+      default = "/etc/nixos";
+      description = ''
+        Absolute local NixOS Git repository root (no URI scheme, query, or fragment).
+        Sets the default source for mcb-nixos and, when host options are enabled,
+        nixd's nixpkgs and NixOS options. MCB_NIXOS_FLAKE_DIR overrides it at
+        runtime. This option does not grant access to a root-only directory:
+        run system commands as root, and disable enableHostOptions for a
+        regular user's editor if that user cannot read the source.
+        Nix imports Git-tracked source files into its normally readable store;
+        tracked files must not contain secrets. Ignored and untracked files
+        are not imported. flake.nix must be tracked by Git.
+      '';
+    };
+
+    enableHostOptions = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Configure nixd to evaluate nixpkgs and NixOS host options from
+        flakeDirectory. Enable only when the editor's user can read that
+        directory; set false for a root-only system flake while retaining
+        generic Nix completion and other NixOS-specific editor settings.
+      '';
+    };
+  };
 
   config = {
     home.packages = [ mcbNixos ];

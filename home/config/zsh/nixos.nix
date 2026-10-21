@@ -1,5 +1,5 @@
 # NixOS-specific Zsh helpers and aliases; portable Zsh defaults remain in default.nix.
-_:
+{ pkgs, mcbNixosExecutable, ... }:
 
 {
   programs.zsh.shellAliases = {
@@ -10,29 +10,42 @@ _:
   };
 
   programs.zsh.siteFunctions = {
+    _mcb_nixos_root = ''
+      ${pkgs.coreutils}/bin/env -i \
+        MCB_NIXOS_FLAKE_DIR="''${MCB_NIXOS_FLAKE_DIR-}" \
+        MCB_NIXOS_FLAKE_TARGET="''${MCB_NIXOS_FLAKE_TARGET-}" \
+        NIXD_HOST="''${NIXD_HOST-}" \
+        /run/wrappers/bin/sudo --preserve-env=MCB_NIXOS_FLAKE_DIR,MCB_NIXOS_FLAKE_TARGET,NIXD_HOST \
+        -- ${mcbNixosExecutable} "$@"
+    '';
+
     # --- NixOS 管理 ---
     nrs = ''
-      mcb-nixos switch "$@"
+      _mcb_nixos_root switch "$@"
     '';
 
     nrt = ''
-      mcb-nixos test "$@"
+      _mcb_nixos_root test "$@"
     '';
 
     nrb = ''
-      mcb-nixos boot "$@"
+      _mcb_nixos_root boot "$@"
     '';
 
     nfu = ''
-      mcb-nixos update "$@"
+      _mcb_nixos_root update "$@"
     '';
 
     nru = ''
-      mcb-nixos update-switch "$@"
+      _mcb_nixos_root update-switch "$@"
     '';
 
     nrc = ''
-      mcb-nixos check "$@"
+      if [[ $# -eq 0 ]]; then
+        _mcb_nixos_root check
+      else
+        ${mcbNixosExecutable} check "$@"
+      fi
     '';
   };
 }
