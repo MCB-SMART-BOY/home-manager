@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)
 cd "$repo"
 
+# ShellCheck cannot interpret Nix interpolation in this literal expression.
+# shellcheck disable=SC2016
 result=$(nix eval --impure --no-write-lock-file --json --expr '
   let
     flake = builtins.getFlake (toString ./.);

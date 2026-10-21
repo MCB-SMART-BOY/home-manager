@@ -6,8 +6,8 @@ fail() {
   exit 1
 }
 
-repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
-source "$repo/tests/git-fixture.sh"
+repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)
+source "$repo/.omp/tests/git-fixture.sh"
 fixture=$(mktemp -d)
 trap 'rm -rf -- "$fixture"' EXIT
 cat >"$fixture/flake.nix" <<'EOF'

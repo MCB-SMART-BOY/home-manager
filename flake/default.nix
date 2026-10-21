@@ -153,8 +153,14 @@ let
   devShells = forAllSystems (system: {
     default = (mkPkgs { inherit system; }).mkShell {
       packages = with (mkPkgs { inherit system; }); [
+        bash
+        coreutils
         deadnix
+        git
+        jq
+        shellcheck
         statix
+        util-linux
       ];
     };
   });
