@@ -2,9 +2,12 @@
 
 本仓库是当前用户的 Home Manager flake；项目检查与操作说明集中于 `.omp/`，不替代全局规则，也不保存日志、凭据或运行态。
 
-- [flake.nix](../flake.nix) 与 [flake/default.nix](../flake/default.nix)：输入、输出、`default`/`nixos` profiles 和 devShell 的事实源；[flake.lock](../flake.lock) 固定输入版本。
-- [home/default.nix](../home/default.nix)、[home/base.nix](../home/base.nix) 与 [home/features](../home/features)：用户配置与可移植功能；[home/platform/nixos.nix](../home/platform/nixos.nix) 只为 NixOS 添加主机操作。普通 Linux 用 `#default`，NixOS 本机用 `#nixos`；均取当前 `USER`、`HOME`，求值须 `--impure`。普通用户的 Home Manager 操作不使用 `sudo`。
-- [home/scripts](../home/scripts)、[home/config](../home/config)：安装到用户 profile 的工具与应用配置；`mcb-nixos` 和 `nfu`/`nrs`/`nru` 指向另一份 `/root/nixos-config` 系统配置，不是本仓库的 Home Manager 更新命令。独立语言工具链也不随 flake 更新自动升级。
-- [.omp/validate.sh](validate.sh) 与 [.omp/tests](tests)：项目行为检查及真实 profile 构建；全局 `~/.omp/agent/validate.sh` 是另一个交付质量门。
+- [flake.nix](../flake.nix) 与 [flake/default.nix](../flake/default.nix)：输入、唯一部署输出 `homeConfigurations.home` 及跨系统检查的事实源；[flake.lock](../flake.lock) 固定输入版本。
+- [home/default.nix](../home/default.nix) 直接组合所有系统共用的用户配置，[home/packages.nix](../home/packages.nix) 列出没有独立配置的工具。部署读取当前 `USER`、`HOME` 与 Nix 系统标识；用目标普通用户执行 `home-manager switch --flake .#home --impure --no-write-lock-file --no-out-link`，不用 `sudo`。
+- [.omp/validate.sh](validate.sh) 构建真实用户的 activation package；全局 `~/.omp/agent/validate.sh` 是独立的交付质量门。
 
 操作、授权、失败与回退边界见 [Home Manager 工作流](workflow/home-manager.md)。正式配置在 `flake/` 和 `home/`，不要把检查脚本或操作说明当成运行态配置。
+
+## 软件配置分类
+
+`home/config/<分类>/<软件>` 按主要用途组织，如终端、编辑器、Shell、开发工具和独立命令行工具。目录位置不决定是否启用；实际应用集合以 `home/default.nix` 及其模块为准。只安装而没有独立配置的软件留在相应模块，不为它新增空目录。

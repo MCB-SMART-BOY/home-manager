@@ -1,15 +1,16 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let
-  mcbToolchain = pkgs.writeShellApplication {
-    name = "mcb-toolchain";
-    runtimeInputs = [
-      pkgs.coreutils
-      pkgs.gnused
-      pkgs.jq
-    ];
-    text = builtins.readFile ./mcb-toolchain;
-  };
+  toolchainCommands = map (
+    action:
+    pkgs.writeShellApplication {
+      name = "${action}-toolchain";
+      runtimeInputs = [ pkgs.jq ];
+      text = ''
+        exec ${lib.getExe pkgs.bash} ${./toolchain} ${./toolchain.tsv} ${action} "$@"
+      '';
+    }
+  ) [ "bootstrap" "update" "check" ];
 
   pack = pkgs.writeShellApplication {
     name = "pack";
@@ -248,8 +249,5 @@ let
   };
 in
 {
-  home.packages = [
-    mcbToolchain
-    pack
-  ];
+  home.packages = [ pack ] ++ toolchainCommands;
 }

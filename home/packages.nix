@@ -9,6 +9,8 @@
   };
 
   home.packages = with pkgs; [
+    bash
+    clang-tools
     coreutils
     curl
     ouch

@@ -1,0 +1,172 @@
+#!/usr/bin/env bash
+# The Home Manager launchers supply the manifest and action before user arguments.
+set -uo pipefail
+
+manifest=$1
+mode=$2
+shift 2
+
+usage() {
+  printf '%s\n' \
+    "Usage: ${mode}-toolchain [rust|python|go|js|mise ...]" \
+    'Without groups: rust, python, go, js; mise is explicit.' \
+    'bootstrap installs the latest release from every selected list entry.' \
+    'update upgrades only listed packages already installed by their manager.' \
+    'check reports each managed install and the command selected by PATH.'
+}
+
+if [[ ${1:-} == --help && $# == 1 ]]; then
+  usage
+  exit 0
+fi
+
+[[ $# -gt 0 ]] || set -- rust python go js
+for group in "$@"; do
+  case $group in
+    rust|python|go|js|mise) ;;
+    *) printf 'Unknown tool group: %s\n' "$group" >&2; usage >&2; exit 2 ;;
+  esac
+done
+
+# Do not resolve project-local Go or mise settings in the caller's directory.
+cd "$HOME" || exit 1
+status=0
+
+prepare_group() {
+  local info gopath
+  installed_list=
+  bin_dir=
+  case $group in
+    rust)
+      manager=cargo
+      cargo_root=${CARGO_INSTALL_ROOT:-${CARGO_HOME:-$HOME/.cargo}}
+      bin_dir=$cargo_root/bin
+      ;;
+    python) manager=uv ;;
+    go) manager=go ;;
+    js) manager=bun ;;
+    mise) manager=mise ;;
+  esac
+  if ! type -P "$manager" >/dev/null; then
+    printf '%s: required command %s is not in PATH\n' "$group" "$manager" >&2
+    return 1
+  fi
+
+  case $group in
+    rust)
+      if [[ $mode != bootstrap ]]; then
+        installed_list=$(cargo install --list --root "$cargo_root") || return 1
+      fi
+      ;;
+    python)
+      bin_dir=$(uv tool dir --bin) || return 1
+      if [[ $mode != bootstrap ]]; then
+        installed_list=$(uv tool list) || return 1
+      fi
+      ;;
+    go)
+      info=$(GOTOOLCHAIN=local go env -json GOBIN GOPATH) || return 1
+      bin_dir=$(jq -r '.GOBIN' <<<"$info") || return 1
+      if [[ -z $bin_dir ]]; then
+        gopath=$(jq -r '.GOPATH' <<<"$info") || return 1
+        bin_dir=${gopath%%:*}/bin
+      fi
+      ;;
+    js)
+      if ! type -P node >/dev/null; then
+        printf 'js: Node is required by the installed CLI entry points; put node in PATH first\n' >&2
+        return 1
+      fi
+      bin_dir=$(bun pm bin --global) || return 1
+      if [[ $mode != bootstrap ]]; then
+        installed_list=$(NO_COLOR=1 bun pm ls --global) || return 1
+      fi
+      ;;
+    mise)
+      if [[ $mode != bootstrap ]]; then
+        installed_list=$(mise ls --global --json) || return 1
+      fi
+      ;;
+  esac
+}
+
+is_installed() {
+  local line info
+  case $group in
+    rust|python)
+      while IFS= read -r line; do
+        if [[ $line == "$package v"* ]]; then return 0; fi
+      done <<<"$installed_list"
+      ;;
+    go)
+      if [[ -x $bin_dir/${bins[0]} ]]; then
+        info=$(GOTOOLCHAIN=local go version -m "$bin_dir/${bins[0]}") || return 1
+        while IFS=$'\t' read -r kind path _; do
+          if [[ $kind == path && $path == "$package" ]]; then return 0; fi
+        done <<<"$info"
+      fi
+      ;;
+    js)
+      while IFS= read -r line; do
+        if [[ ${line#*── } == "$package@"* ]]; then return 0; fi
+      done <<<"$installed_list"
+      ;;
+    mise)
+      jq -e --arg tool "$package" 'any(.[$tool][]?; .installed and .active)' \
+        <<<"$installed_list" >/dev/null
+      return
+      ;;
+  esac
+  return 1
+}
+
+install_latest() {
+  case $group in
+    rust) cargo install --locked --root "$cargo_root" "$package" ;;
+    python) uv tool install --managed-python --upgrade "$package" ;;
+    go) go install "$package@latest" ;;
+    js) bun add --global "$package@latest" ;;
+    mise) mise use --global --fuzzy "$package@latest" ;;
+  esac
+}
+
+check_bins() {
+  local bin expected active
+  for bin in "${bins[@]}"; do
+    if [[ $group == mise ]]; then
+      expected=$(mise which "$bin") || { status=1; continue; }
+    else
+      expected=$bin_dir/$bin
+    fi
+    active=$(type -P "$bin" || :)
+    if [[ ! -x $expected ]]; then
+      printf '  %s: missing at %s (PATH: %s)\n' "$bin" "$expected" "${active:-not found}" >&2
+      status=1
+    elif [[ -n $active && $expected -ef $active ]]; then
+      printf '  %s: %s (active)\n' "$bin" "$expected"
+    else
+      printf '  %s: %s (PATH: %s)\n' "$bin" "$expected" "${active:-not found}"
+    fi
+  done
+}
+
+for group in "$@"; do
+  if ! prepare_group; then status=1; continue; fi
+  while IFS=$'\t' read -r listed_group package executables <&3; do
+    [[ $listed_group == "$group" ]] || continue
+    read -r -a bins <<<"$executables"
+    if [[ $mode != bootstrap ]] && ! is_installed; then
+      printf '%s/%s: not installed by %s\n' "$group" "$package" "$manager"
+      if [[ $mode == check ]]; then check_bins; status=1; fi
+      continue
+    fi
+    printf '%s/%s\n' "$group" "$package"
+    if [[ $mode == check ]]; then
+      check_bins
+    elif ! install_latest; then
+      printf '%s/%s: %s failed\n' "$group" "$package" "$mode" >&2
+      status=1
+    fi
+  done 3< "$manifest"
+done
+exit "$status"
