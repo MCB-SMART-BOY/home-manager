@@ -4,6 +4,7 @@
   programs = {
     fd.enable = true;
     fzf.enable = true;
+    fzf.enableNushellIntegration = false;
     jq.enable = true;
     ripgrep.enable = true;
   };

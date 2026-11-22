@@ -1,8 +1,8 @@
 # Home Manager 工作流
 
-从仓库根目录操作。唯一部署目标是 `homeConfigurations.home`；[flake/default.nix](../../flake/default.nix) 与 [home/default.nix](../../home/default.nix) 是事实源。部署和检查共用同一套应用，目标为 Linux（`i686`、`x86_64`、`aarch64`）和 macOS（`x86_64`、`aarch64`），不为不同平台跳过应用。原生 Windows、BSD 和其他 CPU 组合不在此配置的支持范围；WSL 使用对应的 Linux 环境。
+从仓库根目录操作。唯一部署目标是 `homeConfigurations.home`；[flake/default.nix](../../flake/default.nix) 与 [home/default.nix](../../home/default.nix) 是事实源。部署和检查共用同一套应用，目标为 Linux（`i686`、`x86_64`、`aarch64`）和 Apple Silicon macOS（`aarch64`），不为不同平台跳过应用。原生 Windows、BSD 和其他 CPU 组合不在此配置的支持范围；WSL 使用对应的 Linux 环境。
 
-需要事先有能工作的 Nix。Nixpkgs、Home Manager 和 Nixvim 一并锁在 26.05；这是 Nixpkgs 最后支持 Intel Mac 的版本，不保证后续版本仍支持。不要为绕过平台错误关闭 Nixpkgs 的兼容性检查。
+需要事先有能工作的 Nix。Nixpkgs 跟随 `nixpkgs-unstable`，Home Manager 和 Nixvim 使用各自主分支并共用同一个 nixpkgs；具体版本由 `flake.lock` 固定。当前 unstable 已不支持 Intel Mac；不要通过关闭平台检查来绕过限制。`home.stateVersion` 是用户配置的兼容基线，不随更新 lock 改动。
 
 ## 日常更新与切换
 
@@ -45,7 +45,7 @@ Nix 仍提供编辑器、Shell 所依赖的基础命令、`clangd` 和 Nix 自�
 
 项目入口 [.omp/validate.sh](../validate.sh) 先在临时目录验证工具链命令，再用 Git Flake 源构建当前用户的配置；需要 Nix 与 jq。`--help` 不执行检查。构建使用 `--impure --no-update-lock-file --no-link`，不会激活、更新 lock、写入 `result`、调用 `sudo` 或改动 Git index。
 
-`checks.<system>.home` 对上述五个目标使用合成用户和相同的模块。求值只证明能生成构建计划；完整构建和应用运行仍需相应平台。比如在 `aarch64-linux` 构建机上运行：
+`checks.<system>.home` 对上述目标使用合成用户和相同的模块。求值只证明能生成构建计划；完整构建和应用运行仍需相应平台。比如在 `aarch64-linux` 构建机上运行：
 
 ```bash
 nix build --no-write-lock-file --no-link .#checks.aarch64-linux.home

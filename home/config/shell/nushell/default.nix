@@ -19,6 +19,7 @@ in
   programs.nushell = {
     enable = true;
     package = pkgs.nushell;
+    loadSessionVariables = false;
     configFile.text = ''
       source ${starshipInit}
       source ${zoxideInit}
