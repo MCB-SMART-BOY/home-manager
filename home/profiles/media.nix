@@ -1,0 +1,22 @@
+{
+  pkgs,
+  ...
+}:
+
+{
+  imports = [
+    ../modules/apps/mpv
+  ];
+
+  programs = {
+    ncmpcpp.enable = true;
+    ncspot.enable = true;
+    obs-studio.enable = true;
+  };
+
+  home.packages = with pkgs; [
+    mpd
+    playerctl
+    go-musicfox
+  ];
+}

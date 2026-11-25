@@ -1,0 +1,11 @@
+# NixOS 全局 clangd 配置
+# 让单文件 C/C++ 项目能正确找到 Nix store 中的系统头文件
+#
+# 原理：clangd 默认用自带的 clang 作为 fallback 驱动，
+# 但该 clang 不认识 /nix/store 里的 glibc 头文件。
+# 指定 Compiler: gcc 后，clangd 用 gcc 做 fallback，
+# 结合 languages.toml 中的 --query-driver，clangd 会
+# 执行 gcc -v 提取真实 include 路径。
+
+CompileFlags:
+  Compiler: gcc

@@ -32,4 +32,4 @@ fi
 bash .omp/tests/toolchain.sh || exit
 
 exec nix build --impure --no-update-lock-file --no-link \
-  '.#homeConfigurations.home.activationPackage'
+  "path:$PWD#homeConfigurations.home.activationPackage"

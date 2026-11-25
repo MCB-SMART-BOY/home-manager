@@ -1,6 +1,6 @@
 # Home Manager 工作流
 
-从仓库根目录操作。唯一部署目标是 `homeConfigurations.home`；[flake/default.nix](../../flake/default.nix) 与 [home/default.nix](../../home/default.nix) 是事实源。部署和检查共用同一套应用，目标为 Linux（`i686`、`x86_64`、`aarch64`）和 Apple Silicon macOS（`aarch64`），不为不同平台跳过应用。原生 Windows、BSD 和其他 CPU 组合不在此配置的支持范围；WSL 使用对应的 Linux 环境。
+从仓库根目录操作。唯一部署目标是 `homeConfigurations.home`；[flake/default.nix](../../flake/default.nix) 与 [home/default.nix](../../home/default.nix) 是事实源。部署和检查共用同一套应用与分层模块（`base` → `modules` 按所有者聚合 → `profiles` 能力集）。目标为 `x86_64-linux`、`aarch64-linux` 和 Apple Silicon macOS（`aarch64`）。所有 Linux profile 在两种 Linux 架构上同样启用，不再有 x86 专属能力集；不支持的 x86-only 应用已从配置中移除。原生 Windows、BSD、32 位 x86 和其他 CPU 组合不在此配置的支持范围；WSL 使用对应的 Linux 环境。
 
 需要事先有能工作的 Nix。Nixpkgs 跟随 `nixpkgs-unstable`，Home Manager 和 Nixvim 使用各自主分支并共用同一个 nixpkgs；具体版本由 `flake.lock` 固定。当前 unstable 已不支持 Intel Mac；不要通过关闭平台检查来绕过限制。`home.stateVersion` 是用户配置的兼容基线，不随更新 lock 改动。
 
@@ -29,21 +29,20 @@ update-toolchain                  # 只升级清单里已有的工具，不安�
 check-toolchain                   # 只检查管理器安装位置和 PATH 路径
 ```
 
-[工具清单](../../home/scripts/toolchain.tsv) 不锁版本。`bootstrap-toolchain` 即使在系统目录或 Nix 中找到同名命令，也照常交给该生态的管理器安装；不会卸载系统包或改 `PATH` 顺序。若管理器自己的安装目录已经有同名文件，则按该管理器的规则处理。`check-toolchain` 报告两边的路径，方便你自己决定用哪份；它不查询远程版本。
+[工具清单](../../home/modules/development/toolchain/manifest.tsv) 不锁版本。`bootstrap-toolchain` 即使在系统目录或 Nix 中找到同名命令，也照常交给该生态的管理器安装；不会卸载系统包，也不自行改 `PATH` 顺序。Home Manager 在 [home/modules/development/toolchain/default.nix](../../home/modules/development/toolchain/default.nix) 把 Cargo、Go、opam、elan、Bun 和 `~/.local/bin` 加入 `sessionPath`，安装后的命令在新会话中直接可用。`check-toolchain` 检查管理器安装位置和 PATH；若 PATH 指向的二进制不是管理器安装的那一个，检查失败并报告两边路径。它不查询远程版本。
 
 | 组 | 前置条件和安装位置 |
 | --- | --- |
 | `rust` | 已有 Cargo 和本机编译工具；用 `cargo install --locked`。按 `CARGO_INSTALL_ROOT`、`CARGO_HOME`、`~/.cargo` 的顺序选择安装根目录，命令在其 `bin`。`rustfmt`、`clippy`、`rust-analyzer` 是 Rust 工具链组件，单独用 rustup 管。 |
 | `python` | 已有 uv；`uv tool install --managed-python --upgrade` 用 uv 托管的 Python 安装独立工具，命令目录见 `uv tool dir --bin`。解释器和项目依赖仍用 `uv python`、`uv add`、`uv sync`。 |
 | `go` | 已有官方 Go 工具链；用 `go install ...@latest`，安装到 `GOBIN` 或 `GOPATH` 首项下的 `bin`。 |
-| `js` | 已有 Bun 和 Node（有些 CLI 通过 Node 启动）；用 `bun add --global ...@latest`，目录见 `bun pm bin --global`。Bun 不支持 32 位 x86；该机器仍可用 `#home`，安装时显式选其他组。 |
-| `mise` | 单独执行 `bootstrap-toolchain mise` 才用现有 mise 安装并选择全局最新版 uv、Bun 和 Node。`update-toolchain mise` 只检查并更新已有的全局 mise 版本，不替代 Rust、Go 或 Python 的管理器。 |
+| `js` | 已有 Bun 和 Node（Node 由 `home/profiles/development.nix` 的 `pkgs.nodejs` 提供）；用 `bun add --global ...@latest`，目录见 `bun pm bin --global`。 |
 
-Nix 仍提供编辑器、Shell 所依赖的基础命令、`clangd` 和 Nix 自身的开发工具；`prettier`、`vtsls` 由 Bun 提供。项目锁文件继续决定项目自己的版本；Home Manager 回退不会回退这些独立安装的工具。
+Nix 拥有 `rg`、`fd`、`bat`、`eza`、`ouch` 和编辑器、Shell 所依赖的基础命令、`clangd` 和 Nix 自身的开发工具；工具链清单不重复安装这些命令。`prettier`、`vtsls` 由 Bun 提供。项目锁文件继续决定项目自己的版本；Home Manager 回退不会回退这些独立安装的工具。
 
 ## 开发反馈与交付检查
 
-项目入口 [.omp/validate.sh](../validate.sh) 先在临时目录验证工具链命令，再用 Git Flake 源构建当前用户的配置；需要 Nix 与 jq。`--help` 不执行检查。构建使用 `--impure --no-update-lock-file --no-link`，不会激活、更新 lock、写入 `result`、调用 `sudo` 或改动 Git index。
+项目入口 [.omp/validate.sh](../validate.sh) 先在临时目录验证工具链命令，再用 `path:$PWD` 工作树构建当前用户的配置；未暂存的新文件也会参与构建。需要 Nix 与 jq。`--help` 不执行检查。构建使用 `--impure --no-update-lock-file --no-link`，不会激活、更新 lock、写入 `result`、调用 `sudo` 或改动 Git index。
 
 `checks.<system>.home` 对上述目标使用合成用户和相同的模块。求值只证明能生成构建计划；完整构建和应用运行仍需相应平台。比如在 `aarch64-linux` 构建机上运行：
 

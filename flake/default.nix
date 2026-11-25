@@ -5,19 +5,32 @@ let
   systems = [
     "aarch64-darwin"
     "aarch64-linux"
-    "i686-linux"
     "x86_64-linux"
   ];
   forAllSystems = lib.genAttrs systems;
-  pkgsFor = forAllSystems (system: import inputs.nixpkgs { inherit system; });
+
+  mkPkgs =
+    system:
+    import inputs.nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+      overlays = [ (import ../overlays/tela-circle-icon-theme.nix) ];
+    };
+
+  pkgsFor = forAllSystems mkPkgs;
 
   mkHome =
-    { system, username, homeDirectory }:
+    {
+      system,
+      username,
+      homeDirectory,
+    }:
     if !builtins.elem system systems then
       throw "Unsupported system ${system}; supported systems: ${lib.concatStringsSep ", " systems}."
     else
       inputs.home-manager.lib.homeManagerConfiguration {
         pkgs = pkgsFor.${system};
+        extraSpecialArgs = { inherit system; };
         modules = [
           inputs.nixvim.homeModules.nixvim
           ../home
@@ -42,19 +55,22 @@ in
   homeConfigurations.home = currentHome;
 
   checks = forAllSystems (system: {
-    home = (mkHome {
-      inherit system;
-      username = "home-check";
-      homeDirectory = "/tmp/home-check";
-    }).activationPackage;
+    home =
+      (mkHome {
+        inherit system;
+        username = "home-check";
+        homeDirectory = "/tmp/home-check";
+      }).activationPackage;
   });
 
   devShells = forAllSystems (system: {
     default = pkgsFor.${system}.mkShellNoCC {
       packages = with pkgsFor.${system}; [
         bash
+        deadnix
         jq
         shellcheck
+        statix
       ];
     };
   });
