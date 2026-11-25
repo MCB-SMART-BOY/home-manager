@@ -4,7 +4,7 @@
     settings = {
       hide_window_decorations = true;
       window_padding_width = 18;
-      background_opacity = 1.0;
+      background_opacity = 0.90;
       dynamic_background_opacity = true;
       window_alert_on_bell = false;
       confirm_os_window_close = 0;

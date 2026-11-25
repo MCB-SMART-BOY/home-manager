@@ -1,0 +1,7 @@
+[font]
+base-size = 14
+
+[notifications]
+background-alpha = 0.75
+border = "#c0caf5"
+border-alpha = 0.35

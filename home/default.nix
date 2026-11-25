@@ -22,6 +22,7 @@
     ./config/editor/helix
     ./config/editor/nixvim
     ./config/productivity/sioyek
+    ./config/desktop/omarchy
   ];
 
   home.stateVersion = "26.05";
